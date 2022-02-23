@@ -12,7 +12,7 @@
 <meta property="og:description" content="一直以来都有搭建个人网站或者说博客的想法，今天终于把这件事做成了，感谢 Github 各大代码托管平台的 GitHub XXX Pages 服务，使我们即使没有公网服务器也能搭个人人可访问的静态个人网站，而且无需任何费用。当然国内码云也有这项服务，由于一些理由我没有在那上面弄， Github Pages 由于国内访问速度太慢了，我就在码云上面也创建了仓库。言归正传，按照 Hexo 社区的惯例以及正">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2022-02-21T14:23:11.437Z">
-<meta property="article:modified_time" content="2022-02-23T14:17:44.757Z">
+<meta property="article:modified_time" content="2022-02-23T14:31:05.154Z">
 <meta property="article:author" content="skinyi">
 <meta property="article:tag" content="Javascript">
 <meta property="article:tag" content="Nodejs">
@@ -255,9 +255,9 @@
 <p>安装完成后查看 Nodejs 版本号：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[skinyi@localhost ~]$ node -v</span><br><span class="line">v16.14.0</span><br></pre></td></tr></table></figure>
 <p>从仓库安装完成后，需要升级 npm 版本以及为了不用以 root 权限执行 npm 命令，需要更改 npm 的配置：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 在当前用户主目录创建 npm 全局安装目录</span></span><br><span class="line">[skinyi@localhost ~]$ <span class="built_in">mkdir</span> ~/.npm-global</span><br><span class="line"><span class="comment"># 配置 npm 使用刚才建的目录路径</span></span><br><span class="line">[skinyi@localhost ~]$ npm config prefix <span class="string">&#x27;~/.npm-global&#x27;</span></span><br></pre></td></tr></table></figure>
-<p>添加 ~./npm-global/bin 路径到系统环境变量：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[skinyi@localhost ~]$ <span class="built_in">echo</span> <span class="string">&#x27;export PATH=~/.npm-global/bin:$PATH&#x27;</span> &gt;&gt; ~./bash_rc</span><br><span class="line">[skinyi@localhost ~]$ <span class="built_in">source</span> ~/.bash_rc</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 在当前用户主目录创建 npm 全局安装目录</span></span><br><span class="line">[skinyi@localhost ~]$ <span class="built_in">mkdir</span> ~/.npm-global</span><br><span class="line"><span class="comment"># 配置 npm 使用刚才建的目录路径</span></span><br><span class="line">[skinyi@localhost ~]$ npm config <span class="built_in">set</span> prefix <span class="string">&#x27;~/.npm-global&#x27;</span></span><br></pre></td></tr></table></figure>
+<p>添加 ~./npm-global/bin 路径到用户环境变量：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[skinyi@localhost ~]$ <span class="built_in">echo</span> <span class="string">&#x27;export PATH=~/.npm-global/bin:$PATH&#x27;</span> &gt;&gt; ~/.bash_rc</span><br><span class="line">[skinyi@localhost ~]$ <span class="built_in">source</span> ~/.bash_rc</span><br></pre></td></tr></table></figure>
 <h3 id="安装Git">安装Git</h3>
 <p>使用 <code>dnf</code> 包管理器安装 Git：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[skinyi@localhost ~]$ sudo dnf install git-core</span><br></pre></td></tr></table></figure>
