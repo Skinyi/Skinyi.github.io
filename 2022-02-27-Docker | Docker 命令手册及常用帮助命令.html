@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html  lang="zh-CN,en,default" >
+    <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, maximum-scale=5, viewport-fit=cover">
+    <title>Docker 命令手册及常用帮助命令 | 我在干什么</title>
+    <meta name="description" content="常用命令速查表格    命令 用途     docker version 查看 docker 客户端及服务端（docker 引擎）的版本及环境信息   docker info 查看 docker 的系统信息，包括客户端、服务端配置、镜像与容器数量以及一些其他常见配置   docker [命令] --help 查看 docker [命令] 使用的帮助信息，比如 docker image --help">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Docker 命令手册及常用帮助命令">
+<meta property="og:url" content="http://skinyi.github.com/skinyi.github.io/2022-02-27-Docker%20|%20Docker%20%E5%91%BD%E4%BB%A4%E6%89%8B%E5%86%8C%E5%8F%8A%E5%B8%B8%E7%94%A8%E5%B8%AE%E5%8A%A9%E5%91%BD%E4%BB%A4.html">
+<meta property="og:site_name" content="我在干什么">
+<meta property="og:description" content="常用命令速查表格    命令 用途     docker version 查看 docker 客户端及服务端（docker 引擎）的版本及环境信息   docker info 查看 docker 的系统信息，包括客户端、服务端配置、镜像与容器数量以及一些其他常见配置   docker [命令] --help 查看 docker [命令] 使用的帮助信息，比如 docker image --help">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-02-27T14:03:20.637Z">
+<meta property="article:modified_time" content="2022-02-27T14:11:56.635Z">
+<meta property="article:author" content="skinyi">
+<meta property="article:tag" content="Docker">
+<meta property="article:tag" content="Linux">
+<meta property="article:tag" content="容器">
+<meta property="article:tag" content="虚拟化">
+<meta name="twitter:card" content="summary">
+
+    
+    <link rel="icon" href="images/favicon.png" type="image/x-icon">
+
+    
+<link rel="stylesheet" href="/skinyi.github.io/css/common.min.css">
+
+
+
+    
+    
+    
+    
+        <link href="//cdn.jsdelivr.net/npm/lightgallery.js@1.1.3/dist/css/lightgallery.min.css" rel="stylesheet">
+    
+    
+    
+<link rel="stylesheet" href="/skinyi.github.io/css/iconfont.min.css">
+
+    
+<meta name="generator" content="Hexo 6.0.0"></head>
+
+    <body>
+        <header class="header header-fixture">
+    <div class="profile-search-wrap flex sm:block">
+        
+        
+        <div class="profile sm:text-center md:px-1 lg:px-3 sm:pb-4 sm:pt-6">
+            <a id="avatar" role="link" href="https://github.com/skinyi" class="inline-block lg:w-16 lg:h-16 w-8 h-8 m-2" target="_blank" rel="noopener" rel="noreferrer" >
+                <img src="/skinyi.github.io/images/avatar.jpg" class="rounded-full" alt="avatar">
+            </a>
+            <h2 id="name" class="hidden lg:block">Avery Ma</h2>
+            <h3 id="title" class="hidden xl:block">IT 从业者</h3>
+            
+            <small id="location" class="hidden lg:block">
+                <i class="iconfont icon-map-icon"></i>
+                宁夏, 中国
+            </small>
+            
+        </div>
+        
+        
+<div class="search flex-1 flex lg:inline-block sm:hidden lg:px-4 lg:mt-2 lg:mb-4 lg:w-full">
+    <form id="search-form" class="my-auto flex-1 lg:border lg:border-solid lg:border-gray-200">
+        <div class="input-group table bg-gray-100 lg:bg-white w-full">
+            <input id="search-input" type="text" placeholder="搜索" class="inline-block w-full bg-gray-100 lg:bg-white">
+            <span class="table-cell">
+                <button name="search tigger button" disabled>
+                    <i class="iconfont icon-search m-2"></i>
+                </button>
+            </span>
+        </div>
+    </form>
+        
+<div id="content-json" data-placeholder="搜索" class="invisible hidden">/content.json</div>
+<script id="search-teamplate" type="text/html" data-path="/skinyi.github.io/content.json">
+    <div>
+        <div class="search-header bg-gray-400">
+            <input id="actual-search-input" model="keyword" ref="input" class="inline-block w-full h-10 px-2 py-1" placeholder="搜索" type="text">
+        </div>
+        <div class="search-result bg-gray-200">
+            {{#each searchPosts}}
+            <a href="/{{ path }}" class="result-item block px-2 pb-3 mb-1 pt-1 hover:bg-indigo-100">
+                <i class="iconfont icon-file"></i>
+                <h1 class="result-title inline font-medium text-lg">{{ title }}</h1>
+                <p class="result-content text-gray-600 text-sm">{{{ text }}}</p>
+            </a>
+            {{/each}}
+        </div>
+    </div>
+</script>
+
+</div>
+
+
+        <button name="menu toogle button" id="menu-toggle-btn" class="block sm:hidden p-3" role="button" aria-expanded="false">
+            <i class="iconfont icon-hamburger"></i>
+        </button>
+    </div>
+    <nav id="menu-nav" class="hidden sm:flex flex-col">
+        
+        
+            <div class="menu-item menu-home" role="menuitem">
+                <a href="/skinyi.github.io/.">
+                    <i class="iconfont icon-home" aria-hidden="true"></i>
+                    <span class="menu-title">首页</span>
+                </a>
+            </div>
+        
+        
+            <div class="menu-item menu-archives" role="menuitem">
+                <a href="/skinyi.github.io/archives">
+                    <i class="iconfont icon-archive" aria-hidden="true"></i>
+                    <span class="menu-title">归档</span>
+                </a>
+            </div>
+        
+        
+            <div class="menu-item menu-categories" role="menuitem">
+                <a href="/skinyi.github.io/categories">
+                    <i class="iconfont icon-folder" aria-hidden="true"></i>
+                    <span class="menu-title">分类</span>
+                </a>
+            </div>
+        
+        
+            <div class="menu-item menu-tags" role="menuitem">
+                <a href="/skinyi.github.io/tags">
+                    <i class="iconfont icon-tag" aria-hidden="true"></i>
+                    <span class="menu-title">标签</span>
+                </a>
+            </div>
+        
+        
+            <div class="menu-item menu-repository" role="menuitem">
+                <a href="/skinyi.github.io/repository">
+                    <i class="iconfont icon-project" aria-hidden="true"></i>
+                    <span class="menu-title">项目</span>
+                </a>
+            </div>
+        
+        
+            <div class="menu-item menu-about" role="menuitem">
+                <a href="/skinyi.github.io/about">
+                    <i class="iconfont icon-cup" aria-hidden="true"></i>
+                    <span class="menu-title">关于</span>
+                </a>
+            </div>
+        
+        
+
+    </nav>
+</header>
+
+        <section class="main-section">
+            
+    <main class="flex-1 px-4 py-14 md:px-5 lg:px-8 lg:py-4 relative min-h-screen">
+    
+
+    <article class="content article article-archives article-type-list" itemscope="">
+        <header class="article-header">
+            
+    
+        <h1 class="article-title text-lg" itemprop="name">
+            Docker 命令手册及常用帮助命令
+        </h1>
+    
+
+
+
+            <p class="article-meta mb-3 text-xs">
+                <span class="article-date">
+    <i class="iconfont icon-calendar-check"></i>
+	<a href="/skinyi.github.io/2022-02-27-Docker%20%7C%20Docker%20%E5%91%BD%E4%BB%A4%E6%89%8B%E5%86%8C%E5%8F%8A%E5%B8%B8%E7%94%A8%E5%B8%AE%E5%8A%A9%E5%91%BD%E4%BB%A4.html" class="article-date">
+	  <time datetime="2022-02-27T14:03:20.637Z" itemprop="datePublished">2月 27</time>
+	</a>
+</span>
+
+                
+    <span class="article-category">
+    <i class="iconfont icon-folder"></i>
+    <a class="article-category-link" href="/skinyi.github.io/categories/%E5%AD%A6%E4%B9%A0/">学习</a> , <a class="article-category-link" href="/skinyi.github.io/categories/%E5%AD%A6%E4%B9%A0/Docker/">Docker</a> , <a class="article-category-link" href="/skinyi.github.io/categories/%E6%97%A5%E5%B8%B8%E8%AE%B0%E5%BD%95/">日常记录</a>
+  </span>
+
+
+                
+    <span class="article-tags">
+    <i class="iconfont icon-tag"></i>
+    <a class="article-tag-none-link" href="/skinyi.github.io/tags/Docker/" rel="tag">Docker</a>, <a class="article-tag-none-link" href="/skinyi.github.io/tags/Linux/" rel="tag">Linux</a>, <a class="article-tag-none-link" href="/skinyi.github.io/tags/%E5%AE%B9%E5%99%A8/" rel="tag">容器</a>, <a class="article-tag-none-link" href="/skinyi.github.io/tags/%E8%99%9A%E6%8B%9F%E5%8C%96/" rel="tag">虚拟化</a>
+  </span>
+
+
+                <span class="_partial/post-comment"><i class="icon icon-comment"></i>
+                    <a href="/skinyi.github.io/2022-02-27-Docker%20%7C%20Docker%20%E5%91%BD%E4%BB%A4%E6%89%8B%E5%86%8C%E5%8F%8A%E5%B8%B8%E7%94%A8%E5%B8%AE%E5%8A%A9%E5%91%BD%E4%BB%A4.html#comments" class="article-comment-link">
+                        评论
+                    </a>
+                </span>
+                
+    
+        <span class="post-wordcount" itemprop="wordCount">字数统计: 686(字)</span>
+    
+    
+        <span class="post-readcount" itemprop="timeRequired">阅读时长: 3(分)</span>
+    
+
+
+            </p>
+        </header>
+        <div class="marked-body article-body">
+            <h2 id="常用命令速查表格">常用命令速查表格</h2>
+<table>
+<thead>
+<tr>
+<th>命令</th>
+<th>用途</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>docker version</td>
+<td>查看 docker 客户端及服务端（docker 引擎）的版本及环境信息</td>
+</tr>
+<tr>
+<td>docker info</td>
+<td>查看 docker 的系统信息，包括客户端、服务端配置、镜像与容器数量以及一些其他常见配置</td>
+</tr>
+<tr>
+<td>docker [命令] --help</td>
+<td>查看 <code>docker [命令]</code> 使用的帮助信息，比如 <code>docker image --help</code></td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>Docker 命令速查手册地址：<a target="_blank" rel="noopener" href="https://docs.docker.com/engine/reference/run/%E3%80%82">https://docs.docker.com/engine/reference/run/。</a></p>
+</blockquote>
+<h2 id="常用帮助命令介绍">常用帮助命令介绍</h2>
+<h3 id="docker-version-查看-docker-版本信息"><code>docker version</code> 查看 docker 版本信息</h3>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">[skinyi@fedora ~]\$ sudo docker version</span><br><span class="line">[sudo] skinyi 的密码：</span><br><span class="line">Client: Docker Engine - Community</span><br><span class="line"> Version:           20.10.12</span><br><span class="line"> API version:       1.41</span><br><span class="line"> Go version:        go1.16.12</span><br><span class="line"> Git commit:        e91ed57</span><br><span class="line"> Built:             Mon Dec 13 11:46:03 2021</span><br><span class="line"> OS/Arch:           linux/amd64</span><br><span class="line"> Context:           default</span><br><span class="line"> Experimental:      <span class="literal">true</span></span><br><span class="line"></span><br><span class="line">Server: Docker Engine - Community</span><br><span class="line"> Engine:</span><br><span class="line">  Version:          20.10.12</span><br><span class="line">  API version:      1.41 (minimum version 1.12)</span><br><span class="line">  Go version:       go1.16.12</span><br><span class="line">  Git commit:       459d0df</span><br><span class="line">  Built:            Mon Dec 13 11:43:48 2021</span><br><span class="line">  OS/Arch:          linux/amd64</span><br><span class="line">  Experimental:     <span class="literal">false</span></span><br><span class="line"> containerd:</span><br><span class="line">  Version:          1.4.12</span><br><span class="line">  GitCommit:        7b11cfaabd73bb80907dd23182b9347b4245eb5d</span><br><span class="line"> runc:</span><br><span class="line">  Version:          1.0.2</span><br><span class="line">  GitCommit:        v1.0.2-0-g52b36a2</span><br><span class="line"> docker-init:</span><br><span class="line">  Version:          0.19.0</span><br><span class="line">  GitCommit:        de40ad0</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h3 id="docker-info-查看-docker-的系统信息"><code>docker info</code> 查看 docker 的系统信息</h3>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br></pre></td><td class="code"><pre><span class="line">[skinyi@fedora ~]\$ sudo docker info</span><br><span class="line">[sudo] skinyi 的密码：</span><br><span class="line">Client:</span><br><span class="line"> Context:    default</span><br><span class="line"> Debug Mode: <span class="literal">false</span></span><br><span class="line"> Plugins:</span><br><span class="line">  app: Docker App (Docker Inc., v0.9.1-beta3)</span><br><span class="line">  buildx: Docker Buildx (Docker Inc., v0.7.1-docker)</span><br><span class="line">  scan: Docker Scan (Docker Inc., v0.12.0)</span><br><span class="line"></span><br><span class="line">Server:</span><br><span class="line"> Containers: 2</span><br><span class="line">  Running: 0</span><br><span class="line">  Paused: 0</span><br><span class="line">  Stopped: 2</span><br><span class="line"> Images: 1</span><br><span class="line"> Server Version: 20.10.12</span><br><span class="line"> Storage Driver: overlay2</span><br><span class="line">  Backing Filesystem: xfs</span><br><span class="line">  Supports d_type: <span class="literal">true</span></span><br><span class="line">  Native Overlay Diff: <span class="literal">true</span></span><br><span class="line">  userxattr: <span class="literal">false</span></span><br><span class="line"> Logging Driver: json-file</span><br><span class="line"> Cgroup Driver: systemd</span><br><span class="line"> Cgroup Version: 2</span><br><span class="line"> Plugins:</span><br><span class="line">  Volume: <span class="built_in">local</span></span><br><span class="line">  Network: bridge host ipvlan macvlan null overlay</span><br><span class="line">  Log: awslogs fluentd gcplogs gelf journald json-file <span class="built_in">local</span> logentries splunk syslog</span><br><span class="line"> Swarm: inactive</span><br><span class="line"> Runtimes: runc io.containerd.runc.v2 io.containerd.runtime.v1.linux</span><br><span class="line"> Default Runtime: runc</span><br><span class="line"> Init Binary: docker-init</span><br><span class="line"> containerd version: 7b11cfaabd73bb80907dd23182b9347b4245eb5d</span><br><span class="line"> runc version: v1.0.2-0-g52b36a2</span><br><span class="line"> init version: de40ad0</span><br><span class="line"> Security Options:</span><br><span class="line">  seccomp</span><br><span class="line">   Profile: default</span><br><span class="line">  cgroupns</span><br><span class="line"> Kernel Version: 5.16.8-200.fc35.x86_64</span><br><span class="line"> Operating System: Fedora Linux 35 (Server Edition)</span><br><span class="line"> OSType: linux</span><br><span class="line"> Architecture: x86_64</span><br><span class="line"> CPUs: 2</span><br><span class="line"> Total Memory: 3.788GiB</span><br><span class="line"> Name: fedora</span><br><span class="line"> ID: I5R6:5NIE:OTIL:XBI4:R6WP:5XSO:BZTG:QGV6:6RHG:OU7U:P3EP:JTEC</span><br><span class="line"> Docker Root Dir: /var/lib/docker</span><br><span class="line"> Debug Mode: <span class="literal">false</span></span><br><span class="line"> Registry: https://index.docker.io/v1/</span><br><span class="line"> Labels:</span><br><span class="line"> Experimental: <span class="literal">false</span></span><br><span class="line"> Insecure Registries:</span><br><span class="line">  127.0.0.0/8</span><br><span class="line"> Live Restore Enabled: <span class="literal">false</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h3 id="docker-命令-help-查看-docker-命令-的帮助信息"><code>docker [命令] --help</code> 查看 <code>docker [命令]</code> 的帮助信息</h3>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">[skinyi@fedora ~]\$ docker image --<span class="built_in">help</span></span><br><span class="line"></span><br><span class="line">Usage:  docker image COMMAND</span><br><span class="line"></span><br><span class="line">Manage images</span><br><span class="line"></span><br><span class="line">Commands:</span><br><span class="line">  build       Build an image from a Dockerfile</span><br><span class="line">  <span class="built_in">history</span>     Show the <span class="built_in">history</span> of an image</span><br><span class="line">  import      Import the contents from a tarball to create a filesystem image</span><br><span class="line">  inspect     Display detailed information on one or more images</span><br><span class="line">  load        Load an image from a tar archive or STDIN</span><br><span class="line">  <span class="built_in">ls</span>          List images</span><br><span class="line">  prune       Remove unused images</span><br><span class="line">  pull        Pull an image or a repository from a registry</span><br><span class="line">  push        Push an image or a repository to a registry</span><br><span class="line">  <span class="built_in">rm</span>          Remove one or more images</span><br><span class="line">  save        Save one or more images to a tar archive (streamed to STDOUT by default)</span><br><span class="line">  tag         Create a tag TARGET_IMAGE that refers to SOURCE_IMAGE</span><br><span class="line"></span><br><span class="line">Run <span class="string">&#x27;docker image COMMAND --help&#x27;</span> <span class="keyword">for</span> more information on a <span class="built_in">command</span>.</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">[skinyi@fedora ~]$ sudo docker container list --<span class="built_in">help</span></span><br><span class="line"></span><br><span class="line">Usage:  docker container <span class="built_in">ls</span> [OPTIONS]</span><br><span class="line"></span><br><span class="line">List containers</span><br><span class="line"></span><br><span class="line">Aliases:</span><br><span class="line">  <span class="built_in">ls</span>, ps, list</span><br><span class="line"></span><br><span class="line">Options:</span><br><span class="line">  -a, --all             Show all containers (default shows just running)</span><br><span class="line">  -f, --filter filter   Filter output based on conditions provided</span><br><span class="line">      --format string   Pretty-print containers using a Go template</span><br><span class="line">  -n, --last int        Show n last created containers (includes all states) (default -1)</span><br><span class="line">  -l, --latest          Show the latest created container (includes all states)</span><br><span class="line">      --no-trunc        Don<span class="string">&#x27;t truncate output</span></span><br><span class="line"><span class="string">  -q, --quiet           Only display container IDs</span></span><br><span class="line"><span class="string">  -s, --size            Display total file sizes</span></span><br></pre></td></tr></table></figure>
+        </div>
+        
+<blockquote class="copyright">
+    <p><strong>本文链接 : </strong><a class="permalink" href="http://skinyi.github.com/skinyi.github.io/2022-02-27-Docker%20|%20Docker%20%E5%91%BD%E4%BB%A4%E6%89%8B%E5%86%8C%E5%8F%8A%E5%B8%B8%E7%94%A8%E5%B8%AE%E5%8A%A9%E5%91%BD%E4%BB%A4.html">http://skinyi.github.com/skinyi.github.io/2022-02-27-Docker | Docker 命令手册及常用帮助命令.html</a></p>
+    <p><strong>This article is available under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="noopener noreferrer">Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)</a> License</strong></p>
+</blockquote>
+
+
+    </article>
+    
+    <section id="comments">
+        
+    </section>
+
+
+    
+
+</main>
+
+
+<aside style="" id="sidebar" class="aside aside-fixture">
+    <div class="toc-sidebar">
+        <nav id="toc" class="article-toc">
+            <h3 class="toc-title">文章目录</h3>
+            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4%E9%80%9F%E6%9F%A5%E8%A1%A8%E6%A0%BC"><span class="toc-number">1.</span> <span class="toc-text">常用命令速查表格</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B8%B8%E7%94%A8%E5%B8%AE%E5%8A%A9%E5%91%BD%E4%BB%A4%E4%BB%8B%E7%BB%8D"><span class="toc-number">2.</span> <span class="toc-text">常用帮助命令介绍</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#docker-version-%E6%9F%A5%E7%9C%8B-docker-%E7%89%88%E6%9C%AC%E4%BF%A1%E6%81%AF"><span class="toc-number">2.1.</span> <span class="toc-text">docker version 查看 docker 版本信息</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#docker-info-%E6%9F%A5%E7%9C%8B-docker-%E7%9A%84%E7%B3%BB%E7%BB%9F%E4%BF%A1%E6%81%AF"><span class="toc-number">2.2.</span> <span class="toc-text">docker info 查看 docker 的系统信息</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#docker-%E5%91%BD%E4%BB%A4-help-%E6%9F%A5%E7%9C%8B-docker-%E5%91%BD%E4%BB%A4-%E7%9A%84%E5%B8%AE%E5%8A%A9%E4%BF%A1%E6%81%AF"><span class="toc-number">2.3.</span> <span class="toc-text">docker [命令] --help 查看 docker [命令] 的帮助信息</span></a></li></ol></li></ol>
+        </nav>
+    </div>
+</aside>
+
+
+
+
+
+        </section>
+        <footer class="hidden lg:block fixed bottom-0 left-0 sm:w-1/12 lg:w-1/6 bg-gray-100 z-40">
+    
+    
+        <p class="footer-custom">❤ Powered by <a href="https://hexo.io/" target="_blank" rel="noopener noreferrer">Hexo</a> with <a href="https://github.com/fengkx/hexo-theme-purer" target="_blank" rel="noopener noreferrer">Purer theme</a> by fengkx.</p>
+    
+</footer>
+
+        <div id="mask" class="hidden mask fixed inset-0 bg-gray-900 opacity-75 z-40"></div>
+        <div id="search-view-container" class="hidden shadow-xl"></div>
+        
+<script src="/skinyi.github.io/js/dom-event.min.js"></script>
+
+
+
+<script src="/skinyi.github.io/js/local-search.min.js"></script>
+
+
+
+    <script src="//cdn.jsdelivr.net/npm/lightgallery.js@1.1.3/dist/js/lightgallery.min.js"></script>
+    
+<script src="/skinyi.github.io/js/light-gallery.min.js"></script>
+
+
+
+
+
+
+    </body>
+</html>

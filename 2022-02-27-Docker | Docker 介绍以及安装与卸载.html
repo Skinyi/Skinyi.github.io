@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html  lang="zh-CN,en,default" >
+    <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, maximum-scale=5, viewport-fit=cover">
+    <title>Docker 介绍以及安装与卸载 | 我在干什么</title>
+    <meta name="description" content="Docker 是一个开源的应用容器引擎，让开发者可以打包他们的应用以及依赖包到一个可移植的容器中,然后发布到任何流行的 Linux 或 Windows 操作系统的机器上,也可以实现虚拟化,容器是完全使用沙箱机制,相互之间不会有任何接口。 Docker 官方文档地址：https:&#x2F;&#x2F;docs.docker.com&#x2F;。在其官网上关于 docker 的整体架构介绍可以找到这张图：  可以看出 docke">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Docker 介绍以及安装与卸载">
+<meta property="og:url" content="http://skinyi.github.com/skinyi.github.io/2022-02-27-Docker%20|%20Docker%20%E4%BB%8B%E7%BB%8D%E4%BB%A5%E5%8F%8A%E5%AE%89%E8%A3%85%E4%B8%8E%E5%8D%B8%E8%BD%BD.html">
+<meta property="og:site_name" content="我在干什么">
+<meta property="og:description" content="Docker 是一个开源的应用容器引擎，让开发者可以打包他们的应用以及依赖包到一个可移植的容器中,然后发布到任何流行的 Linux 或 Windows 操作系统的机器上,也可以实现虚拟化,容器是完全使用沙箱机制,相互之间不会有任何接口。 Docker 官方文档地址：https:&#x2F;&#x2F;docs.docker.com&#x2F;。在其官网上关于 docker 的整体架构介绍可以找到这张图：  可以看出 docke">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://skinyi.github.com/skinyi.github.io/images/architecture.svg">
+<meta property="og:image" content="http://skinyi.github.com/skinyi.github.io/images/Docker%E5%90%AF%E5%8A%A8%E8%BF%87%E7%A8%8B.png">
+<meta property="article:published_time" content="2022-02-27T13:03:47.405Z">
+<meta property="article:modified_time" content="2022-02-27T14:02:38.202Z">
+<meta property="article:author" content="skinyi">
+<meta property="article:tag" content="Docker">
+<meta property="article:tag" content="Linux">
+<meta property="article:tag" content="容器">
+<meta property="article:tag" content="虚拟化">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://skinyi.github.com/skinyi.github.io/images/architecture.svg">
+
+    
+    <link rel="icon" href="images/favicon.png" type="image/x-icon">
+
+    
+<link rel="stylesheet" href="/skinyi.github.io/css/common.min.css">
+
+
+
+    
+    
+    
+    
+        <link href="//cdn.jsdelivr.net/npm/lightgallery.js@1.1.3/dist/css/lightgallery.min.css" rel="stylesheet">
+    
+    
+    
+<link rel="stylesheet" href="/skinyi.github.io/css/iconfont.min.css">
+
+    
+<meta name="generator" content="Hexo 6.0.0"></head>
+
+    <body>
+        <header class="header header-fixture">
+    <div class="profile-search-wrap flex sm:block">
+        
+        
+        <div class="profile sm:text-center md:px-1 lg:px-3 sm:pb-4 sm:pt-6">
+            <a id="avatar" role="link" href="https://github.com/skinyi" class="inline-block lg:w-16 lg:h-16 w-8 h-8 m-2" target="_blank" rel="noopener" rel="noreferrer" >
+                <img src="/skinyi.github.io/images/avatar.jpg" class="rounded-full" alt="avatar">
+            </a>
+            <h2 id="name" class="hidden lg:block">Avery Ma</h2>
+            <h3 id="title" class="hidden xl:block">IT 从业者</h3>
+            
+            <small id="location" class="hidden lg:block">
+                <i class="iconfont icon-map-icon"></i>
+                宁夏, 中国
+            </small>
+            
+        </div>
+        
+        
+<div class="search flex-1 flex lg:inline-block sm:hidden lg:px-4 lg:mt-2 lg:mb-4 lg:w-full">
+    <form id="search-form" class="my-auto flex-1 lg:border lg:border-solid lg:border-gray-200">
+        <div class="input-group table bg-gray-100 lg:bg-white w-full">
+            <input id="search-input" type="text" placeholder="搜索" class="inline-block w-full bg-gray-100 lg:bg-white">
+            <span class="table-cell">
+                <button name="search tigger button" disabled>
+                    <i class="iconfont icon-search m-2"></i>
+                </button>
+            </span>
+        </div>
+    </form>
+        
+<div id="content-json" data-placeholder="搜索" class="invisible hidden">/content.json</div>
+<script id="search-teamplate" type="text/html" data-path="/skinyi.github.io/content.json">
+    <div>
+        <div class="search-header bg-gray-400">
+            <input id="actual-search-input" model="keyword" ref="input" class="inline-block w-full h-10 px-2 py-1" placeholder="搜索" type="text">
+        </div>
+        <div class="search-result bg-gray-200">
+            {{#each searchPosts}}
+            <a href="/{{ path }}" class="result-item block px-2 pb-3 mb-1 pt-1 hover:bg-indigo-100">
+                <i class="iconfont icon-file"></i>
+                <h1 class="result-title inline font-medium text-lg">{{ title }}</h1>
+                <p class="result-content text-gray-600 text-sm">{{{ text }}}</p>
+            </a>
+            {{/each}}
+        </div>
+    </div>
+</script>
+
+</div>
+
+
+        <button name="menu toogle button" id="menu-toggle-btn" class="block sm:hidden p-3" role="button" aria-expanded="false">
+            <i class="iconfont icon-hamburger"></i>
+        </button>
+    </div>
+    <nav id="menu-nav" class="hidden sm:flex flex-col">
+        
+        
+            <div class="menu-item menu-home" role="menuitem">
+                <a href="/skinyi.github.io/.">
+                    <i class="iconfont icon-home" aria-hidden="true"></i>
+                    <span class="menu-title">首页</span>
+                </a>
+            </div>
+        
+        
+            <div class="menu-item menu-archives" role="menuitem">
+                <a href="/skinyi.github.io/archives">
+                    <i class="iconfont icon-archive" aria-hidden="true"></i>
+                    <span class="menu-title">归档</span>
+                </a>
+            </div>
+        
+        
+            <div class="menu-item menu-categories" role="menuitem">
+                <a href="/skinyi.github.io/categories">
+                    <i class="iconfont icon-folder" aria-hidden="true"></i>
+                    <span class="menu-title">分类</span>
+                </a>
+            </div>
+        
+        
+            <div class="menu-item menu-tags" role="menuitem">
+                <a href="/skinyi.github.io/tags">
+                    <i class="iconfont icon-tag" aria-hidden="true"></i>
+                    <span class="menu-title">标签</span>
+                </a>
+            </div>
+        
+        
+            <div class="menu-item menu-repository" role="menuitem">
+                <a href="/skinyi.github.io/repository">
+                    <i class="iconfont icon-project" aria-hidden="true"></i>
+                    <span class="menu-title">项目</span>
+                </a>
+            </div>
+        
+        
+            <div class="menu-item menu-about" role="menuitem">
+                <a href="/skinyi.github.io/about">
+                    <i class="iconfont icon-cup" aria-hidden="true"></i>
+                    <span class="menu-title">关于</span>
+                </a>
+            </div>
+        
+        
+
+    </nav>
+</header>
+
+        <section class="main-section">
+            
+    <main class="flex-1 px-4 py-14 md:px-5 lg:px-8 lg:py-4 relative min-h-screen">
+    
+
+    <article class="content article article-archives article-type-list" itemscope="">
+        <header class="article-header">
+            
+    
+        <h1 class="article-title text-lg" itemprop="name">
+            Docker 介绍以及安装与卸载
+        </h1>
+    
+
+
+
+            <p class="article-meta mb-3 text-xs">
+                <span class="article-date">
+    <i class="iconfont icon-calendar-check"></i>
+	<a href="/skinyi.github.io/2022-02-27-Docker%20%7C%20Docker%20%E4%BB%8B%E7%BB%8D%E4%BB%A5%E5%8F%8A%E5%AE%89%E8%A3%85%E4%B8%8E%E5%8D%B8%E8%BD%BD.html" class="article-date">
+	  <time datetime="2022-02-27T13:03:47.405Z" itemprop="datePublished">2月 27</time>
+	</a>
+</span>
+
+                
+    <span class="article-category">
+    <i class="iconfont icon-folder"></i>
+    <a class="article-category-link" href="/skinyi.github.io/categories/%E5%AD%A6%E4%B9%A0/">学习</a> , <a class="article-category-link" href="/skinyi.github.io/categories/%E5%AD%A6%E4%B9%A0/Docker/">Docker</a> , <a class="article-category-link" href="/skinyi.github.io/categories/%E6%97%A5%E5%B8%B8%E8%AE%B0%E5%BD%95/">日常记录</a>
+  </span>
+
+
+                
+    <span class="article-tags">
+    <i class="iconfont icon-tag"></i>
+    <a class="article-tag-none-link" href="/skinyi.github.io/tags/Docker/" rel="tag">Docker</a>, <a class="article-tag-none-link" href="/skinyi.github.io/tags/Linux/" rel="tag">Linux</a>, <a class="article-tag-none-link" href="/skinyi.github.io/tags/%E5%AE%B9%E5%99%A8/" rel="tag">容器</a>, <a class="article-tag-none-link" href="/skinyi.github.io/tags/%E8%99%9A%E6%8B%9F%E5%8C%96/" rel="tag">虚拟化</a>
+  </span>
+
+
+                <span class="_partial/post-comment"><i class="icon icon-comment"></i>
+                    <a href="/skinyi.github.io/2022-02-27-Docker%20%7C%20Docker%20%E4%BB%8B%E7%BB%8D%E4%BB%A5%E5%8F%8A%E5%AE%89%E8%A3%85%E4%B8%8E%E5%8D%B8%E8%BD%BD.html#comments" class="article-comment-link">
+                        评论
+                    </a>
+                </span>
+                
+    
+        <span class="post-wordcount" itemprop="wordCount">字数统计: 2k(字)</span>
+    
+    
+        <span class="post-readcount" itemprop="timeRequired">阅读时长: 8(分)</span>
+    
+
+
+            </p>
+        </header>
+        <div class="marked-body article-body">
+            <p>Docker 是一个开源的应用容器引擎，让开发者可以打包他们的应用以及依赖包到一个可移植的容器中,然后发布到任何流行的 Linux 或 Windows 操作系统的机器上,也可以实现虚拟化,容器是完全使用沙箱机制,相互之间不会有任何接口。</p>
+<p>Docker 官方文档地址：<a target="_blank" rel="noopener" href="https://docs.docker.com/">https://docs.docker.com/</a>。在其官网上关于 docker 的整体架构介绍可以找到这张图：</p>
+<p><img src="images/architecture.svg" alt="Docker Architecture Diagram"></p>
+<p>可以看出 docker 整体是模块化、低耦合且遵循 C/S 架构的，构成它的是功能不同的组件，以下是对这些组件的功能的梳理。</p>
+<h2 id="Docker-组件介绍">Docker 组件介绍</h2>
+<ul>
+<li>
+<p>Docker Daemon：Docker 守护进程（<code>dockerd</code>）监听 Docker API 请求并管理 Docker 对象，例如镜像、容器、网络和存储卷。守护进程还可以与其他守护进程通信以管理 Docker 服务。</p>
+</li>
+<li>
+<p>Docker Client：Docker 客户端（<code>docker</code>）是许多 Docker 用户与 Docker 交互的主要方式。当你使用 <code>docker run</code> 等命令时，客户端会将这些命令发送给 dockerd，dockerd 会执行这些命令。 docker 命令使用 Docker API。Docker 客户端可以与多个守护进程通信。</p>
+</li>
+<li>
+<p>Docker Desktop：是一个易于安装的应用程序，适用于 Mac 或 Windows 环境，能够构建和共享容器化应用程序和微服务。Docker Desktop 包括 Docker 守护程序 (<code>dockerd</code>)、Docker 客户端 (<code>docker</code>)、Docker Compose、Docker Content Trust、Kubernetes 和 Credential Helper。有关更多信息，请参阅 Docker 桌面。</p>
+</li>
+<li>
+<p>Docker Registries：Docker 仓库存储 <em>Docker 映像</em>（Docker Image）。DockerHub 是一个任何人都可以使用的公共仓库，并且 Docker 默认配置为在 DockerHub 上查找镜像。甚至可以定制运行自己的私有仓库。</p>
+</li>
+</ul>
+<blockquote>
+<p>当使用 <code>docker pull</code> 或 <code>docker run</code> 命令时，将从系统所配置的镜像仓库中提取所需的镜像。当使用 <code>docker push</code> 命令时，你定制的镜像会被推送到你配置的镜像仓库中。</p>
+</blockquote>
+<ul>
+<li>
+<p>Docker Objects：当使用 Docker 时，会涉及到创建和使用图像、容器、网络、卷、插件和其他对象。以下简要概述其中一些对象。</p>
+<ul>
+<li>Docker Image</li>
+</ul>
+<p>Docker 镜像是一个只读模板，其中包含创建 Docker 容器时的说明。通常，一个镜像基于另一个镜像，并附带有一些额外的自定义。例如，可以构建一个基于 <em>ubuntu</em> 镜像的镜像，但会安装 Apache Web 服务器和一些你的应用程序，该镜像还包含使你的应用程序运行所需的配置的详细信息。</p>
+<p>你可以创建自己的镜像，也可以只使用其他人创建并在仓库中发布的镜像。要构建你自己的镜像，你需要使用简单的语法创建一个 <em>Dockerfile</em>，用于定义创建和运行镜像所需的步骤。<em>Dockerfile</em> 中的每条指令都会在镜像中创建一个层。当你更改 <em>Dockerfile</em> 并重建映像时，仅重建那些已更改的层。与其他虚拟化技术相比，这是使镜像如此轻量、小巧和快速的部分原因。</p>
+<ul>
+<li>Docker Container</li>
+</ul>
+<p>Docker 容器是镜像的可运行实例。你可以使用 Docker API 或 CLI 创建、启动、停止、移动或删除容器。你可以将容器连接到一个或多个网络，将存储附加到它，甚至可以根据其当前状态创建新的镜像。</p>
+<p>默认情况下，一个容器与其他容器以及其宿主机的隔离相对较好。你可以控制容器的网络、存储和其他底层子系统与其他容器或宿主机的隔离程度。</p>
+<p>一个容器由其镜像以及你在创建或启动它时提供给它的任何配置选项进行定义。当容器被移除时，任何未存储在持久存储中的状态更改都会消失。</p>
+</li>
+</ul>
+<p>​Docker 三大核心组件指的是：Docker Image、Docker Container 以及 Docker Registry。</p>
+<h3 id="Docker-运行示例">Docker 运行示例</h3>
+<p>以下命令运行 <code>ubuntu</code> 容器，以交互方式附加到本地命令行会话，并运行 <strong>/bin/bash</strong>。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[skinyi@fedora ~]\$ sudo docker run -i -t ubuntu /bin/bash</span><br></pre></td></tr></table></figure>
+<p>^ 安装 Docker 后如不做其他配置则 <code>docker run</code> 命令只能使用 root 权限来执行。</p>
+<p>当你运行此命令时，会发生以下情况（假设你使用的是默认镜像仓库配置）：</p>
+<ol>
+<li>
+<p>如果你在本地没有 <code>ubuntu</code> 映像，Docker 会从你配置的镜像仓库（默认 DockerHub）中提取它，就像你手动运行 <code>docker pull ubuntu</code> 一样；</p>
+</li>
+<li>
+<p>Docker 使用该镜像创建一个新容器，就像你手动运行了 <code>docker container create</code> 命令一样；</p>
+</li>
+<li>
+<p>Docker 为该容器分配一个读写文件系统，作为该容器的底层，这允许正在运行的容器在其本地文件系统中创建或修改文件和目录；</p>
+</li>
+<li>
+<p>由于没有指定任何其他的网络选项，Docker 会创建一个网络接口来将该容器连接到默认网络，包括为容器分配 IP 地址。默认情况下，容器可以使用主机的网络连接连接到外部网络。</p>
+</li>
+<li>
+<p>Docker 启动容器并执行 <code>/bin/bash</code>。由于容器以交互方式运行并附加到您的终端（<code>-i</code> 和 <code>-t</code> 选项），所以你可以在将输出记录到终端时使用键盘提供输入。</p>
+</li>
+<li>
+<p>当你键入 <code>exit</code> 命令以终止 <code>/bin/bash</code> 命令时，容器会停止但不会被删除，你可以重新启动或删除它。</p>
+</li>
+</ol>
+<h2 id="Docker-的安装与卸载">Docker 的安装与卸载</h2>
+<p>个人学习使用操作系统为：Fedora 35，Fedora 版本目前仅支持 Fedora 34 和 Fedora 35。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">[skinyi@fedora ~]\$ <span class="built_in">cat</span> /etc/os-release</span><br><span class="line">NAME=<span class="string">&quot;Fedora Linux&quot;</span></span><br><span class="line">VERSION=<span class="string">&quot;35 (Server Edition)&quot;</span></span><br><span class="line">ID=fedora</span><br><span class="line">VERSION_ID=35</span><br><span class="line">VERSION_CODENAME=<span class="string">&quot;&quot;</span></span><br><span class="line">PLATFORM_ID=<span class="string">&quot;platform:f35&quot;</span></span><br><span class="line">PRETTY_NAME=<span class="string">&quot;Fedora Linux 35 (Server Edition)&quot;</span></span><br><span class="line">ANSI_COLOR=<span class="string">&quot;0;38;2;60;110;180&quot;</span></span><br><span class="line">LOGO=fedora-logo-icon</span><br><span class="line">CPE_NAME=<span class="string">&quot;cpe:/o:fedoraproject:fedora:35&quot;</span></span><br><span class="line">HOME_URL=<span class="string">&quot;https://fedoraproject.org/&quot;</span></span><br><span class="line">DOCUMENTATION_URL=<span class="string">&quot;https://docs.fedoraproject.org/en-US/fedora/f35/system-administrators-guide/&quot;</span></span><br><span class="line">SUPPORT_URL=<span class="string">&quot;https://ask.fedoraproject.org/&quot;</span></span><br><span class="line">BUG_REPORT_URL=<span class="string">&quot;https://bugzilla.redhat.com/&quot;</span></span><br><span class="line">REDHAT_BUGZILLA_PRODUCT=<span class="string">&quot;Fedora&quot;</span></span><br><span class="line">REDHAT_BUGZILLA_PRODUCT_VERSION=35</span><br><span class="line">REDHAT_SUPPORT_PRODUCT=<span class="string">&quot;Fedora&quot;</span></span><br><span class="line">REDHAT_SUPPORT_PRODUCT_VERSION=35</span><br><span class="line">PRIVACY_POLICY_URL=<span class="string">&quot;https://fedoraproject.org/wiki/Legal:PrivacyPolicy&quot;</span></span><br><span class="line">VARIANT=<span class="string">&quot;Server Edition&quot;</span></span><br><span class="line">VARIANT_ID=server</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>Fedora 操作系统 Docker 安装文档：<a target="_blank" rel="noopener" href="https://docs.docker.com/engine/install/fedora/%E3%80%82">https://docs.docker.com/engine/install/fedora/。</a></p>
+</blockquote>
+<h3 id="卸载旧版本">卸载旧版本</h3>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[skinyi@fedora ~]\$ sudo dnf remove docker \</span><br><span class="line">									docker-client \</span><br><span class="line">									docker-client-lastest \</span><br><span class="line">									docker-common \</span><br><span class="line">									docker-lastest-logrotate \</span><br><span class="line">									docker-selinux \</span><br><span class="line">									docker-engine-selinux \</span><br><span class="line">									docker-engine</span><br></pre></td></tr></table></figure>
+<h3 id="使用软件仓库进行-Doker-的安装">使用软件仓库进行 Doker 的安装</h3>
+<p>​安装 <strong>dnf-plugins-core</strong> 插件。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[skinyi@fedora ~]$ sudo dnf -y install dnf-plugins-core</span><br></pre></td></tr></table></figure>
+<p>​添加 docker 的官方软件仓库。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[skinyi@fedora ~]$ sudo dnf config-manager --add-repo \</span><br><span class="line">	https://download.docker.com/linux/fedora/docker-ce.repo</span><br></pre></td></tr></table></figure>
+<h3 id="安装-Docker-引擎">安装 Docker 引擎</h3>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[skinyi@fedora ~]$ sudo dnf install docker-ce docker-ce-cli containerd.io</span><br></pre></td></tr></table></figure>
+<h3 id="启动并验证-Docker-是否成功安装">启动并验证 Docker 是否成功安装</h3>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">[skinyi@fedora ~]$ sudo systemctl start docker</span><br><span class="line">[skinyi@fedora ~]$ sudo docker run hello-world</span><br><span class="line"></span><br><span class="line">Hello from Docker!</span><br><span class="line">This message shows that your installation appears to be working correctly.</span><br><span class="line"></span><br><span class="line">To generate this message, Docker took the following steps:</span><br><span class="line"> 1. The Docker client contacted the Docker daemon.</span><br><span class="line"> 2. The Docker daemon pulled the <span class="string">&quot;hello-world&quot;</span> image from the Docker Hub.</span><br><span class="line">    (amd64)</span><br><span class="line"> 3. The Docker daemon created a new container from that image <span class="built_in">which</span> runs the</span><br><span class="line">    executable that produces the output you are currently reading.</span><br><span class="line"> 4. The Docker daemon streamed that output to the Docker client, <span class="built_in">which</span> sent it</span><br><span class="line">    to your terminal.</span><br><span class="line"></span><br><span class="line">To try something more ambitious, you can run an Ubuntu container with:</span><br><span class="line"> $ docker run -it ubuntu bash</span><br><span class="line"></span><br><span class="line">Share images, automate workflows, and more with a free Docker ID:</span><br><span class="line"> https://hub.docker.com/</span><br><span class="line"></span><br><span class="line">For more examples and ideas, visit:</span><br><span class="line"> https://docs.docker.com/get-started/</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>实现非 root 权限执行 docker 命令或者实现一些其他安装后的优化可以参阅：<a target="_blank" rel="noopener" href="https://docs.docker.com/engine/install/linux-postinstall/%E3%80%82">https://docs.docker.com/engine/install/linux-postinstall/。</a></p>
+</blockquote>
+<h3 id="卸载-Docker-引擎">卸载 Docker 引擎</h3>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[skinyi@fedora ~]$ sudo dnf remove docker-ce docker-ce-cli containerd.io</span><br><span class="line">[skinyi@fedora ~]$ sudo <span class="built_in">rm</span> -rf /var/lib/docker /var/lib/containerd</span><br></pre></td></tr></table></figure>
+<h2 id="启动-Docker-时的执行过程">启动 Docker 时的执行过程</h2>
+<p><img src="images/Docker%E5%90%AF%E5%8A%A8%E8%BF%87%E7%A8%8B.png" alt="Docker启动过程"></p>
+<blockquote>
+<p>启动过程中的注意点：</p>
+<ol>
+<li>
+<p>Docker 优先使用的存储驱动为 Overlay2；</p>
+</li>
+<li>
+<p>加载容器时会设置容器的网络，并创建虚拟网络接口 docker0，该接口使用桥接模式接入网络，并在宿主机防火墙中配置一个 docker zone；</p>
+</li>
+<li>
+<p>Docker 的守护程序 <code>dockerd</code> 初始化成功后会启动 docker 应用容器引擎，然后 docker 引擎通过监听 /run/docker.sock 套接字实现客户端与守护程序之间的通信。</p>
+</li>
+</ol>
+</blockquote>
+
+        </div>
+        
+<blockquote class="copyright">
+    <p><strong>本文链接 : </strong><a class="permalink" href="http://skinyi.github.com/skinyi.github.io/2022-02-27-Docker%20|%20Docker%20%E4%BB%8B%E7%BB%8D%E4%BB%A5%E5%8F%8A%E5%AE%89%E8%A3%85%E4%B8%8E%E5%8D%B8%E8%BD%BD.html">http://skinyi.github.com/skinyi.github.io/2022-02-27-Docker | Docker 介绍以及安装与卸载.html</a></p>
+    <p><strong>This article is available under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="noopener noreferrer">Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)</a> License</strong></p>
+</blockquote>
+
+
+    </article>
+    
+    <section id="comments">
+        
+    </section>
+
+
+    
+
+</main>
+
+
+<aside style="" id="sidebar" class="aside aside-fixture">
+    <div class="toc-sidebar">
+        <nav id="toc" class="article-toc">
+            <h3 class="toc-title">文章目录</h3>
+            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Docker-%E7%BB%84%E4%BB%B6%E4%BB%8B%E7%BB%8D"><span class="toc-number">1.</span> <span class="toc-text">Docker 组件介绍</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Docker-%E8%BF%90%E8%A1%8C%E7%A4%BA%E4%BE%8B"><span class="toc-number">1.1.</span> <span class="toc-text">Docker 运行示例</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Docker-%E7%9A%84%E5%AE%89%E8%A3%85%E4%B8%8E%E5%8D%B8%E8%BD%BD"><span class="toc-number">2.</span> <span class="toc-text">Docker 的安装与卸载</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8D%B8%E8%BD%BD%E6%97%A7%E7%89%88%E6%9C%AC"><span class="toc-number">2.1.</span> <span class="toc-text">卸载旧版本</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8%E8%BD%AF%E4%BB%B6%E4%BB%93%E5%BA%93%E8%BF%9B%E8%A1%8C-Doker-%E7%9A%84%E5%AE%89%E8%A3%85"><span class="toc-number">2.2.</span> <span class="toc-text">使用软件仓库进行 Doker 的安装</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%89%E8%A3%85-Docker-%E5%BC%95%E6%93%8E"><span class="toc-number">2.3.</span> <span class="toc-text">安装 Docker 引擎</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%90%AF%E5%8A%A8%E5%B9%B6%E9%AA%8C%E8%AF%81-Docker-%E6%98%AF%E5%90%A6%E6%88%90%E5%8A%9F%E5%AE%89%E8%A3%85"><span class="toc-number">2.4.</span> <span class="toc-text">启动并验证 Docker 是否成功安装</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8D%B8%E8%BD%BD-Docker-%E5%BC%95%E6%93%8E"><span class="toc-number">2.5.</span> <span class="toc-text">卸载 Docker 引擎</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%90%AF%E5%8A%A8-Docker-%E6%97%B6%E7%9A%84%E6%89%A7%E8%A1%8C%E8%BF%87%E7%A8%8B"><span class="toc-number">3.</span> <span class="toc-text">启动 Docker 时的执行过程</span></a></li></ol>
+        </nav>
+    </div>
+</aside>
+
+
+
+
+
+        </section>
+        <footer class="hidden lg:block fixed bottom-0 left-0 sm:w-1/12 lg:w-1/6 bg-gray-100 z-40">
+    
+    
+        <p class="footer-custom">❤ Powered by <a href="https://hexo.io/" target="_blank" rel="noopener noreferrer">Hexo</a> with <a href="https://github.com/fengkx/hexo-theme-purer" target="_blank" rel="noopener noreferrer">Purer theme</a> by fengkx.</p>
+    
+</footer>
+
+        <div id="mask" class="hidden mask fixed inset-0 bg-gray-900 opacity-75 z-40"></div>
+        <div id="search-view-container" class="hidden shadow-xl"></div>
+        
+<script src="/skinyi.github.io/js/dom-event.min.js"></script>
+
+
+
+<script src="/skinyi.github.io/js/local-search.min.js"></script>
+
+
+
+    <script src="//cdn.jsdelivr.net/npm/lightgallery.js@1.1.3/dist/js/lightgallery.min.js"></script>
+    
+<script src="/skinyi.github.io/js/light-gallery.min.js"></script>
+
+
+
+
+
+
+    </body>
+</html>
