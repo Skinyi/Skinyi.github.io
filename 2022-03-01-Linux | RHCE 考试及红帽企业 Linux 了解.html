@@ -4,20 +4,24 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, maximum-scale=5, viewport-fit=cover">
     <title>RHCE 考试及红帽企业 Linux 了解 | 我在干什么</title>
-    <meta name="description" content="我的个人小站">
+    <meta name="description" content="🔴 此文章由之前的 Typora 笔记迁移过来，内容可能已经过时。  RHCE8.0 课程及考试代码 相较于 RHCE7 ，在 EX200 考试中，RHCE8 增加了 SHELL 脚本（RH254）、系统调优（RH442）以及 RHEL8 新特性的一些考察；在 EX294 考试中，RHCE7 考察一些常见的 Service 的搭建部署使用，如：NFS、SAMBA、DNS等，而在 RHCE8 考">
 <meta property="og:type" content="article">
 <meta property="og:title" content="RHCE 考试及红帽企业 Linux 了解">
 <meta property="og:url" content="http://skinyi.github.com/skinyi.github.io/2022-03-01-Linux%20|%20RHCE%20%E8%80%83%E8%AF%95%E5%8F%8A%E7%BA%A2%E5%B8%BD%E4%BC%81%E4%B8%9A%20Linux%20%E4%BA%86%E8%A7%A3.html">
 <meta property="og:site_name" content="我在干什么">
-<meta property="og:description" content="我的个人小站">
+<meta property="og:description" content="🔴 此文章由之前的 Typora 笔记迁移过来，内容可能已经过时。  RHCE8.0 课程及考试代码 相较于 RHCE7 ，在 EX200 考试中，RHCE8 增加了 SHELL 脚本（RH254）、系统调优（RH442）以及 RHEL8 新特性的一些考察；在 EX294 考试中，RHCE7 考察一些常见的 Service 的搭建部署使用，如：NFS、SAMBA、DNS等，而在 RHCE8 考">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://skinyi.github.com/skinyi.github.io/images/linux/RHEL8.3-%E7%BB%83%E4%B9%A0%E7%8E%AF%E5%A2%83%E8%99%9A%E6%8B%9F%E6%9C%BA%E9%85%8D%E7%BD%AE.png">
+<meta property="og:image" content="http://skinyi.github.com/skinyi.github.io/images/linux/%E5%AE%89%E8%A3%85%E8%BD%AF%E4%BB%B6%E9%80%89%E6%8B%A9.png">
+<meta property="og:image" content="http://skinyi.github.com/skinyi.github.io/images/linux/Gnome-%E6%AC%A2%E8%BF%8E%E7%95%8C%E9%9D%A2.png">
 <meta property="article:published_time" content="2022-03-01T10:35:41.028Z">
-<meta property="article:modified_time" content="2022-03-01T10:46:10.240Z">
+<meta property="article:modified_time" content="2022-03-01T11:10:53.763Z">
 <meta property="article:author" content="skinyi">
 <meta property="article:tag" content="Linux">
 <meta property="article:tag" content="RHEL">
 <meta property="article:tag" content="认证考试">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://skinyi.github.com/skinyi.github.io/images/linux/RHEL8.3-%E7%BB%83%E4%B9%A0%E7%8E%AF%E5%A2%83%E8%99%9A%E6%8B%9F%E6%9C%BA%E9%85%8D%E7%BD%AE.png">
 
     
     <link rel="icon" href="images/favicon.png" type="image/x-icon">
@@ -197,7 +201,7 @@
                 </span>
                 
     
-        <span class="post-wordcount" itemprop="wordCount">字数统计: 0(字)</span>
+        <span class="post-wordcount" itemprop="wordCount">字数统计: 484(字)</span>
     
     
         <span class="post-readcount" itemprop="timeRequired">阅读时长: 1(分)</span>
@@ -207,7 +211,57 @@
             </p>
         </header>
         <div class="marked-body article-body">
-            
+            <blockquote>
+<p>🔴 此文章由之前的 Typora 笔记迁移过来，内容可能已经过时。</p>
+</blockquote>
+<h2 id="RHCE8-0-课程及考试代码">RHCE8.0 课程及考试代码</h2>
+<p>相较于 RHCE7 ，在 EX200 考试中，RHCE8 增加了 SHELL 脚本（RH254）、系统调优（RH442）以及 RHEL8 新特性的一些考察；在 EX294 考试中，RHCE7 考察一些常见的 Service 的搭建部署使用，如：NFS、SAMBA、DNS等，而在 RHCE8 考试中则主要考察 Ansible 自动化工具的操作，不再包含常见服务。</p>
+<table>
+    <tr>
+       <th>课程代码</th>
+       <th>考试代码</th>
+       <th>考试内容</th>
+       <th>考试形式</th>
+       <th>考试时长</th>
+    </tr>
+    <tr>
+        <td>RH124</td>
+        <td rowspan="2">EX200</td>
+        <td rowspan="2">以系统管理操作为主，如：文件系统、用户操作、权限操作、磁盘操作等</td>
+        <td rowspan="3">机考实验</td>
+        <td rowspan="2">2.5h</td>
+    </tr>
+    <tr>
+        <td>RH134</td>
+    </tr>
+    <tr>
+        <td>RH294</td>
+        <td>EX294</td>
+        <td>全是关于 Ansible 自动化工具的技能操作</td>
+        <td>4h</td>
+    </tr>
+</table>
+<h2 id="搭建日常练习环境">搭建日常练习环境</h2>
+<blockquote>
+<p>🟢 所需前期准备工作：</p>
+<ul>
+<li>已安装 VMWare Workstation 虚拟机，并在 bios 中开启了虚拟化相关的开关；</li>
+<li>已下载好 RHEL8 Linux 操作系统 iso 镜像；</li>
+<li>练习环境虚拟机以 NAT 模式和宿主机进行网络连接，使用的虚拟网卡是 VMNet8 。</li>
+</ul>
+</blockquote>
+<h3 id="虚拟机安装-RHEL8-3-操作系统">虚拟机安装 RHEL8.3 操作系统</h3>
+<p>​如图，虚拟机的配置如下，可根据自己个人硬件设备情况按需调整。</p>
+<p><img src="images/linux/RHEL8.3-%E7%BB%83%E4%B9%A0%E7%8E%AF%E5%A2%83%E8%99%9A%E6%8B%9F%E6%9C%BA%E9%85%8D%E7%BD%AE.png" alt="练习环境虚拟机配置"></p>
+<p>虚拟机软件选择如下：</p>
+<p><img src="images/linux/%E5%AE%89%E8%A3%85%E8%BD%AF%E4%BB%B6%E9%80%89%E6%8B%A9.png" alt="安装软件选择"></p>
+<p>设置 root 用户和普通用户后开始安装，等待进度条跑完重启虚拟机，重启后同意 Redhat 的 EULA，选择 <em>FINISH CONFIGURATION</em> 进入图形界面。图形界面默认为刚才创建的普通用户，新安装的 RHEL 还需要进行一些系统级的配置才行。</p>
+<p>在此之前我们需要登陆 root 账户来配置我们新安装的操作系统。下图为使用 root 用户登陆后的界面。</p>
+<p><img src="images/linux/Gnome-%E6%AC%A2%E8%BF%8E%E7%95%8C%E9%9D%A2.png" alt="Gnome 欢迎界面"></p>
+<h3 id="安装完操作系统后的配置">安装完操作系统后的配置</h3>
+<h4 id="配置网络设置">配置网络设置</h4>
+<p>​使用 <code>ip addr show</code> 命令来查看操作系统的网络配置结果如图所示：</p>
+
         </div>
         
 <blockquote class="copyright">
@@ -232,7 +286,7 @@
     <div class="toc-sidebar">
         <nav id="toc" class="article-toc">
             <h3 class="toc-title">文章目录</h3>
-            
+            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#RHCE8-0-%E8%AF%BE%E7%A8%8B%E5%8F%8A%E8%80%83%E8%AF%95%E4%BB%A3%E7%A0%81"><span class="toc-number">1.</span> <span class="toc-text">RHCE8.0 课程及考试代码</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%90%AD%E5%BB%BA%E6%97%A5%E5%B8%B8%E7%BB%83%E4%B9%A0%E7%8E%AF%E5%A2%83"><span class="toc-number">2.</span> <span class="toc-text">搭建日常练习环境</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%AE%89%E8%A3%85-RHEL8-3-%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F"><span class="toc-number">2.1.</span> <span class="toc-text">虚拟机安装 RHEL8.3 操作系统</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%89%E8%A3%85%E5%AE%8C%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%90%8E%E7%9A%84%E9%85%8D%E7%BD%AE"><span class="toc-number">2.2.</span> <span class="toc-text">安装完操作系统后的配置</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%85%8D%E7%BD%AE%E7%BD%91%E7%BB%9C%E8%AE%BE%E7%BD%AE"><span class="toc-number">2.2.1.</span> <span class="toc-text">配置网络设置</span></a></li></ol></li></ol></li></ol>
         </nav>
     </div>
 </aside>
