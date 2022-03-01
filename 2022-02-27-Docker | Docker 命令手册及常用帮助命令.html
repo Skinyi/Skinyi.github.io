@@ -3,16 +3,16 @@
     <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, maximum-scale=5, viewport-fit=cover">
-    <title>Docker 命令手册及常用帮助命令 | 我在干什么</title>
+    <title>Docker 命令手册及常用帮助命令 | Avery Ma 的个人网站</title>
     <meta name="description" content="常用命令速查表格    命令 用途     docker version 查看 docker 客户端及服务端（docker 引擎）的版本及环境信息   docker info 查看 docker 的系统信息，包括客户端、服务端配置、镜像与容器数量以及一些其他常见配置   docker [命令] --help 查看 docker [命令] 使用的帮助信息，比如 docker image --help">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Docker 命令手册及常用帮助命令">
 <meta property="og:url" content="https://skinyi.github.io/2022-02-27-Docker%20|%20Docker%20%E5%91%BD%E4%BB%A4%E6%89%8B%E5%86%8C%E5%8F%8A%E5%B8%B8%E7%94%A8%E5%B8%AE%E5%8A%A9%E5%91%BD%E4%BB%A4.html">
-<meta property="og:site_name" content="我在干什么">
+<meta property="og:site_name" content="Avery Ma 的个人网站">
 <meta property="og:description" content="常用命令速查表格    命令 用途     docker version 查看 docker 客户端及服务端（docker 引擎）的版本及环境信息   docker info 查看 docker 的系统信息，包括客户端、服务端配置、镜像与容器数量以及一些其他常见配置   docker [命令] --help 查看 docker [命令] 使用的帮助信息，比如 docker image --help">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2022-02-27T14:03:20.637Z">
-<meta property="article:modified_time" content="2022-02-27T14:11:56.635Z">
+<meta property="article:modified_time" content="2022-03-01T13:16:25.044Z">
 <meta property="article:author" content="skinyi">
 <meta property="article:tag" content="Docker">
 <meta property="article:tag" content="Linux">
@@ -198,10 +198,10 @@
                 </span>
                 
     
-        <span class="post-wordcount" itemprop="wordCount">字数统计: 686(字)</span>
+        <span class="post-wordcount" itemprop="wordCount">字数统计: 1k(字)</span>
     
     
-        <span class="post-readcount" itemprop="timeRequired">阅读时长: 3(分)</span>
+        <span class="post-readcount" itemprop="timeRequired">阅读时长: 5(分)</span>
     
 
 
@@ -232,7 +232,7 @@
 </tbody>
 </table>
 <blockquote>
-<p>Docker 命令速查手册地址：<a target="_blank" rel="noopener" href="https://docs.docker.com/engine/reference/run/%E3%80%82">https://docs.docker.com/engine/reference/run/。</a></p>
+<p>Docker 命令速查手册地址：<a target="_blank" rel="noopener" href="https://docs.docker.com/engine/reference/run/">https://docs.docker.com/engine/reference/run/</a> 。</p>
 </blockquote>
 <h2 id="常用帮助命令介绍">常用帮助命令介绍</h2>
 <h3 id="docker-version-查看-docker-版本信息"><code>docker version</code> 查看 docker 版本信息</h3>
@@ -242,6 +242,122 @@
 <h3 id="docker-命令-help-查看-docker-命令-的帮助信息"><code>docker [命令] --help</code> 查看 <code>docker [命令]</code> 的帮助信息</h3>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">[skinyi@fedora ~]\$ docker image --<span class="built_in">help</span></span><br><span class="line"></span><br><span class="line">Usage:  docker image COMMAND</span><br><span class="line"></span><br><span class="line">Manage images</span><br><span class="line"></span><br><span class="line">Commands:</span><br><span class="line">  build       Build an image from a Dockerfile</span><br><span class="line">  <span class="built_in">history</span>     Show the <span class="built_in">history</span> of an image</span><br><span class="line">  import      Import the contents from a tarball to create a filesystem image</span><br><span class="line">  inspect     Display detailed information on one or more images</span><br><span class="line">  load        Load an image from a tar archive or STDIN</span><br><span class="line">  <span class="built_in">ls</span>          List images</span><br><span class="line">  prune       Remove unused images</span><br><span class="line">  pull        Pull an image or a repository from a registry</span><br><span class="line">  push        Push an image or a repository to a registry</span><br><span class="line">  <span class="built_in">rm</span>          Remove one or more images</span><br><span class="line">  save        Save one or more images to a tar archive (streamed to STDOUT by default)</span><br><span class="line">  tag         Create a tag TARGET_IMAGE that refers to SOURCE_IMAGE</span><br><span class="line"></span><br><span class="line">Run <span class="string">&#x27;docker image COMMAND --help&#x27;</span> <span class="keyword">for</span> more information on a <span class="built_in">command</span>.</span><br></pre></td></tr></table></figure>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">[skinyi@fedora ~]$ sudo docker container list --<span class="built_in">help</span></span><br><span class="line"></span><br><span class="line">Usage:  docker container <span class="built_in">ls</span> [OPTIONS]</span><br><span class="line"></span><br><span class="line">List containers</span><br><span class="line"></span><br><span class="line">Aliases:</span><br><span class="line">  <span class="built_in">ls</span>, ps, list</span><br><span class="line"></span><br><span class="line">Options:</span><br><span class="line">  -a, --all             Show all containers (default shows just running)</span><br><span class="line">  -f, --filter filter   Filter output based on conditions provided</span><br><span class="line">      --format string   Pretty-print containers using a Go template</span><br><span class="line">  -n, --last int        Show n last created containers (includes all states) (default -1)</span><br><span class="line">  -l, --latest          Show the latest created container (includes all states)</span><br><span class="line">      --no-trunc        Don<span class="string">&#x27;t truncate output</span></span><br><span class="line"><span class="string">  -q, --quiet           Only display container IDs</span></span><br><span class="line"><span class="string">  -s, --size            Display total file sizes</span></span><br></pre></td></tr></table></figure>
+<h2 id="docker-子命令功能简介"><code>docker</code> 子命令功能简介</h2>
+<table>
+<thead>
+<tr>
+<th>子命令</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://docs.docker.com/engine/reference/commandline/attach/">docker attach</a></td>
+<td>将本地标准输入输出和错误流附加到正在运行的容器</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://docs.docker.com/engine/reference/commandline/build/">docker build</a></td>
+<td>从 Dockerfile 构建一个镜像</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://docs.docker.com/engine/reference/commandline/builder/">docker builder</a></td>
+<td>管理镜像构建器</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://docs.docker.com/engine/reference/commandline/checkpoint/">docker checkpoint</a></td>
+<td>管理检查点</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://docs.docker.com/engine/reference/commandline/commit/">docker commit</a></td>
+<td>从一个容器的所有更改创建一个新的镜像</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://docs.docker.com/engine/reference/commandline/config/">docker config</a></td>
+<td>管理 Docker 的配置</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://docs.docker.com/engine/reference/commandline/container/">docker container</a></td>
+<td>管理容器</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://docs.docker.com/engine/reference/commandline/context/">docker context</a></td>
+<td>管理 docker 上下文</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://docs.docker.com/engine/reference/commandline/cp/">docker cp</a></td>
+<td>在容器和本地存储之间拷贝文件或目录</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://docs.docker.com/engine/reference/commandline/create/">docker create</a></td>
+<td>创建一个新的容器</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://docs.docker.com/engine/reference/commandline/diff/">docker diff</a></td>
+<td>监视容器上的文件或目录的变化</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://docs.docker.com/engine/reference/commandline/events/">docker events</a></td>
+<td>从 docker 守护服务上获取实时事件</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://docs.docker.com/engine/reference/commandline/exec/">docker exec</a></td>
+<td>在一个运行的容器上运行命令</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://docs.docker.com/engine/reference/commandline/export/">docker export</a></td>
+<td>将一个容器的文件系统以 tar 包的形式导出</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://docs.docker.com/engine/reference/commandline/history/">docker history</a></td>
+<td>展示一个镜像的提交历史</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://docs.docker.com/engine/reference/commandline/image/">docker image</a></td>
+<td>管理 docker 镜像</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://docs.docker.com/engine/reference/commandline/images/">docker images</a></td>
+<td>列出镜像</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://docs.docker.com/engine/reference/commandline/import/">docker import</a></td>
+<td>从 tar 包中导入内容来创建一个文件系统镜像</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://docs.docker.com/engine/reference/commandline/info/">docker info</a></td>
+<td>显示系统范围的信息</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://docs.docker.com/engine/reference/commandline/inspect/">docker inspect</a></td>
+<td>返回 docker 对象的底层信息</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://docs.docker.com/engine/reference/commandline/kill/">docker kill</a></td>
+<td>杀掉一个或多个运行中的容器</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://docs.docker.com/engine/reference/commandline/load/">docker load</a></td>
+<td>从一个 tar 包或标准输入来加载镜像</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://docs.docker.com/engine/reference/commandline/login/">docker login</a></td>
+<td>登录 Docker registry</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://docs.docker.com/engine/reference/commandline/logout/">docker logout</a></td>
+<td>登出 Docker registry</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://docs.docker.com/engine/reference/commandline/logs/">docker logs</a></td>
+<td>获取一个容器的日志</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://docs.docker.com/engine/reference/commandline/manifest/">docker manifest</a></td>
+<td>管理 Docker 镜像清单和清单列表</td>
+</tr>
+</tbody>
+</table>
+
         </div>
         
 <blockquote class="copyright">
@@ -266,7 +382,7 @@
     <div class="toc-sidebar">
         <nav id="toc" class="article-toc">
             <h3 class="toc-title">文章目录</h3>
-            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4%E9%80%9F%E6%9F%A5%E8%A1%A8%E6%A0%BC"><span class="toc-number">1.</span> <span class="toc-text">常用命令速查表格</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B8%B8%E7%94%A8%E5%B8%AE%E5%8A%A9%E5%91%BD%E4%BB%A4%E4%BB%8B%E7%BB%8D"><span class="toc-number">2.</span> <span class="toc-text">常用帮助命令介绍</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#docker-version-%E6%9F%A5%E7%9C%8B-docker-%E7%89%88%E6%9C%AC%E4%BF%A1%E6%81%AF"><span class="toc-number">2.1.</span> <span class="toc-text">docker version 查看 docker 版本信息</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#docker-info-%E6%9F%A5%E7%9C%8B-docker-%E7%9A%84%E7%B3%BB%E7%BB%9F%E4%BF%A1%E6%81%AF"><span class="toc-number">2.2.</span> <span class="toc-text">docker info 查看 docker 的系统信息</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#docker-%E5%91%BD%E4%BB%A4-help-%E6%9F%A5%E7%9C%8B-docker-%E5%91%BD%E4%BB%A4-%E7%9A%84%E5%B8%AE%E5%8A%A9%E4%BF%A1%E6%81%AF"><span class="toc-number">2.3.</span> <span class="toc-text">docker [命令] --help 查看 docker [命令] 的帮助信息</span></a></li></ol></li></ol>
+            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4%E9%80%9F%E6%9F%A5%E8%A1%A8%E6%A0%BC"><span class="toc-number">1.</span> <span class="toc-text">常用命令速查表格</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B8%B8%E7%94%A8%E5%B8%AE%E5%8A%A9%E5%91%BD%E4%BB%A4%E4%BB%8B%E7%BB%8D"><span class="toc-number">2.</span> <span class="toc-text">常用帮助命令介绍</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#docker-version-%E6%9F%A5%E7%9C%8B-docker-%E7%89%88%E6%9C%AC%E4%BF%A1%E6%81%AF"><span class="toc-number">2.1.</span> <span class="toc-text">docker version 查看 docker 版本信息</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#docker-info-%E6%9F%A5%E7%9C%8B-docker-%E7%9A%84%E7%B3%BB%E7%BB%9F%E4%BF%A1%E6%81%AF"><span class="toc-number">2.2.</span> <span class="toc-text">docker info 查看 docker 的系统信息</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#docker-%E5%91%BD%E4%BB%A4-help-%E6%9F%A5%E7%9C%8B-docker-%E5%91%BD%E4%BB%A4-%E7%9A%84%E5%B8%AE%E5%8A%A9%E4%BF%A1%E6%81%AF"><span class="toc-number">2.3.</span> <span class="toc-text">docker [命令] --help 查看 docker [命令] 的帮助信息</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#docker-%E5%AD%90%E5%91%BD%E4%BB%A4%E5%8A%9F%E8%83%BD%E7%AE%80%E4%BB%8B"><span class="toc-number">3.</span> <span class="toc-text">docker 子命令功能简介</span></a></li></ol>
         </nav>
     </div>
 </aside>

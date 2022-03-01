@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html  lang="zh-CN,en,default" >
+    <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, maximum-scale=5, viewport-fit=cover">
+    <title>Docker Run 命令详解 | Avery Ma 的个人网站</title>
+    <meta name="description" content="Docker 在隔离的容器中运行进程。容器是在主机上运行的进程。主机可以是本地或远程的。当执行 docker run 时，运行的容器进程是独立的，因为它有自己的文件系统、自己的网络和自己的独立于主机的进程树。 以下介绍了如何在运行时使用 docker run 命令定义容器的资源。 docker run 命令的一般形式 基本的 docker run 命令采用以下形式： 1$ docker run [">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Docker Run 命令详解">
+<meta property="og:url" content="https://skinyi.github.io/2022-03-01-Docker%20|%20Docker%20Run%20%E5%91%BD%E4%BB%A4%E8%AF%A6%E8%A7%A3.html">
+<meta property="og:site_name" content="Avery Ma 的个人网站">
+<meta property="og:description" content="Docker 在隔离的容器中运行进程。容器是在主机上运行的进程。主机可以是本地或远程的。当执行 docker run 时，运行的容器进程是独立的，因为它有自己的文件系统、自己的网络和自己的独立于主机的进程树。 以下介绍了如何在运行时使用 docker run 命令定义容器的资源。 docker run 命令的一般形式 基本的 docker run 命令采用以下形式： 1$ docker run [">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-03-01T12:31:09.667Z">
+<meta property="article:modified_time" content="2022-03-01T14:56:34.064Z">
+<meta property="article:author" content="skinyi">
+<meta property="article:tag" content="Docker">
+<meta property="article:tag" content="Linux">
+<meta property="article:tag" content="容器">
+<meta property="article:tag" content="虚拟化">
+<meta name="twitter:card" content="summary">
+
+    
+    <link rel="icon" href="images/favicon.png" type="image/x-icon">
+
+    
+<link rel="stylesheet" href="/css/common.min.css">
+
+
+
+    
+    
+    
+    
+        <link href="//cdn.jsdelivr.net/npm/lightgallery.js@1.1.3/dist/css/lightgallery.min.css" rel="stylesheet">
+    
+    
+    
+<link rel="stylesheet" href="/css/iconfont.min.css">
+
+    
+<meta name="generator" content="Hexo 6.0.0"></head>
+
+    <body>
+        <header class="header header-fixture">
+    <div class="profile-search-wrap flex sm:block">
+        
+        
+        <div class="profile sm:text-center md:px-1 lg:px-3 sm:pb-4 sm:pt-6">
+            <a id="avatar" role="link" href="https://github.com/skinyi" class="inline-block lg:w-16 lg:h-16 w-8 h-8 m-2" target="_blank" rel="noopener" rel="noreferrer" >
+                <img src="/images/avatar.jpg" class="rounded-full" alt="avatar">
+            </a>
+            <h2 id="name" class="hidden lg:block">Avery Ma</h2>
+            <h3 id="title" class="hidden xl:block">IT 从业者</h3>
+            
+            <small id="location" class="hidden lg:block">
+                <i class="iconfont icon-map-icon"></i>
+                宁夏, 中国
+            </small>
+            
+        </div>
+        
+        
+<div class="search flex-1 flex lg:inline-block sm:hidden lg:px-4 lg:mt-2 lg:mb-4 lg:w-full">
+    <form id="search-form" class="my-auto flex-1 lg:border lg:border-solid lg:border-gray-200">
+        <div class="input-group table bg-gray-100 lg:bg-white w-full">
+            <input id="search-input" type="text" placeholder="搜索" class="inline-block w-full bg-gray-100 lg:bg-white">
+            <span class="table-cell">
+                <button name="search tigger button" disabled>
+                    <i class="iconfont icon-search m-2"></i>
+                </button>
+            </span>
+        </div>
+    </form>
+        
+<div id="content-json" data-placeholder="搜索" class="invisible hidden">/content.json</div>
+<script id="search-teamplate" type="text/html" data-path="/content.json">
+    <div>
+        <div class="search-header bg-gray-400">
+            <input id="actual-search-input" model="keyword" ref="input" class="inline-block w-full h-10 px-2 py-1" placeholder="搜索" type="text">
+        </div>
+        <div class="search-result bg-gray-200">
+            {{#each searchPosts}}
+            <a href="/{{ path }}" class="result-item block px-2 pb-3 mb-1 pt-1 hover:bg-indigo-100">
+                <i class="iconfont icon-file"></i>
+                <h1 class="result-title inline font-medium text-lg">{{ title }}</h1>
+                <p class="result-content text-gray-600 text-sm">{{{ text }}}</p>
+            </a>
+            {{/each}}
+        </div>
+    </div>
+</script>
+
+</div>
+
+
+        <button name="menu toogle button" id="menu-toggle-btn" class="block sm:hidden p-3" role="button" aria-expanded="false">
+            <i class="iconfont icon-hamburger"></i>
+        </button>
+    </div>
+    <nav id="menu-nav" class="hidden sm:flex flex-col">
+        
+        
+            <div class="menu-item menu-home" role="menuitem">
+                <a href="/.">
+                    <i class="iconfont icon-home" aria-hidden="true"></i>
+                    <span class="menu-title">首页</span>
+                </a>
+            </div>
+        
+        
+            <div class="menu-item menu-archives" role="menuitem">
+                <a href="/archives">
+                    <i class="iconfont icon-archive" aria-hidden="true"></i>
+                    <span class="menu-title">归档</span>
+                </a>
+            </div>
+        
+        
+            <div class="menu-item menu-categories" role="menuitem">
+                <a href="/categories">
+                    <i class="iconfont icon-folder" aria-hidden="true"></i>
+                    <span class="menu-title">分类</span>
+                </a>
+            </div>
+        
+        
+            <div class="menu-item menu-tags" role="menuitem">
+                <a href="/tags">
+                    <i class="iconfont icon-tag" aria-hidden="true"></i>
+                    <span class="menu-title">标签</span>
+                </a>
+            </div>
+        
+        
+            <div class="menu-item menu-repository" role="menuitem">
+                <a href="/repository">
+                    <i class="iconfont icon-project" aria-hidden="true"></i>
+                    <span class="menu-title">项目</span>
+                </a>
+            </div>
+        
+        
+            <div class="menu-item menu-about" role="menuitem">
+                <a href="/about">
+                    <i class="iconfont icon-cup" aria-hidden="true"></i>
+                    <span class="menu-title">关于</span>
+                </a>
+            </div>
+        
+        
+
+    </nav>
+</header>
+
+        <section class="main-section">
+            
+    <main class="flex-1 px-4 py-14 md:px-5 lg:px-8 lg:py-4 relative min-h-screen">
+    
+
+    <article class="content article article-archives article-type-list" itemscope="">
+        <header class="article-header">
+            
+    
+        <h1 class="article-title text-lg" itemprop="name">
+            Docker Run 命令详解
+        </h1>
+    
+
+
+
+            <p class="article-meta mb-3 text-xs">
+                <span class="article-date">
+    <i class="iconfont icon-calendar-check"></i>
+	<a href="/2022-03-01-Docker%20%7C%20Docker%20Run%20%E5%91%BD%E4%BB%A4%E8%AF%A6%E8%A7%A3.html" class="article-date">
+	  <time datetime="2022-03-01T12:31:09.667Z" itemprop="datePublished">3月 1</time>
+	</a>
+</span>
+
+                
+    <span class="article-category">
+    <i class="iconfont icon-folder"></i>
+    <a class="article-category-link" href="/categories/%E5%AD%A6%E4%B9%A0/">学习</a> , <a class="article-category-link" href="/categories/%E5%AD%A6%E4%B9%A0/Docker/">Docker</a> , <a class="article-category-link" href="/categories/%E6%97%A5%E5%B8%B8%E8%AE%B0%E5%BD%95/">日常记录</a>
+  </span>
+
+
+                
+    <span class="article-tags">
+    <i class="iconfont icon-tag"></i>
+    <a class="article-tag-none-link" href="/tags/Docker/" rel="tag">Docker</a>, <a class="article-tag-none-link" href="/tags/Linux/" rel="tag">Linux</a>, <a class="article-tag-none-link" href="/tags/%E5%AE%B9%E5%99%A8/" rel="tag">容器</a>, <a class="article-tag-none-link" href="/tags/%E8%99%9A%E6%8B%9F%E5%8C%96/" rel="tag">虚拟化</a>
+  </span>
+
+
+                <span class="_partial/post-comment"><i class="icon icon-comment"></i>
+                    <a href="/2022-03-01-Docker%20%7C%20Docker%20Run%20%E5%91%BD%E4%BB%A4%E8%AF%A6%E8%A7%A3.html#comments" class="article-comment-link">
+                        评论
+                    </a>
+                </span>
+                
+    
+        <span class="post-wordcount" itemprop="wordCount">字数统计: 834(字)</span>
+    
+    
+        <span class="post-readcount" itemprop="timeRequired">阅读时长: 3(分)</span>
+    
+
+
+            </p>
+        </header>
+        <div class="marked-body article-body">
+            <p>Docker 在隔离的容器中运行进程。容器是在主机上运行的进程。主机可以是本地或远程的。当执行 <code>docker run</code> 时，运行的容器进程是独立的，因为它有自己的文件系统、自己的网络和自己的独立于主机的进程树。</p>
+<p>以下介绍了如何在运行时使用 <code>docker run</code> 命令定义容器的资源。</p>
+<h2 id="docker-run-命令的一般形式"><code>docker run</code> 命令的一般形式</h2>
+<p>基本的 <code>docker run</code> 命令采用以下形式：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ docker run [选项] IMAGE[:标签|@摘要] [命令] [参数...]</span><br></pre></td></tr></table></figure>
+<p><code>docker run</code> 命令必须指定从中生成容器的镜像。镜像开发人员可以定义与以下内容相关的镜像默认值：</p>
+<ul>
+<li>分离或前台运行；</li>
+<li>容器标识；</li>
+<li>网络设置；</li>
+<li>对CPU和内存的运行时约束。</li>
+</ul>
+<p>通过 <code>docker run [选项]</code> 用户可以添加或覆盖开发人员设置的镜像默认值。此外，用户可以覆盖几乎所有由Docker 运行时本身设置的默认值。也正因为如此，<code>docker run</code> 比任何其他 Docker 命令都有更多选项。</p>
+<blockquote>
+<p>根据你的 Docker 系统配置，你可能需要在 <code>docker run</code> 命令前面加上 <code>sudo</code> 以确保命令正常执行生效。为了避免在 docker 命令中使用 sudo，你的系统管理员可以创建一个名为 docker 的 Unix 组并向其中添加 docker 操作用户。</p>
+</blockquote>
+<h2 id="仅用户可指定的选项">仅用户可指定的选项</h2>
+<p>仅执行 <code>docker run</code> 命令的用户可指定以下命令执行时的选项：</p>
+<ul>
+<li>独立进程或前台执行
+<ul>
+<li>独立进程（<code>-d</code> 选项）</li>
+<li>前台执行</li>
+</ul>
+</li>
+<li>容器标识
+<ul>
+<li>名称（<code>--name</code> 选项）</li>
+<li>PID equivalent</li>
+</ul>
+</li>
+<li>IPC 设置（<code>--ipc</code>）</li>
+<li>网络设置</li>
+<li>重启策略（<code>--restart</code>）</li>
+<li>清理（<code>--rm</code>）</li>
+<li>运行时资源约束</li>
+<li>运行时特权及 Linux capabilities</li>
+</ul>
+<h3 id="独立进程或前台执行">独立进程或前台执行</h3>
+<p>当启动了一个 Docker 容器，你必须先决定你是否想在后台以“分离”的模式或者默认在前台运行容器，可以使用 <code>-d[=&lt;true|false&gt;]</code> 选项来指定分离式模式，容器会在后台运行并打印出该容器的 id。</p>
+<p>根据设计，当用于运行容器的根进程退出时，以分离模式启动的容器也会退出，除非你还指定了 <code>-rm</code> 选项。如果将 <code>-d</code> 与 <code>-rm</code> 一起使用，当容器退出或守护程序退出时(无论哪个先退出)，容器将被删除。</p>
+<p>不要向分离模式运行的容器传递 <code>service xxx start</code> 的命令。如以下命令尝试创建容器后启动 nginx 服务。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ docker run -d -p 80:80 my_image service nginx start</span><br></pre></td></tr></table></figure>
+<p>即使这也会成功的启动容器内部的 nginx 服务，但是它不符合分离的容器范例，因为随着根进程（<code>service nginx start</code>）的退出，分离式容器也会跟着停止，从而导致 nginx 服务启动了却不能用。要启动一个进程如 nginx web 服务器应该按照下述方法：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ docker run -d -p 80:80 my_image nginx -g <span class="string">&#x27;daemon off;&#x27;</span></span><br></pre></td></tr></table></figure>
+<p>要使用分离的容器进行输入/输出则必须使用网络连接或共享卷，因为该容器不会监听运行 <code>docker run</code> 的命令行。</p>
+<p>为了将分离出去的容器转至前台运行，可以使用 <code>docker attach</code> 命令。</p>
+
+        </div>
+        
+<blockquote class="copyright">
+    <p><strong>本文链接 : </strong><a class="permalink" href="https://skinyi.github.io/2022-03-01-Docker%20|%20Docker%20Run%20%E5%91%BD%E4%BB%A4%E8%AF%A6%E8%A7%A3.html">https://skinyi.github.io/2022-03-01-Docker | Docker Run 命令详解.html</a></p>
+    <p><strong>This article is available under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="noopener noreferrer">Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)</a> License</strong></p>
+</blockquote>
+
+
+    </article>
+    
+    <section id="comments">
+        
+    </section>
+
+
+    
+
+</main>
+
+
+<aside style="" id="sidebar" class="aside aside-fixture">
+    <div class="toc-sidebar">
+        <nav id="toc" class="article-toc">
+            <h3 class="toc-title">文章目录</h3>
+            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#docker-run-%E5%91%BD%E4%BB%A4%E7%9A%84%E4%B8%80%E8%88%AC%E5%BD%A2%E5%BC%8F"><span class="toc-number">1.</span> <span class="toc-text">docker run 命令的一般形式</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%85%E7%94%A8%E6%88%B7%E5%8F%AF%E6%8C%87%E5%AE%9A%E7%9A%84%E9%80%89%E9%A1%B9"><span class="toc-number">2.</span> <span class="toc-text">仅用户可指定的选项</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%8B%AC%E7%AB%8B%E8%BF%9B%E7%A8%8B%E6%88%96%E5%89%8D%E5%8F%B0%E6%89%A7%E8%A1%8C"><span class="toc-number">2.1.</span> <span class="toc-text">独立进程或前台执行</span></a></li></ol></li></ol>
+        </nav>
+    </div>
+</aside>
+
+
+
+
+
+        </section>
+        <footer class="hidden lg:block fixed bottom-0 left-0 sm:w-1/12 lg:w-1/6 bg-gray-100 z-40">
+    
+    
+        <p class="footer-custom">❤ Powered by <a href="https://hexo.io/" target="_blank" rel="noopener noreferrer">Hexo</a> with <a href="https://github.com/fengkx/hexo-theme-purer" target="_blank" rel="noopener noreferrer">Purer theme</a> by fengkx.</p>
+    
+</footer>
+
+        <div id="mask" class="hidden mask fixed inset-0 bg-gray-900 opacity-75 z-40"></div>
+        <div id="search-view-container" class="hidden shadow-xl"></div>
+        
+<script src="/js/dom-event.min.js"></script>
+
+
+
+<script src="/js/local-search.min.js"></script>
+
+
+
+    <script src="//cdn.jsdelivr.net/npm/lightgallery.js@1.1.3/dist/js/lightgallery.min.js"></script>
+    
+<script src="/js/light-gallery.min.js"></script>
+
+
+
+
+
+
+    </body>
+</html>
