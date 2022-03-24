@@ -3,22 +3,24 @@
     <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, maximum-scale=5, viewport-fit=cover">
-    <title>Docker 虚拟化技术的本质基底层技术 | Avery Ma 的个人网站</title>
+    <title>Docker 容器的本质及底层技术 | Avery Ma 的个人网站</title>
     <meta name="description" content="容器的本质 容器本身是一种进程隔离技术。容器为进程提供了一个隔离的环境，容器内的进程无法访问容器外的进程。以运行一个 ubuntu 容器为例： 12[root@localhost ~]\# docker run -it ubunturoot@d304e6f37918:\# top                        # 执行 top 命令 在主机上查看系统进程： 1234567[root">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Docker 虚拟化技术的本质基底层技术">
-<meta property="og:url" content="https://skinyi.github.io/2022-03-21-Docker%20|%20Docker%20%E8%99%9A%E6%8B%9F%E5%8C%96%E6%8A%80%E6%9C%AF%E7%9A%84%E6%9C%AC%E8%B4%A8%E5%8F%8A%E5%BA%95%E5%B1%82%E6%8A%80%E6%9C%AF.html">
+<meta property="og:title" content="Docker 容器的本质及底层技术">
+<meta property="og:url" content="https://skinyi.github.io/2022-03-21-Docker%20|%20Docker%20%E5%AE%B9%E5%99%A8%E7%9A%84%E6%9C%AC%E8%B4%A8%E5%8F%8A%E5%BA%95%E5%B1%82%E6%8A%80%E6%9C%AF.html">
 <meta property="og:site_name" content="Avery Ma 的个人网站">
 <meta property="og:description" content="容器的本质 容器本身是一种进程隔离技术。容器为进程提供了一个隔离的环境，容器内的进程无法访问容器外的进程。以运行一个 ubuntu 容器为例： 12[root@localhost ~]\# docker run -it ubunturoot@d304e6f37918:\# top                        # 执行 top 命令 在主机上查看系统进程： 1234567[root">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://skinyi.github.io/images/docker/Containerd-%E6%95%B4%E4%BD%93%E6%9E%B6%E6%9E%84.bmp">
 <meta property="article:published_time" content="2022-03-21T05:27:20.144Z">
-<meta property="article:modified_time" content="2022-03-21T08:33:54.380Z">
+<meta property="article:modified_time" content="2022-03-24T14:51:08.422Z">
 <meta property="article:author" content="skinyi">
 <meta property="article:tag" content="Docker">
 <meta property="article:tag" content="Linux">
 <meta property="article:tag" content="容器">
 <meta property="article:tag" content="虚拟化">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://skinyi.github.io/images/docker/Containerd-%E6%95%B4%E4%BD%93%E6%9E%B6%E6%9E%84.bmp">
 
     
     <link rel="icon" href="images/favicon.png" type="image/x-icon">
@@ -163,7 +165,7 @@
             
     
         <h1 class="article-title text-lg" itemprop="name">
-            Docker 虚拟化技术的本质基底层技术
+            Docker 容器的本质及底层技术
         </h1>
     
 
@@ -172,7 +174,7 @@
             <p class="article-meta mb-3 text-xs">
                 <span class="article-date">
     <i class="iconfont icon-calendar-check"></i>
-	<a href="/2022-03-21-Docker%20%7C%20Docker%20%E8%99%9A%E6%8B%9F%E5%8C%96%E6%8A%80%E6%9C%AF%E7%9A%84%E6%9C%AC%E8%B4%A8%E5%8F%8A%E5%BA%95%E5%B1%82%E6%8A%80%E6%9C%AF.html" class="article-date">
+	<a href="/2022-03-21-Docker%20%7C%20Docker%20%E5%AE%B9%E5%99%A8%E7%9A%84%E6%9C%AC%E8%B4%A8%E5%8F%8A%E5%BA%95%E5%B1%82%E6%8A%80%E6%9C%AF.html" class="article-date">
 	  <time datetime="2022-03-21T05:27:20.144Z" itemprop="datePublished">3月 21</time>
 	</a>
 </span>
@@ -192,13 +194,13 @@
 
 
                 <span class="_partial/post-comment"><i class="icon icon-comment"></i>
-                    <a href="/2022-03-21-Docker%20%7C%20Docker%20%E8%99%9A%E6%8B%9F%E5%8C%96%E6%8A%80%E6%9C%AF%E7%9A%84%E6%9C%AC%E8%B4%A8%E5%8F%8A%E5%BA%95%E5%B1%82%E6%8A%80%E6%9C%AF.html#comments" class="article-comment-link">
+                    <a href="/2022-03-21-Docker%20%7C%20Docker%20%E5%AE%B9%E5%99%A8%E7%9A%84%E6%9C%AC%E8%B4%A8%E5%8F%8A%E5%BA%95%E5%B1%82%E6%8A%80%E6%9C%AF.html#comments" class="article-comment-link">
                         评论
                     </a>
                 </span>
                 
     
-        <span class="post-wordcount" itemprop="wordCount">字数统计: 2k(字)</span>
+        <span class="post-wordcount" itemprop="wordCount">字数统计: 2.1k(字)</span>
     
     
         <span class="post-readcount" itemprop="timeRequired">阅读时长: 9(分)</span>
@@ -227,20 +229,20 @@
 <p>文件隔离的本质技术是使用 <code>chroot</code> 系统调用，该系统调用用于将一个进程及其子进程的根目录改变到文件系统中的一个新位置，并让这些进程只能访问到该目录，此功能的初衷是为每个进程提供独立的磁盘空间。</p>
 <p>我们可以模拟创建容器所进行的操作：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]\<span class="comment"># cd /var/lib/docker/overlay2/7472d22959e652e97acb49e6de5dd704bd2fb46de0f35d12a7b0cfbba1655cb5/</span></span><br><span class="line">[root@localhost 7472d22959e652e97acb49e6de5dd704bd2fb46de0f35d12a7b0cfbba1655cb5]\<span class="comment"># chroot diff</span></span><br><span class="line">root@localhost:\<span class="comment"># ls    </span></span><br><span class="line">bin  boot  dev  etc  home  lib  lib32  lib64  libx32  media  mnt  opt  proc  root  run  sbin  srv  sys  tmp  usr  var</span><br><span class="line">root@localhost:\<span class="comment"># pwd</span></span><br><span class="line">/</span><br></pre></td></tr></table></figure>
-<p>此时无法执行 <code>ps -ef</code> 命令，因为其内存文件系统还没有挂载。可以到此为止了。</p>
+<p>此时无法执行 <code>ps -ef</code> 命令，因为其内存文件系统还没有挂载。但我们的实验可以到此为止。</p>
 <h2 id="Linux-命名空间技术">Linux 命名空间技术</h2>
 <p>后面的容器技术的实现基本上都离不开 Linux 的 Namespace 技术，该技术是 Linux 提供的内核级环境隔离的方法，它提供了以下的系统隔离能力：</p>
 <ul>
 <li>Mount Namespace       提供磁盘挂载点和文件系统的隔离能力</li>
 <li>IPC Namespace         提供进程间通信隔离的能力</li>
 <li>Network Namespace     提供网络隔离能力</li>
-<li>UTS Namespace         提供主机名隔离能力</li>
+<li>UTS Namespace         提供主机名及主机域的隔离能力</li>
 <li>PID Namespace         提供进程隔离能力</li>
 <li>User Namespace        提供用户隔离能力</li>
 </ul>
 <p>在主机上查看容器的 <code>bash</code> 进程、主机的 <code>bash</code> 进程以及主机 <code>systemd</code> 进程的命名空间：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]\<span class="comment"># ls -l /proc/3674/ns</span></span><br><span class="line">总用量 0</span><br><span class="line">lrwxrwxrwx. 1 root root 0  3月 21 15:42 cgroup -&gt; <span class="string">&#x27;cgroup:[4026532847]&#x27;</span></span><br><span class="line">lrwxrwxrwx. 1 root root 0  3月 21 15:42 ipc -&gt; <span class="string">&#x27;ipc:[4026532777]&#x27;</span></span><br><span class="line">lrwxrwxrwx. 1 root root 0  3月 21 15:42 mnt -&gt; <span class="string">&#x27;mnt:[4026532775]&#x27;</span></span><br><span class="line">lrwxrwxrwx. 1 root root 0  3月 21 15:41 net -&gt; <span class="string">&#x27;net:[4026532780]&#x27;</span></span><br><span class="line">lrwxrwxrwx. 1 root root 0  3月 21 15:42 pid -&gt; <span class="string">&#x27;pid:[4026532778]&#x27;</span></span><br><span class="line">lrwxrwxrwx. 1 root root 0  3月 21 15:42 pid_for_children -&gt; <span class="string">&#x27;pid:[4026532778]&#x27;</span></span><br><span class="line">lrwxrwxrwx. 1 root root 0  3月 21 15:42 time -&gt; <span class="string">&#x27;time:[4026531834]&#x27;</span></span><br><span class="line">lrwxrwxrwx. 1 root root 0  3月 21 15:42 time_for_children -&gt; <span class="string">&#x27;time:[4026531834]&#x27;</span></span><br><span class="line">lrwxrwxrwx. 1 root root 0  3月 21 15:42 user -&gt; <span class="string">&#x27;user:[4026531837]&#x27;</span></span><br><span class="line">lrwxrwxrwx. 1 root root 0  3月 21 15:42 uts -&gt; <span class="string">&#x27;uts:[4026532776]&#x27;</span></span><br><span class="line">[root@localhost ~]\<span class="comment"># ls -l /proc/self/ns</span></span><br><span class="line">总用量 0</span><br><span class="line">lrwxrwxrwx. 1 root root 0  3月 21 15:42 cgroup -&gt; <span class="string">&#x27;cgroup:[4026531835]&#x27;</span></span><br><span class="line">lrwxrwxrwx. 1 root root 0  3月 21 15:42 ipc -&gt; <span class="string">&#x27;ipc:[4026531839]&#x27;</span></span><br><span class="line">lrwxrwxrwx. 1 root root 0  3月 21 15:42 mnt -&gt; <span class="string">&#x27;mnt:[4026531840]&#x27;</span></span><br><span class="line">lrwxrwxrwx. 1 root root 0  3月 21 15:42 net -&gt; <span class="string">&#x27;net:[4026532000]&#x27;</span></span><br><span class="line">lrwxrwxrwx. 1 root root 0  3月 21 15:42 pid -&gt; <span class="string">&#x27;pid:[4026531836]&#x27;</span></span><br><span class="line">lrwxrwxrwx. 1 root root 0  3月 21 15:42 pid_for_children -&gt; <span class="string">&#x27;pid:[4026531836]&#x27;</span></span><br><span class="line">lrwxrwxrwx. 1 root root 0  3月 21 15:42 time -&gt; <span class="string">&#x27;time:[4026531834]&#x27;</span></span><br><span class="line">lrwxrwxrwx. 1 root root 0  3月 21 15:42 time_for_children -&gt; <span class="string">&#x27;time:[4026531834]&#x27;</span></span><br><span class="line">lrwxrwxrwx. 1 root root 0  3月 21 15:42 user -&gt; <span class="string">&#x27;user:[4026531837]&#x27;</span></span><br><span class="line">lrwxrwxrwx. 1 root root 0  3月 21 15:42 uts -&gt; <span class="string">&#x27;uts:[4026531838]&#x27;</span></span><br><span class="line">[root@localhost ~]\<span class="comment"># ls -l /proc/1/ns</span></span><br><span class="line">总用量 0</span><br><span class="line">lrwxrwxrwx. 1 root root 0  3月 21 13:05 cgroup -&gt; <span class="string">&#x27;cgroup:[4026531835]&#x27;</span></span><br><span class="line">lrwxrwxrwx. 1 root root 0  3月 21 13:42 ipc -&gt; <span class="string">&#x27;ipc:[4026531839]&#x27;</span></span><br><span class="line">lrwxrwxrwx. 1 root root 0  3月 21 13:42 mnt -&gt; <span class="string">&#x27;mnt:[4026531840]&#x27;</span></span><br><span class="line">lrwxrwxrwx. 1 root root 0  3月 21 13:42 net -&gt; <span class="string">&#x27;net:[4026532000]&#x27;</span></span><br><span class="line">lrwxrwxrwx. 1 root root 0  3月 21 13:42 pid -&gt; <span class="string">&#x27;pid:[4026531836]&#x27;</span></span><br><span class="line">lrwxrwxrwx. 1 root root 0  3月 21 15:50 pid_for_children -&gt; <span class="string">&#x27;pid:[4026531836]&#x27;</span></span><br><span class="line">lrwxrwxrwx. 1 root root 0  3月 21 13:42 time -&gt; <span class="string">&#x27;time:[4026531834]&#x27;</span></span><br><span class="line">lrwxrwxrwx. 1 root root 0  3月 21 15:50 time_for_children -&gt; <span class="string">&#x27;time:[4026531834]&#x27;</span></span><br><span class="line">lrwxrwxrwx. 1 root root 0  3月 21 13:42 user -&gt; <span class="string">&#x27;user:[4026531837]&#x27;</span></span><br><span class="line">lrwxrwxrwx. 1 root root 0  3月 21 13:42 uts -&gt; <span class="string">&#x27;uts:[4026531838]&#x27;</span></span><br></pre></td></tr></table></figure>
-<p>可以发现主机的 <code>bash</code> 进程和 <code>systemd</code> 进程完全一致，但容器中的进程和主机进程中的存在部分差别。</p>
+<p>可以发现主机的 <code>bash</code> 进程和 <code>systemd</code> 进程完全一致，但容器中的进程和主机进程中的存在部分差别。命名空间中还包含 cgroup 命名空间，这涉及到 Linux 管理硬件资源分配的一种技术。</p>
 <h2 id="CGroup-控制组">CGroup 控制组</h2>
 <p>CGroup 是 Linux 内核提供的一种可以限制、记录、隔离进程组所使用的计算资源（CPU、内存、I/O 等）的机制。CGroup 提供了以下功能：</p>
 <ul>
@@ -253,12 +255,12 @@
 <p>容器技术使用 CGroup 技术限制容器对主机资源的使用。</p>
 <h2 id="Containerd-容器运行时">Containerd 容器运行时</h2>
 <p>Containerd 是一个强大的工业级容器运行时环境，其脱胎于 docker 的 libcontainerd 后经开源独立以及不断完善从 RunC 发展到现在的 Containerd（谷歌及其他大厂的一系列操作下）。现在谷歌的 K8S 默认集成的容器运行时环境已经是 Containerd，而不是原本的 Docker，Docker 现在更多代表的其实是操纵 Containerd 的一个客户端。</p>
-<p><a href="images/Containerd-%E6%95%B4%E4%BD%93%E6%9E%B6%E6%9E%84.bmp">!Containerd 的云原生架构</a></p>
+<p><img src="images/docker/Containerd-%E6%95%B4%E4%BD%93%E6%9E%B6%E6%9E%84.bmp" alt="Containerd 的云原生架构"></p>
 
         </div>
         
 <blockquote class="copyright">
-    <p><strong>本文链接 : </strong><a class="permalink" href="https://skinyi.github.io/2022-03-21-Docker%20|%20Docker%20%E8%99%9A%E6%8B%9F%E5%8C%96%E6%8A%80%E6%9C%AF%E7%9A%84%E6%9C%AC%E8%B4%A8%E5%8F%8A%E5%BA%95%E5%B1%82%E6%8A%80%E6%9C%AF.html">https://skinyi.github.io/2022-03-21-Docker | Docker 虚拟化技术的本质及底层技术.html</a></p>
+    <p><strong>本文链接 : </strong><a class="permalink" href="https://skinyi.github.io/2022-03-21-Docker%20|%20Docker%20%E5%AE%B9%E5%99%A8%E7%9A%84%E6%9C%AC%E8%B4%A8%E5%8F%8A%E5%BA%95%E5%B1%82%E6%8A%80%E6%9C%AF.html">https://skinyi.github.io/2022-03-21-Docker | Docker 容器的本质及底层技术.html</a></p>
     <p><strong>这篇文章由作者胡编乱造或者由其他文章复制粘贴而来，其中有些内容可能已经过时，请谨慎参考复制文章中的内容。</strong></p>
 </blockquote>
 
