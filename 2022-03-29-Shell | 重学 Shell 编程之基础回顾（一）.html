@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html  lang="zh-CN,en,default" >
+    <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, maximum-scale=5, viewport-fit=cover">
+    <title>重学 Shell 编程之基础回顾（一） | Avery Ma 的个人网站</title>
+    <meta name="description" content="Shebang Shebang 是指出现在 Shell 脚本文件第一行中的前两个字符 #!，用以指定命令解释器，例如：  #!&#x2F;bin&#x2F;sh 会使用 &#x2F;bin&#x2F;sh，即 bash(sh 是 bash 的一个软连接)解释器执行脚本内容； #!&#x2F;usr&#x2F;bin&#x2F;python 会使用 python 解释器去执行脚本内容； #!&#x2F;usr&#x2F;bin&#x2F;env NAME，是一种在不同平台上都能找到 NAME 解释">
+<meta property="og:type" content="article">
+<meta property="og:title" content="重学 Shell 编程之基础回顾（一）">
+<meta property="og:url" content="https://skinyi.github.io/2022-03-29-Shell%20|%20%E9%87%8D%E5%AD%A6%20Shell%20%E7%BC%96%E7%A8%8B%E4%B9%8B%E5%9F%BA%E7%A1%80%E5%9B%9E%E9%A1%BE%EF%BC%88%E4%B8%80%EF%BC%89.html">
+<meta property="og:site_name" content="Avery Ma 的个人网站">
+<meta property="og:description" content="Shebang Shebang 是指出现在 Shell 脚本文件第一行中的前两个字符 #!，用以指定命令解释器，例如：  #!&#x2F;bin&#x2F;sh 会使用 &#x2F;bin&#x2F;sh，即 bash(sh 是 bash 的一个软连接)解释器执行脚本内容； #!&#x2F;usr&#x2F;bin&#x2F;python 会使用 python 解释器去执行脚本内容； #!&#x2F;usr&#x2F;bin&#x2F;env NAME，是一种在不同平台上都能找到 NAME 解释">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-03-29T01:39:48.733Z">
+<meta property="article:modified_time" content="2022-03-30T07:57:49.630Z">
+<meta property="article:author" content="skinyi">
+<meta property="article:tag" content="Linux">
+<meta property="article:tag" content="Shell">
+<meta property="article:tag" content="Bash">
+<meta property="article:tag" content="脚本编程">
+<meta name="twitter:card" content="summary">
+
+    
+    <link rel="icon" href="images/favicon.png" type="image/x-icon">
+
+    
+<link rel="stylesheet" href="/css/common.min.css">
+
+
+
+    
+    
+    
+    
+        <link href="//cdn.jsdelivr.net/npm/lightgallery.js@1.1.3/dist/css/lightgallery.min.css" rel="stylesheet">
+    
+    
+    
+<link rel="stylesheet" href="/css/iconfont.min.css">
+
+    
+<meta name="generator" content="Hexo 6.1.0"></head>
+
+    <body>
+        <header class="header header-fixture">
+    <div class="profile-search-wrap flex sm:block">
+        
+        
+        <div class="profile sm:text-center md:px-1 lg:px-3 sm:pb-4 sm:pt-6">
+            <a id="avatar" role="link" href="https://github.com/skinyi" class="inline-block lg:w-16 lg:h-16 w-8 h-8 m-2" target="_blank" rel="noopener" rel="noreferrer" >
+                <img src="/images/avatar.jpg" class="rounded-full" alt="avatar">
+            </a>
+            <h2 id="name" class="hidden lg:block">Avery Ma</h2>
+            <h3 id="title" class="hidden xl:block">IT 从业者</h3>
+            
+            <small id="location" class="hidden lg:block">
+                <i class="iconfont icon-map-icon"></i>
+                宁夏, 中国
+            </small>
+            
+        </div>
+        
+        
+<div class="search flex-1 flex lg:inline-block sm:hidden lg:px-4 lg:mt-2 lg:mb-4 lg:w-full">
+    <form id="search-form" class="my-auto flex-1 lg:border lg:border-solid lg:border-gray-200">
+        <div class="input-group table bg-gray-100 lg:bg-white w-full">
+            <input id="search-input" type="text" placeholder="搜索" class="inline-block w-full bg-gray-100 lg:bg-white">
+            <span class="table-cell">
+                <button name="search tigger button" disabled>
+                    <i class="iconfont icon-search m-2"></i>
+                </button>
+            </span>
+        </div>
+    </form>
+        
+<div id="content-json" data-placeholder="搜索" class="invisible hidden">/content.json</div>
+<script id="search-teamplate" type="text/html" data-path="/content.json">
+    <div>
+        <div class="search-header bg-gray-400">
+            <input id="actual-search-input" model="keyword" ref="input" class="inline-block w-full h-10 px-2 py-1" placeholder="搜索" type="text">
+        </div>
+        <div class="search-result bg-gray-200">
+            {{#each searchPosts}}
+            <a href="/{{ path }}" class="result-item block px-2 pb-3 mb-1 pt-1 hover:bg-indigo-100">
+                <i class="iconfont icon-file"></i>
+                <h1 class="result-title inline font-medium text-lg">{{ title }}</h1>
+                <p class="result-content text-gray-600 text-sm">{{{ text }}}</p>
+            </a>
+            {{/each}}
+        </div>
+    </div>
+</script>
+
+</div>
+
+
+        <button name="menu toogle button" id="menu-toggle-btn" class="block sm:hidden p-3" role="button" aria-expanded="false">
+            <i class="iconfont icon-hamburger"></i>
+        </button>
+    </div>
+    <nav id="menu-nav" class="hidden sm:flex flex-col">
+        
+        
+            <div class="menu-item menu-home" role="menuitem">
+                <a href="/.">
+                    <i class="iconfont icon-home" aria-hidden="true"></i>
+                    <span class="menu-title">首页</span>
+                </a>
+            </div>
+        
+        
+            <div class="menu-item menu-archives" role="menuitem">
+                <a href="/archives">
+                    <i class="iconfont icon-archive" aria-hidden="true"></i>
+                    <span class="menu-title">归档</span>
+                </a>
+            </div>
+        
+        
+            <div class="menu-item menu-categories" role="menuitem">
+                <a href="/categories">
+                    <i class="iconfont icon-folder" aria-hidden="true"></i>
+                    <span class="menu-title">分类</span>
+                </a>
+            </div>
+        
+        
+            <div class="menu-item menu-tags" role="menuitem">
+                <a href="/tags">
+                    <i class="iconfont icon-tag" aria-hidden="true"></i>
+                    <span class="menu-title">标签</span>
+                </a>
+            </div>
+        
+        
+            <div class="menu-item menu-repository" role="menuitem">
+                <a href="/repository">
+                    <i class="iconfont icon-project" aria-hidden="true"></i>
+                    <span class="menu-title">项目</span>
+                </a>
+            </div>
+        
+        
+            <div class="menu-item menu-about" role="menuitem">
+                <a href="/about">
+                    <i class="iconfont icon-cup" aria-hidden="true"></i>
+                    <span class="menu-title">关于</span>
+                </a>
+            </div>
+        
+        
+
+    </nav>
+</header>
+
+        <section class="main-section">
+            
+    <main class="flex-1 px-4 py-14 md:px-5 lg:px-8 lg:py-4 relative min-h-screen">
+    
+
+    <article class="content article article-archives article-type-list" itemscope="">
+        <header class="article-header">
+            
+    
+        <h1 class="article-title text-lg" itemprop="name">
+            重学 Shell 编程之基础回顾（一）
+        </h1>
+    
+
+
+
+            <p class="article-meta mb-3 text-xs">
+                <span class="article-date">
+    <i class="iconfont icon-calendar-check"></i>
+	<a href="/2022-03-29-Shell%20%7C%20%E9%87%8D%E5%AD%A6%20Shell%20%E7%BC%96%E7%A8%8B%E4%B9%8B%E5%9F%BA%E7%A1%80%E5%9B%9E%E9%A1%BE%EF%BC%88%E4%B8%80%EF%BC%89.html" class="article-date">
+	  <time datetime="2022-03-29T01:39:48.733Z" itemprop="datePublished">3月 29</time>
+	</a>
+</span>
+
+                
+    <span class="article-category">
+    <i class="iconfont icon-folder"></i>
+    <a class="article-category-link" href="/categories/%E5%AD%A6%E4%B9%A0/">学习</a> , <a class="article-category-link" href="/categories/%E5%AD%A6%E4%B9%A0/Shell/">Shell</a> , <a class="article-category-link" href="/categories/%E6%97%A5%E5%B8%B8%E8%AE%B0%E5%BD%95/">日常记录</a>
+  </span>
+
+
+                
+    <span class="article-tags">
+    <i class="iconfont icon-tag"></i>
+    <a class="article-tag-none-link" href="/tags/Bash/" rel="tag">Bash</a>, <a class="article-tag-none-link" href="/tags/Linux/" rel="tag">Linux</a>, <a class="article-tag-none-link" href="/tags/Shell/" rel="tag">Shell</a>, <a class="article-tag-none-link" href="/tags/%E8%84%9A%E6%9C%AC%E7%BC%96%E7%A8%8B/" rel="tag">脚本编程</a>
+  </span>
+
+
+                <span class="_partial/post-comment"><i class="icon icon-comment"></i>
+                    <a href="/2022-03-29-Shell%20%7C%20%E9%87%8D%E5%AD%A6%20Shell%20%E7%BC%96%E7%A8%8B%E4%B9%8B%E5%9F%BA%E7%A1%80%E5%9B%9E%E9%A1%BE%EF%BC%88%E4%B8%80%EF%BC%89.html#comments" class="article-comment-link">
+                        评论
+                    </a>
+                </span>
+                
+    
+        <span class="post-wordcount" itemprop="wordCount">字数统计: 3.3k(字)</span>
+    
+    
+        <span class="post-readcount" itemprop="timeRequired">阅读时长: 14(分)</span>
+    
+
+
+            </p>
+        </header>
+        <div class="marked-body article-body">
+            <h2 id="Shebang">Shebang</h2>
+<p>Shebang 是指出现在 Shell 脚本文件第一行中的前两个字符 <code>#!</code>，用以指定命令解释器，例如：</p>
+<ul>
+<li><code>#!/bin/sh</code> 会使用 <code>/bin/sh</code>，即 <code>bash</code>(<code>sh</code> 是 <code>bash</code> 的一个软连接)解释器执行脚本内容；</li>
+<li><code>#!/usr/bin/python</code> 会使用 python 解释器去执行脚本内容；</li>
+<li><code>#!/usr/bin/env NAME</code>，是一种在不同平台上都能找到 NAME 解释器，并用 NAME 解释器执行脚本内容的写法。</li>
+</ul>
+<blockquote>
+<p>🟢 一些细节：</p>
+<ol>
+<li>如果脚本没有指定 <strong>shebang</strong>，脚本执行的时候，默认用当前 shell 去解释脚本，即 <strong>$SHELL</strong> 环境变量；</li>
+<li>如果 <strong>shebang</strong> 指定了可执行的解释器，如 <strong>/bin/bash</strong>、<strong>/usr/bin/python</strong>，那么脚本在执行时，文件名会作为参数传递给解释器；</li>
+<li>如果 <strong>shebang</strong> 指定的解释器没有可执行权限，则会报错：“bad interpreter: Permission denied”；</li>
+<li>如果 <strong>shebang</strong> 指定的解释器不是一个可执行文件，那么则会忽略此指定的解释器，继而转交给当前的 shell 去执行这个脚本；</li>
+<li>如果 <strong>shebang</strong> 指定的解释器不存在，那么会报错 “bad interpreter: No such file or directory”；</li>
+<li><strong>shebang</strong> 指定解释器需写其绝对路径（如：<strong>#!/bin/bash</strong>），找寻解释器的过程不会在 <strong>$PATH</strong> 环境变量中找；</li>
+<li>如果使用 <code>bash script.sh</code> 这样的命令来执行脚本，脚本中 <strong>shebang</strong> 所指定的解释器会被忽略而使用命令显式指定的 <strong>bash</strong>。</li>
+</ol>
+</blockquote>
+<h2 id="执行脚本">执行脚本</h2>
+<p>执行一个脚本一般有以下几种方法，以执行 <code>script.sh</code> 脚本为例：</p>
+<ul>
+<li><code>bash script.sh</code> 或 <code>sh script.sh</code>，被执行的脚本文件可以没有可执行权限，或者脚本没有指定 <code>shebang</code> 时可使用；</li>
+<li>使用 绝对/相对 路径执行脚本，被执行的脚本文件需要有可执行权限；</li>
+<li><code>source script.sh</code> 或者 <code>. script.sh</code>，在当前 Shell 进程中执行脚本（不产生子 Shell 进程）；</li>
+<li>少见用法：<code>sh &lt; script.sh</code>。</li>
+</ul>
+<p>一些常见的其他 shell 解释器：</p>
+<ul>
+<li><code>/bin/sh</code></li>
+<li><code>/bin/bash</code></li>
+<li><code>/sbin/nologin</code></li>
+<li><code>/usr/bin/sh</code></li>
+<li><code>/usr/bin/bash</code></li>
+<li><code>/usr/sbin/nologin</code></li>
+<li><code>/bin/tcsh</code></li>
+<li><code>/bin/csh</code></li>
+<li><code>/bin/dash</code></li>
+</ul>
+<p>当前系统支持的解释器类型可以执行 <code>cat /etc/shells</code> 命令查看。不过最受欢迎的解释器还是 <code>bash</code> 解释器。<code>bash</code> 解释器支持以下特性：</p>
+<ul>
+<li>文件路径 tab 键补全</li>
+<li>命令补全</li>
+<li>快捷键 <code>ctrl</code> + <code>a</code>、<code>e</code>、<code>u</code>、<code>k</code>、<code>l</code></li>
+<li>通配符</li>
+<li>历史命令</li>
+<li>命令别名</li>
+<li>命令行展开</li>
+</ul>
+<h2 id="Shell-变量">Shell 变量</h2>
+<p>Shell 语言是弱类型语言，如其他编程语言，其也有变量的概念。</p>
+<h3 id="定义变量">定义变量</h3>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">\$ NAME=<span class="string">&quot;VALUE&quot;</span> <span class="comment"># 默认所有变量类型都是字符串类型，不能指定类型</span></span><br><span class="line">\$ <span class="built_in">echo</span> <span class="variable">$&#123;NAME&#125;</span></span><br><span class="line">\$ VALUE</span><br></pre></td></tr></table></figure>
+<p>关于单引号、双引号、反引号用法的一个案例：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">\$ <span class="built_in">date</span>=<span class="string">&quot;2020-03-29 20:24:56 CST&quot;</span> </span><br><span class="line">\$ VAR=<span class="string">&#x27;$&#123;date&#125;&#x27;</span>;<span class="built_in">echo</span> <span class="variable">$&#123;VAR&#125;</span></span><br><span class="line">\$ <span class="variable">$date</span>                                        <span class="comment"># 单引号括起来的字符串不解析变量及命令结果</span></span><br><span class="line">\$ VAR=<span class="string">&quot;<span class="variable">$&#123;date&#125;</span>&quot;</span>;<span class="built_in">echo</span> <span class="variable">$&#123;VAR&#125;</span></span><br><span class="line">\$ 2020-03-29 20:24:56 CST                      <span class="comment"># 双引号括起来的字符串会解析变量和命令结果</span></span><br><span class="line">\$ VAR=`<span class="built_in">date</span>`;<span class="built_in">echo</span> <span class="variable">$&#123;VAR&#125;</span></span><br><span class="line">\$ 2022年 03月 30日 星期三 08:58:33 CST           <span class="comment"># 反引号代表执行命令，并取得命令的结果</span></span><br><span class="line">\$ VAR=<span class="string">&quot;`date`&quot;</span>;<span class="built_in">echo</span> <span class="variable">$&#123;VAR&#125;</span></span><br><span class="line">\$ 2022年 03月 30日 星期三 09:01:14 CST           <span class="comment"># 双引号也会解析反引号执行的结果</span></span><br></pre></td></tr></table></figure>
+<h3 id="变量替换及引用">变量替换及引用</h3>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">\$ NAME=<span class="string">&quot;ANOTHER_VALUE&quot;</span></span><br><span class="line">\$ <span class="built_in">echo</span> <span class="variable">$&#123;NAME&#125;</span></span><br><span class="line">\$ ANOTHER_VALUE</span><br><span class="line">\$ <span class="built_in">echo</span> <span class="variable">$NAME</span> <span class="comment"># 省略花括号</span></span><br><span class="line">\$ ANOTHER_VALUE</span><br></pre></td></tr></table></figure>
+<h3 id="变量名命名规范">变量名命名规范</h3>
+<ul>
+<li>见名知意，避免使用保留关键字</li>
+<li>变量名组成可以是字母、数字以及下划线</li>
+<li>不能以数字开头</li>
+<li>不能使用标点符号</li>
+<li>变量名严格区分大小写</li>
+</ul>
+<h3 id="变量的作用域">变量的作用域</h3>
+<ul>
+<li>局部变量：只能在函数内部使用的变量</li>
+<li>全局变量：只能在当前 Shell 进程中使用的变量</li>
+<li>环境变量：可以在子 Shell 进程中使用的变量</li>
+</ul>
+<blockquote>
+<p>🔵 注意点：</p>
+<ol>
+<li>不同于其他编程语言，Shell 函数内部定义的变量的作用域是全局的，即执行这个脚本的进程内可见（不等同于脚本内部可见，因为使用 <strong>source</strong> 可以在一个 Shell 进程内执行多个脚本），要实现仅在函数内部可见需使用 <strong>local</strong> 关键字，如：<strong>local var=“something”</strong></li>
+<li>全局变量只在当前 Shell 进程可见，对其他进程、子进程都不可见，当使用 <strong>export</strong> 命令将变量进行导出后，父 Shell 进程的被导出的变量将会对子进程可见，该变量即被称作环境变量</li>
+<li>父 Shell 进程退出后，此环境变量会消失，如要定义一些常用的环境变量并在启动每个 Shell 进程时自动定义它们，此时就需将它们写在特定的配置文件里</li>
+</ol>
+</blockquote>
+<h3 id="一些特殊变量">一些特殊变量</h3>
+<table>
+<thead>
+<tr>
+<th>变量</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>$0</td>
+<td>当前脚本的文件名</td>
+</tr>
+<tr>
+<td>$n(n&gt;=1)</td>
+<td>传递给脚本或函数的参数。（n 代表是第几个传递的参数，数字）</td>
+</tr>
+<tr>
+<td>$#</td>
+<td>传递给脚本或函数的参数个数。</td>
+</tr>
+<tr>
+<td>$*</td>
+<td>传递给脚本或函数的所有参数，被引号括起来时所有参数视作一个整体。</td>
+</tr>
+<tr>
+<td>$@</td>
+<td>传递给脚本或函数的所有参数，被引号括起来时每个参数视作一个整体，可遍历每个参数。</td>
+</tr>
+<tr>
+<td>$?</td>
+<td>上个命令的退出状态，或函数的返回值。</td>
+</tr>
+<tr>
+<td>$$</td>
+<td>当前 Shell 进程 ID。对于 Shell 脚本，就是脚本所在的进程 ID。</td>
+</tr>
+<tr>
+<td>$!</td>
+<td>上一次后台进程的 PID。</td>
+</tr>
+<tr>
+<td>$_</td>
+<td>获取上次执行命令的最后一个参数。</td>
+</tr>
+</tbody>
+</table>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">[skinyi@fedora ~]\$ <span class="built_in">cat</span> test.sh</span><br><span class="line"><span class="comment">#!/bin/sh</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">&#x27;使用&quot;$*&quot;打印参数：&#x27;</span></span><br><span class="line"><span class="keyword">for</span> var <span class="keyword">in</span> <span class="string">&quot;$*&quot;</span></span><br><span class="line"><span class="keyword">do</span></span><br><span class="line">        <span class="built_in">echo</span> <span class="string">&quot;<span class="variable">$var</span>&quot;</span></span><br><span class="line"><span class="keyword">done</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">&#x27;使用&quot;$@&quot;打印参数：&#x27;</span></span><br><span class="line"><span class="keyword">for</span> var <span class="keyword">in</span> <span class="string">&quot;<span class="variable">$@</span>&quot;</span></span><br><span class="line"><span class="keyword">do</span></span><br><span class="line">        <span class="built_in">echo</span> <span class="string">&quot;<span class="variable">$var</span>&quot;</span></span><br><span class="line"><span class="keyword">done</span></span><br><span class="line"></span><br><span class="line">[skinyi@fedora ~]\$ bash test.sh a b c d</span><br><span class="line">使用<span class="string">&quot;$*&quot;</span>打印参数：</span><br><span class="line">a b c d</span><br><span class="line">使用<span class="string">&quot;<span class="variable">$@</span>&quot;</span>打印参数：</span><br><span class="line">a</span><br><span class="line">b</span><br><span class="line">c</span><br><span class="line">d</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>🟢 一般来说，程序、命令的返回值为 0 时代表命令成功执行完成，返回其他值即代表发生了错误，可以根据返回值去查询相应的文档进行排错调试。对于 Shell 来说，函数的返回值跟 C、JAVA 之类的函数返回值的意义和作用是不同的。</p>
+</blockquote>
+<h3 id="查看环境变量">查看环境变量</h3>
+<ul>
+<li>set</li>
+<li>declare</li>
+<li>env</li>
+<li>export</li>
+</ul>
+<p>案例：判断传入参数个数。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">[skinyi@fedora ~]\$ <span class="built_in">cat</span> test.sh</span><br><span class="line"><span class="comment">#!/bin/sh</span></span><br><span class="line">[ <span class="string">&quot;<span class="variable">$#</span>&quot;</span> -ne <span class="string">&quot;2&quot;</span> ] &amp;&amp; &#123;</span><br><span class="line">        <span class="built_in">echo</span> <span class="string">&quot;Expect 2 args!&quot;</span></span><br><span class="line">        <span class="built_in">exit</span> 112</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">[skinyi@fedora ~]\$ bash test.sh 1</span><br><span class="line">Expect 2 args!</span><br></pre></td></tr></table></figure>
+<h2 id="Bash-内建命令">Bash 内建命令</h2>
+<p>可以使用 <code>compgen -b</code> 查看所有 shell 内建命令。shell 内建命令附加在 bash 命令中，因此它们是随 bash 进程常驻内存的，内建命令执行一般不需要创建子进程。</p>
+<table>
+<thead>
+<tr>
+<th>命令</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>echo</td>
+<td>将指定字符串输出到 STDOUT</td>
+</tr>
+<tr>
+<td>eval</td>
+<td>将指定的参数拼接成一个命令，然后执行该命令</td>
+</tr>
+<tr>
+<td>exec</td>
+<td>用指定命令替换 shell 进程</td>
+</tr>
+<tr>
+<td>export</td>
+<td>设置子 shell 进程可用的变量</td>
+</tr>
+<tr>
+<td>read</td>
+<td>从 STDIN 读取一行数据并将其赋给一个变量</td>
+</tr>
+<tr>
+<td>shift</td>
+<td>将位置参数依次向下降一个位置</td>
+</tr>
+<tr>
+<td>alias</td>
+<td>为指定命令定义一个别名</td>
+</tr>
+<tr>
+<td>getopts</td>
+<td>分析指定的位置参数</td>
+</tr>
+<tr>
+<td>let</td>
+<td>计算一个数学表达式中的每个参数</td>
+</tr>
+<tr>
+<td>local</td>
+<td>在函数中创建一个局部变量</td>
+</tr>
+<tr>
+<td>readonly</td>
+<td>从 STDIN 读取一行数据并将其赋给一个不可修改的变量</td>
+</tr>
+<tr>
+<td>readarray</td>
+<td>从 STDIN 读取数据行并将其放入索引数组</td>
+</tr>
+<tr>
+<td>test</td>
+<td>基于指定条件返回退出状态码 0 或 1</td>
+</tr>
+<tr>
+<td>trap</td>
+<td>如果收到了指定的系统信号，执行指定的命令</td>
+</tr>
+<tr>
+<td>wait</td>
+<td>等待指定的进程完成，并返回退出状态码</td>
+</tr>
+</tbody>
+</table>
+<h3 id="echo">echo</h3>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 常用选项</span></span><br><span class="line">-n 不换行输出</span><br><span class="line">-e 解析字符串中的格式化字符，等同于 `<span class="built_in">printf</span>` 命令的效果</span><br><span class="line"><span class="comment"># 格式化字符</span></span><br><span class="line">\n 换行</span><br><span class="line">\r 回车</span><br><span class="line">\t 制表符</span><br><span class="line">\b 退格</span><br></pre></td></tr></table></figure>
+<h3 id="eval">eval</h3>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 例子</span></span><br><span class="line">[skinyi@fedora ~]\$ <span class="built_in">set</span> 11 22 33 44 <span class="comment"># 通过 set 命令设置 $1, $2, $3, $4</span></span><br><span class="line">[skinyi@fedora ~]\$ <span class="built_in">echo</span> <span class="variable">$4</span>         <span class="comment"># 输出 $4 的值，即 44</span></span><br><span class="line">[skinyi@fedora ~]\$ <span class="built_in">echo</span> <span class="string">&#x27;$&#x27;</span><span class="variable">$#</span>      <span class="comment"># 此时会输出 $4 而非 $4 的值</span></span><br><span class="line">[skinyi@fedora ~]\$ <span class="built_in">eval</span> <span class="built_in">echo</span> <span class="string">&#x27;$&#x27;</span><span class="variable">$#</span> <span class="comment"># 此时会输出 $4 的值 44</span></span><br></pre></td></tr></table></figure>
+<p>原理：eval 会把参数进行扫描拼接再执行，即上述例子最后一条命令会先扫描得到 <code>echo $4</code>，然后再去执行。</p>
+<h3 id="exec">exec</h3>
+<p>exec 会在当前进程中直接执行后面的命令而不会创建子进程，因此当执行的命令退出后该进程也会被销毁，即效果是原本的 bash 进程“不见了”。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[skinyi@fedora ~]\$ sudo su -</span><br><span class="line">[root@fedora ~]\<span class="comment"># exec whoami</span></span><br><span class="line">root</span><br><span class="line">[skinyi@fedora ~]\$ </span><br></pre></td></tr></table></figure>
+<h2 id="Shell-子串">Shell 子串</h2>
+<table>
+<thead>
+<tr>
+<th>字串</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>${var}</td>
+<td>返回变量 var 的值</td>
+</tr>
+<tr>
+<td>${@var}</td>
+<td>返回变量 var 的值的字符串长度，<strong>注意@替换为#</strong></td>
+</tr>
+<tr>
+<td>${var:start}</td>
+<td>返回变量 var 的 start 个字符之后的所有字符</td>
+</tr>
+<tr>
+<td>${var:start:length}</td>
+<td>返回变量 var 的 start 个字符之后长度为 length 的子字符串</td>
+</tr>
+<tr>
+<td>${var#word}</td>
+<td>返回变量 var ”掐头“（最短匹配）后的子字符串</td>
+</tr>
+<tr>
+<td>${var##word}</td>
+<td>返回变量 var ”掐头“（最长匹配）后的子字符串</td>
+</tr>
+<tr>
+<td>${var%word}</td>
+<td>返回变量 var ”去尾“（最短匹配）后的子字符串</td>
+</tr>
+<tr>
+<td>${var%%word}</td>
+<td>返回变量 var ”去尾“（最长匹配）后的子字符串</td>
+</tr>
+<tr>
+<td>${var/pattern/string}</td>
+<td>返回变量 var 经单次匹配 pattern 并使用 string 替换后的值</td>
+</tr>
+<tr>
+<td>${var//pattern/string}</td>
+<td>返回变量 var 经多次匹配 pattern 并使用 string 替换后的值</td>
+</tr>
+<tr>
+<td>${var:-word}</td>
+<td>未定义变量 var 或值为空时返回 word，否则直接返回 var 的值</td>
+</tr>
+<tr>
+<td>${var:=word}</td>
+<td>未定义变量 var 或值为空时返回 word，同时将 word 赋值给 var</td>
+</tr>
+<tr>
+<td>${var:+word}</td>
+<td>当变量 var 已赋值时才返回 word 进行替换，否则不替换</td>
+</tr>
+<tr>
+<td>${var:?MASSAGE}</td>
+<td>当变量 var 已赋值时才返回 var 的值，否则输出 MASSAGE 到 STDERR</td>
+</tr>
+</tbody>
+</table>
+<p>子串处理示例：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">[skinyi@fedora ~]\$ var=<span class="string">&quot;abcdefghi&quot;</span></span><br><span class="line">[skinyi@fedora ~]\$ <span class="built_in">echo</span> <span class="variable">$&#123;var&#125;</span></span><br><span class="line">abcdefghi</span><br><span class="line">[skinyi@fedora ~]\$ <span class="built_in">echo</span> <span class="variable">$&#123;#var&#125;</span></span><br><span class="line">9</span><br><span class="line">[skinyi@fedora ~]\$ <span class="built_in">echo</span> <span class="variable">$&#123;var:2&#125;</span></span><br><span class="line">cdefghi</span><br><span class="line">[skinyi@fedora ~]\$ <span class="built_in">echo</span> <span class="variable">$&#123;var:0-5&#125;</span>     <span class="comment"># 从右数第五个开始输出</span></span><br><span class="line">efghi</span><br><span class="line">[skinyi@fedora ~]\$ <span class="built_in">echo</span> <span class="variable">$&#123;var:2:4&#125;</span></span><br><span class="line">cdef</span><br><span class="line">[skinyi@fedora ~]\$ <span class="built_in">echo</span> <span class="variable">$&#123;var:0-4:2&#125;</span>   <span class="comment"># 从右数第四个开始输出两个字符</span></span><br><span class="line"><span class="built_in">fg</span></span><br><span class="line">[skinyi@fedora ~]\$ <span class="built_in">echo</span> <span class="variable">$&#123;var#a*d&#125;</span></span><br><span class="line">efghi</span><br><span class="line">[skinyi@fedora ~]\$ <span class="built_in">echo</span> <span class="variable">$&#123;var%e*i&#125;</span></span><br><span class="line">abcd</span><br><span class="line">[skinyi@fedora ~]\$ <span class="built_in">echo</span> <span class="variable">$&#123;var/cde/edc&#125;</span></span><br><span class="line">abedcfghi</span><br></pre></td></tr></table></figure>
+<h3 id="案例——批量文件名修改">案例——批量文件名修改</h3>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 准备工作：产生实验数据</span></span><br><span class="line">[skinyi@fedora <span class="keyword">case</span>]$ <span class="built_in">touch</span> file_&#123;1..5&#125;_draft.&#123;jpg,png&#125; &amp;&amp; <span class="built_in">ls</span></span><br><span class="line">file_1_draft.jpg  file_2_draft.jpg  file_3_draft.jpg  file_4_draft.jpg  file_5_draft.jpg</span><br><span class="line">file_1_draft.png  file_2_draft.png  file_3_draft.png  file_4_draft.png  file_5_draft.png</span><br><span class="line">[skinyi@fedora <span class="keyword">case</span>]$ <span class="built_in">mv</span> file_2_draft.jpg file_2_finished.jpg</span><br><span class="line">[skinyi@fedora <span class="keyword">case</span>]$ <span class="built_in">mv</span> file_2_draft.png file_2_delete.png</span><br><span class="line">[skinyi@fedora <span class="keyword">case</span>]$ <span class="built_in">ls</span></span><br><span class="line">file_1_draft.jpg  file_2_delete.png    file_3_draft.jpg  file_4_draft.jpg  file_5_draft.jpg</span><br><span class="line">file_1_draft.png  file_2_finished.jpg  file_3_draft.png  file_4_draft.png  file_5_draft.png</span><br><span class="line">[skinyi@fedora <span class="keyword">case</span>]$</span><br><span class="line"><span class="comment"># 任务一：将所有结尾为 draft 的 jpg 文件重新命名，去掉结尾的 _draft 后缀</span></span><br><span class="line">[skinyi@fedora <span class="keyword">case</span>]$ <span class="keyword">for</span> filename <span class="keyword">in</span> `<span class="built_in">ls</span> *draft.jpg`; <span class="keyword">do</span> <span class="built_in">mv</span> <span class="variable">$filename</span> <span class="variable">$&#123;filename/_draft/&#125;</span>; \</span><br><span class="line"><span class="keyword">done</span>; <span class="built_in">ls</span></span><br><span class="line">file_1_draft.png  file_2_delete.png    file_3_draft.png  file_4_draft.png  file_5_draft.png</span><br><span class="line">file_1.jpg        file_2_finished.jpg  file_3.jpg        file_4.jpg        file_5.jpg</span><br><span class="line">[skinyi@fedora <span class="keyword">case</span>]$</span><br><span class="line"><span class="comment"># 任务二：将所有开头为 file 且结尾为 draft 的 png 文件重新命名，修改为 pic_&#123;n&#125;_undo.png 的形式</span></span><br><span class="line">[skinyi@fedora <span class="keyword">case</span>]$ <span class="keyword">for</span> filename <span class="keyword">in</span> `<span class="built_in">ls</span> *draft.png`; <span class="keyword">do</span> tmp=<span class="variable">$&#123;filename/draft/undo&#125;</span>; \</span><br><span class="line"><span class="built_in">mv</span> <span class="variable">$filename</span> <span class="variable">$&#123;tmp/file/pic&#125;</span>; <span class="keyword">done</span>; <span class="built_in">ls</span></span><br><span class="line">file_1.jpg         file_2_finished.jpg  file_4.jpg  pic_1_undo.png  pic_4_undo.png</span><br><span class="line">file_2_delete.png  file_3.jpg           file_5.jpg  pic_3_undo.png  pic_5_undo.png</span><br><span class="line">[skinyi@fedora <span class="keyword">case</span>]$</span><br></pre></td></tr></table></figure>
+<p>Shell 扩展变量示例：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 未定义 undefined 变量，定义 defined 变量的值为 defined</span></span><br><span class="line">[skinyi@fedora <span class="keyword">case</span>]$ <span class="built_in">echo</span> <span class="variable">$undefined</span></span><br><span class="line"></span><br><span class="line">[skinyi@fedora <span class="keyword">case</span>]$ defined=<span class="string">&quot;defined&quot;</span></span><br><span class="line">[skinyi@fedora <span class="keyword">case</span>]$</span><br><span class="line"><span class="comment"># var2=$&#123;var1:-word&#125; 用法示例</span></span><br><span class="line">[skinyi@fedora <span class="keyword">case</span>]$ res=<span class="variable">$&#123;undefined:-&quot;not defined&quot;&#125;</span>;<span class="built_in">printf</span> <span class="string">&quot;<span class="variable">$undefined</span>\n<span class="variable">$res</span>\n&quot;</span></span><br><span class="line"></span><br><span class="line">not defined</span><br><span class="line">[skinyi@fedora <span class="keyword">case</span>]$ res=<span class="variable">$&#123;defined:-&quot;not defined&quot;&#125;</span>;<span class="built_in">printf</span> <span class="string">&quot;<span class="variable">$defined</span>\n<span class="variable">$res</span>\n&quot;</span></span><br><span class="line">defined</span><br><span class="line">defined</span><br><span class="line">[skinyi@fedora <span class="keyword">case</span>]$</span><br><span class="line"><span class="comment"># var2=$&#123;var1:=word&#125; 用法示例</span></span><br><span class="line">[skinyi@fedora <span class="keyword">case</span>]$ res=<span class="variable">$&#123;undefined:=&quot;will defined&quot;&#125;</span>;<span class="built_in">printf</span> <span class="string">&quot;<span class="variable">$undefined</span>\n<span class="variable">$res</span>\n&quot;</span></span><br><span class="line">will defined</span><br><span class="line">will defined</span><br><span class="line">[skinyi@fedora <span class="keyword">case</span>]$ res=<span class="variable">$&#123;defined:=&quot;will redefined?&quot;&#125;</span>;<span class="built_in">printf</span> <span class="string">&quot;<span class="variable">$defined</span>\n<span class="variable">$res</span>\n&quot;</span></span><br><span class="line">defined</span><br><span class="line">defined</span><br><span class="line">[skinyi@fedora <span class="keyword">case</span>]$ <span class="built_in">unset</span> undefined           <span class="comment"># 销毁 undefined 变量</span></span><br><span class="line">[skinyi@fedora <span class="keyword">case</span>]$ <span class="built_in">echo</span> <span class="variable">$undefined</span></span><br><span class="line"></span><br><span class="line">[skinyi@fedora <span class="keyword">case</span>]$</span><br><span class="line"><span class="comment"># var2=$&#123;var1:+word&#125; 用法示例</span></span><br><span class="line">[skinyi@fedora <span class="keyword">case</span>]$ res=<span class="variable">$&#123;undefined:+&quot;something&quot;&#125;</span>;<span class="built_in">printf</span> <span class="string">&quot;<span class="variable">$undefined</span>\n<span class="variable">$res</span>\n&quot;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">[skinyi@fedora <span class="keyword">case</span>]$ res=<span class="variable">$&#123;defined:+&quot;something&quot;&#125;</span>;<span class="built_in">printf</span> <span class="string">&quot;<span class="variable">$defined</span>\n<span class="variable">$res</span>\n&quot;</span></span><br><span class="line">defined</span><br><span class="line">something</span><br><span class="line"><span class="comment"># var2=$&#123;var1:?MASSAGE&#125; 用法示例</span></span><br><span class="line">[skinyi@fedora <span class="keyword">case</span>]$ res=<span class="variable">$&#123;undefined:?&quot;undefined is not defined!&quot;&#125;</span>;<span class="built_in">printf</span> <span class="string">&quot;<span class="variable">$undefined</span>\n<span class="variable">$res</span>\n&quot;</span></span><br><span class="line">bash: undefined: undefined is not defined!      <span class="comment"># 程序立即返回，没有执行后面的语句</span></span><br><span class="line">[skinyi@fedora <span class="keyword">case</span>]$ res=<span class="variable">$&#123;undefined:?&#125;</span>        <span class="comment"># 也可不指定报错信息，会有默认的 stderr 信息</span></span><br><span class="line">bash: undefined：参数为空或未设置</span><br><span class="line">[skinyi@fedora <span class="keyword">case</span>]$ res=<span class="variable">$&#123;defined:?&quot;undefined is not defined!&quot;&#125;</span>;<span class="built_in">printf</span> <span class="string">&quot;<span class="variable">$defined</span>\n<span class="variable">$res</span>\n&quot;</span></span><br><span class="line">defined</span><br><span class="line">defined</span><br><span class="line">[skinyi@fedora <span class="keyword">case</span>]$</span><br></pre></td></tr></table></figure>
+<h2 id="命令列表、进程列表、进程分组">命令列表、进程列表、进程分组</h2>
+<ul>
+<li>命令列表，示例：<em>pwd; ls; …</em>   直接执行，不能放到后台进程</li>
+<li>进程列表，示例：<em>(pwd; ls; …)</em> 在子 shell 中执行然后返回父 shell</li>
+<li>进程分组，示例：<em>{pwd; ls; …}</em> 不会启动子 shell，与命令列表一样，只是给命令进行了分组</li>
+</ul>
+<blockquote>
+<p>🟢 可以通过环境变量 BASH_SUBSHELL 来判断自己是否是子 Shell，若该变量的值为 0，则代表自己不是 subshell，若为其他值则是。<br>
+🟢 创建子 shell 时新建子进程但子进程由 bash 维护，只能通过 $BASHPID 获取PID，与父进程共用同一个 POSIX 语义下的 PID 与 PPID。本质上实现了多进程。</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">[skinyi@fedora ~]$ <span class="built_in">pwd</span>; <span class="built_in">ls</span>; <span class="built_in">echo</span> <span class="variable">$BASH_SUBSHELL</span></span><br><span class="line">/home/skinyi</span><br><span class="line"><span class="keyword">case</span>  gh-pages  package-lock.json  test.sh</span><br><span class="line">0</span><br><span class="line">[skinyi@fedora ~]$ (<span class="built_in">pwd</span>; <span class="built_in">ls</span>; <span class="built_in">echo</span> <span class="variable">$BASH_SUBSHELL</span>)</span><br><span class="line">/home/skinyi</span><br><span class="line"><span class="keyword">case</span>  gh-pages  package-lock.json  test.sh</span><br><span class="line">1</span><br><span class="line">[skinyi@fedora ~]$ <span class="built_in">echo</span> <span class="variable">$BASH_SUBSHELL</span>;(<span class="built_in">echo</span> <span class="variable">$BASH_SUBSHELL</span>;(<span class="built_in">echo</span> <span class="variable">$BASH_SUBSHELL</span>;(<span class="built_in">echo</span> <span class="variable">$BASH_SUBSHELL</span>;(<span class="built_in">echo</span> <span class="variable">$BASH_SUBSHELL</span>;(<span class="built_in">echo</span> <span class="variable">$BASH_SUBSHELL</span>;)))))</span><br><span class="line">0</span><br><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">[skinyi@fedora ~]$</span><br></pre></td></tr></table></figure>
+
+        </div>
+        
+<blockquote class="copyright">
+    <p><strong>本文链接 : </strong><a class="permalink" href="https://skinyi.github.io/2022-03-29-Shell%20|%20%E9%87%8D%E5%AD%A6%20Shell%20%E7%BC%96%E7%A8%8B%E4%B9%8B%E5%9F%BA%E7%A1%80%E5%9B%9E%E9%A1%BE%EF%BC%88%E4%B8%80%EF%BC%89.html">https://skinyi.github.io/2022-03-29-Shell | 重学 Shell 编程之基础回顾（一）.html</a></p>
+    <p><strong>这篇文章由作者胡编乱造或者由其他文章复制粘贴而来，其中有些内容可能已经过时，请谨慎参考复制文章中的内容。</strong></p>
+</blockquote>
+
+
+    </article>
+    
+    <section id="comments">
+        
+    </section>
+
+
+    
+
+</main>
+
+
+<aside style="" id="sidebar" class="aside aside-fixture">
+    <div class="toc-sidebar">
+        <nav id="toc" class="article-toc">
+            <h3 class="toc-title">文章目录</h3>
+            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Shebang"><span class="toc-number">1.</span> <span class="toc-text">Shebang</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%89%A7%E8%A1%8C%E8%84%9A%E6%9C%AC"><span class="toc-number">2.</span> <span class="toc-text">执行脚本</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Shell-%E5%8F%98%E9%87%8F"><span class="toc-number">3.</span> <span class="toc-text">Shell 变量</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9A%E4%B9%89%E5%8F%98%E9%87%8F"><span class="toc-number">3.1.</span> <span class="toc-text">定义变量</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%98%E9%87%8F%E6%9B%BF%E6%8D%A2%E5%8F%8A%E5%BC%95%E7%94%A8"><span class="toc-number">3.2.</span> <span class="toc-text">变量替换及引用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%98%E9%87%8F%E5%90%8D%E5%91%BD%E5%90%8D%E8%A7%84%E8%8C%83"><span class="toc-number">3.3.</span> <span class="toc-text">变量名命名规范</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%98%E9%87%8F%E7%9A%84%E4%BD%9C%E7%94%A8%E5%9F%9F"><span class="toc-number">3.4.</span> <span class="toc-text">变量的作用域</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%80%E4%BA%9B%E7%89%B9%E6%AE%8A%E5%8F%98%E9%87%8F"><span class="toc-number">3.5.</span> <span class="toc-text">一些特殊变量</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9F%A5%E7%9C%8B%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F"><span class="toc-number">3.6.</span> <span class="toc-text">查看环境变量</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Bash-%E5%86%85%E5%BB%BA%E5%91%BD%E4%BB%A4"><span class="toc-number">4.</span> <span class="toc-text">Bash 内建命令</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#echo"><span class="toc-number">4.1.</span> <span class="toc-text">echo</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#eval"><span class="toc-number">4.2.</span> <span class="toc-text">eval</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#exec"><span class="toc-number">4.3.</span> <span class="toc-text">exec</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Shell-%E5%AD%90%E4%B8%B2"><span class="toc-number">5.</span> <span class="toc-text">Shell 子串</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A1%88%E4%BE%8B%E2%80%94%E2%80%94%E6%89%B9%E9%87%8F%E6%96%87%E4%BB%B6%E5%90%8D%E4%BF%AE%E6%94%B9"><span class="toc-number">5.1.</span> <span class="toc-text">案例——批量文件名修改</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%91%BD%E4%BB%A4%E5%88%97%E8%A1%A8%E3%80%81%E8%BF%9B%E7%A8%8B%E5%88%97%E8%A1%A8%E3%80%81%E8%BF%9B%E7%A8%8B%E5%88%86%E7%BB%84"><span class="toc-number">6.</span> <span class="toc-text">命令列表、进程列表、进程分组</span></a></li></ol>
+        </nav>
+    </div>
+</aside>
+
+
+
+
+
+        </section>
+        <footer class="hidden lg:block fixed bottom-0 left-0 sm:w-1/12 lg:w-1/6 bg-gray-100 z-40">
+    
+    
+        <p class="footer-custom">❤ Powered by <a href="https://hexo.io/" target="_blank" rel="noopener noreferrer">Hexo</a> with <a href="https://github.com/fengkx/hexo-theme-purer" target="_blank" rel="noopener noreferrer">Purer theme</a> by fengkx.</p>
+    
+</footer>
+
+        <div id="mask" class="hidden mask fixed inset-0 bg-gray-900 opacity-75 z-40"></div>
+        <div id="search-view-container" class="hidden shadow-xl"></div>
+        
+<script src="/js/dom-event.min.js"></script>
+
+
+
+<script src="/js/local-search.min.js"></script>
+
+
+
+    <script src="//cdn.jsdelivr.net/npm/lightgallery.js@1.1.3/dist/js/lightgallery.min.js"></script>
+    
+<script src="/js/light-gallery.min.js"></script>
+
+
+
+
+
+
+    </body>
+</html>
