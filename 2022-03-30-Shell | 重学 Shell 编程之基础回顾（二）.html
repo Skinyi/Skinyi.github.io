@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html  lang="zh-CN,en,default" >
+    <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, maximum-scale=5, viewport-fit=cover">
+    <title>重学 Shell 编程之基础回顾（二） | Avery Ma 的个人网站</title>
+    <meta name="description" content="引用命令的结果  &#96;command&#96; $(command)  例： 1234[skinyi@fedora ~]$ echo &quot;当前日期是：&#96;date&#96;&quot;当前日期是：2022年 03月 31日 星期四 11:13:50 CST[skinyi@fedora ~]$ echo &quot;当前用户的 id 是：$(id -u)&quot;当前用户的 id 是：1000 Shell 运">
+<meta property="og:type" content="article">
+<meta property="og:title" content="重学 Shell 编程之基础回顾（二）">
+<meta property="og:url" content="https://skinyi.github.io/2022-03-30-Shell%20|%20%E9%87%8D%E5%AD%A6%20Shell%20%E7%BC%96%E7%A8%8B%E4%B9%8B%E5%9F%BA%E7%A1%80%E5%9B%9E%E9%A1%BE%EF%BC%88%E4%BA%8C%EF%BC%89.html">
+<meta property="og:site_name" content="Avery Ma 的个人网站">
+<meta property="og:description" content="引用命令的结果  &#96;command&#96; $(command)  例： 1234[skinyi@fedora ~]$ echo &quot;当前日期是：&#96;date&#96;&quot;当前日期是：2022年 03月 31日 星期四 11:13:50 CST[skinyi@fedora ~]$ echo &quot;当前用户的 id 是：$(id -u)&quot;当前用户的 id 是：1000 Shell 运">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-03-30T08:03:08.891Z">
+<meta property="article:modified_time" content="2022-04-01T06:37:43.953Z">
+<meta property="article:author" content="skinyi">
+<meta property="article:tag" content="Linux">
+<meta property="article:tag" content="Shell">
+<meta property="article:tag" content="Bash">
+<meta property="article:tag" content="脚本编程">
+<meta name="twitter:card" content="summary">
+
+    
+    <link rel="icon" href="images/favicon.png" type="image/x-icon">
+
+    
+<link rel="stylesheet" href="/css/common.min.css">
+
+
+
+    
+    
+    
+    
+        <link href="//cdn.jsdelivr.net/npm/lightgallery.js@1.1.3/dist/css/lightgallery.min.css" rel="stylesheet">
+    
+    
+    
+<link rel="stylesheet" href="/css/iconfont.min.css">
+
+    
+<meta name="generator" content="Hexo 6.1.0"></head>
+
+    <body>
+        <header class="header header-fixture">
+    <div class="profile-search-wrap flex sm:block">
+        
+        
+        <div class="profile sm:text-center md:px-1 lg:px-3 sm:pb-4 sm:pt-6">
+            <a id="avatar" role="link" href="https://github.com/skinyi" class="inline-block lg:w-16 lg:h-16 w-8 h-8 m-2" target="_blank" rel="noopener" rel="noreferrer" >
+                <img src="/images/avatar.jpg" class="rounded-full" alt="avatar">
+            </a>
+            <h2 id="name" class="hidden lg:block">Avery Ma</h2>
+            <h3 id="title" class="hidden xl:block">IT 从业者</h3>
+            
+            <small id="location" class="hidden lg:block">
+                <i class="iconfont icon-map-icon"></i>
+                宁夏, 中国
+            </small>
+            
+        </div>
+        
+        
+<div class="search flex-1 flex lg:inline-block sm:hidden lg:px-4 lg:mt-2 lg:mb-4 lg:w-full">
+    <form id="search-form" class="my-auto flex-1 lg:border lg:border-solid lg:border-gray-200">
+        <div class="input-group table bg-gray-100 lg:bg-white w-full">
+            <input id="search-input" type="text" placeholder="搜索" class="inline-block w-full bg-gray-100 lg:bg-white">
+            <span class="table-cell">
+                <button name="search tigger button" disabled>
+                    <i class="iconfont icon-search m-2"></i>
+                </button>
+            </span>
+        </div>
+    </form>
+        
+<div id="content-json" data-placeholder="搜索" class="invisible hidden">/content.json</div>
+<script id="search-teamplate" type="text/html" data-path="/content.json">
+    <div>
+        <div class="search-header bg-gray-400">
+            <input id="actual-search-input" model="keyword" ref="input" class="inline-block w-full h-10 px-2 py-1" placeholder="搜索" type="text">
+        </div>
+        <div class="search-result bg-gray-200">
+            {{#each searchPosts}}
+            <a href="/{{ path }}" class="result-item block px-2 pb-3 mb-1 pt-1 hover:bg-indigo-100">
+                <i class="iconfont icon-file"></i>
+                <h1 class="result-title inline font-medium text-lg">{{ title }}</h1>
+                <p class="result-content text-gray-600 text-sm">{{{ text }}}</p>
+            </a>
+            {{/each}}
+        </div>
+    </div>
+</script>
+
+</div>
+
+
+        <button name="menu toogle button" id="menu-toggle-btn" class="block sm:hidden p-3" role="button" aria-expanded="false">
+            <i class="iconfont icon-hamburger"></i>
+        </button>
+    </div>
+    <nav id="menu-nav" class="hidden sm:flex flex-col">
+        
+        
+            <div class="menu-item menu-home" role="menuitem">
+                <a href="/.">
+                    <i class="iconfont icon-home" aria-hidden="true"></i>
+                    <span class="menu-title">首页</span>
+                </a>
+            </div>
+        
+        
+            <div class="menu-item menu-archives" role="menuitem">
+                <a href="/archives">
+                    <i class="iconfont icon-archive" aria-hidden="true"></i>
+                    <span class="menu-title">归档</span>
+                </a>
+            </div>
+        
+        
+            <div class="menu-item menu-categories" role="menuitem">
+                <a href="/categories">
+                    <i class="iconfont icon-folder" aria-hidden="true"></i>
+                    <span class="menu-title">分类</span>
+                </a>
+            </div>
+        
+        
+            <div class="menu-item menu-tags" role="menuitem">
+                <a href="/tags">
+                    <i class="iconfont icon-tag" aria-hidden="true"></i>
+                    <span class="menu-title">标签</span>
+                </a>
+            </div>
+        
+        
+            <div class="menu-item menu-repository" role="menuitem">
+                <a href="/repository">
+                    <i class="iconfont icon-project" aria-hidden="true"></i>
+                    <span class="menu-title">项目</span>
+                </a>
+            </div>
+        
+        
+            <div class="menu-item menu-about" role="menuitem">
+                <a href="/about">
+                    <i class="iconfont icon-cup" aria-hidden="true"></i>
+                    <span class="menu-title">关于</span>
+                </a>
+            </div>
+        
+        
+
+    </nav>
+</header>
+
+        <section class="main-section">
+            
+    <main class="flex-1 px-4 py-14 md:px-5 lg:px-8 lg:py-4 relative min-h-screen">
+    
+
+    <article class="content article article-archives article-type-list" itemscope="">
+        <header class="article-header">
+            
+    
+        <h1 class="article-title text-lg" itemprop="name">
+            重学 Shell 编程之基础回顾（二）
+        </h1>
+    
+
+
+
+            <p class="article-meta mb-3 text-xs">
+                <span class="article-date">
+    <i class="iconfont icon-calendar-check"></i>
+	<a href="/2022-03-30-Shell%20%7C%20%E9%87%8D%E5%AD%A6%20Shell%20%E7%BC%96%E7%A8%8B%E4%B9%8B%E5%9F%BA%E7%A1%80%E5%9B%9E%E9%A1%BE%EF%BC%88%E4%BA%8C%EF%BC%89.html" class="article-date">
+	  <time datetime="2022-03-30T08:03:08.891Z" itemprop="datePublished">3月 30</time>
+	</a>
+</span>
+
+                
+    <span class="article-category">
+    <i class="iconfont icon-folder"></i>
+    <a class="article-category-link" href="/categories/%E5%AD%A6%E4%B9%A0/">学习</a> , <a class="article-category-link" href="/categories/%E5%AD%A6%E4%B9%A0/Shell/">Shell</a> , <a class="article-category-link" href="/categories/%E6%97%A5%E5%B8%B8%E8%AE%B0%E5%BD%95/">日常记录</a>
+  </span>
+
+
+                
+    <span class="article-tags">
+    <i class="iconfont icon-tag"></i>
+    <a class="article-tag-none-link" href="/tags/Bash/" rel="tag">Bash</a>, <a class="article-tag-none-link" href="/tags/Linux/" rel="tag">Linux</a>, <a class="article-tag-none-link" href="/tags/Shell/" rel="tag">Shell</a>, <a class="article-tag-none-link" href="/tags/%E8%84%9A%E6%9C%AC%E7%BC%96%E7%A8%8B/" rel="tag">脚本编程</a>
+  </span>
+
+
+                <span class="_partial/post-comment"><i class="icon icon-comment"></i>
+                    <a href="/2022-03-30-Shell%20%7C%20%E9%87%8D%E5%AD%A6%20Shell%20%E7%BC%96%E7%A8%8B%E4%B9%8B%E5%9F%BA%E7%A1%80%E5%9B%9E%E9%A1%BE%EF%BC%88%E4%BA%8C%EF%BC%89.html#comments" class="article-comment-link">
+                        评论
+                    </a>
+                </span>
+                
+    
+        <span class="post-wordcount" itemprop="wordCount">字数统计: 3.2k(字)</span>
+    
+    
+        <span class="post-readcount" itemprop="timeRequired">阅读时长: 13(分)</span>
+    
+
+
+            </p>
+        </header>
+        <div class="marked-body article-body">
+            <h2 id="引用命令的结果">引用命令的结果</h2>
+<ul>
+<li>`command`</li>
+<li>$(command)</li>
+</ul>
+<p>例：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[skinyi@fedora ~]$ <span class="built_in">echo</span> <span class="string">&quot;当前日期是：`date`&quot;</span></span><br><span class="line">当前日期是：2022年 03月 31日 星期四 11:13:50 CST</span><br><span class="line">[skinyi@fedora ~]$ <span class="built_in">echo</span> <span class="string">&quot;当前用户的 id 是：<span class="subst">$(id -u)</span>&quot;</span></span><br><span class="line">当前用户的 <span class="built_in">id</span> 是：1000</span><br></pre></td></tr></table></figure>
+<h2 id="Shell-运算符">Shell 运算符</h2>
+<p>Shell 和其它编程语言不同，Shell 不能直接进行算数运算，必须使用数学计算命令。以下是 Shell 中使用的算数运算符：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Shell 算数运算符</th>
+<th style="text-align:left">意义（带 <strong>*</strong> 代表常用）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">+、-</td>
+<td style="text-align:left">加法（或正号）、减法（或负号） <strong>*</strong></td>
+</tr>
+<tr>
+<td style="text-align:left">*、/、%</td>
+<td style="text-align:left">乘法、除法、取余（取模） <strong>*</strong></td>
+</tr>
+<tr>
+<td style="text-align:left">**</td>
+<td style="text-align:left">幂运算 <strong>*</strong></td>
+</tr>
+<tr>
+<td style="text-align:left">++、–</td>
+<td style="text-align:left">自增、自减 <strong>*</strong></td>
+</tr>
+<tr>
+<td style="text-align:left">!、&amp;&amp;、||</td>
+<td style="text-align:left">逻辑非（取反）、逻辑与（and）、逻辑或（or） <strong>*</strong></td>
+</tr>
+<tr>
+<td style="text-align:left">&lt;、&lt;=、&gt;、&gt;=</td>
+<td style="text-align:left">小于、小于等于、大于、大于等于</td>
+</tr>
+<tr>
+<td style="text-align:left">==、!=、=</td>
+<td style="text-align:left">相等、不等、对于字符串 = 也可表示相当于 <strong>*</strong></td>
+</tr>
+<tr>
+<td style="text-align:left">&lt;&lt;、&gt;&gt;</td>
+<td style="text-align:left">左移位、右移位</td>
+</tr>
+<tr>
+<td style="text-align:left">~、|、&amp;、^</td>
+<td style="text-align:left">按位取反、按位异或、按位与、按位或</td>
+</tr>
+<tr>
+<td style="text-align:left">=、+=、-=、*=、/=、%=</td>
+<td style="text-align:left">赋值运算符，a+=1 相当于 a=a+1，后面类推 <strong>*</strong></td>
+</tr>
+</tbody>
+</table>
+<p>要想让数学计算发挥作用，必须使用数学计算命令，Shell 中常用的数学计算命令如下表所示。</p>
+<table>
+<thead>
+<tr>
+<th>Shell 运算操作符与运算命令</th>
+<th>意义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>(())</td>
+<td>用于整数运算的常用运算符，效率很高</td>
+</tr>
+<tr>
+<td>let</td>
+<td>用于整数运算，类似于”(())“</td>
+</tr>
+<tr>
+<td>expr</td>
+<td>可用于整数运算，但还有很多其他的额外功能</td>
+</tr>
+<tr>
+<td>bc</td>
+<td>Linux 下的一个计算器程序（适合整数及小数运算）</td>
+</tr>
+<tr>
+<td>$[]</td>
+<td>用于整数运算</td>
+</tr>
+<tr>
+<td>awk</td>
+<td>awk 既可以用于整数运算，也可以用于小数运算</td>
+</tr>
+<tr>
+<td>declare</td>
+<td>定义变量值和属性，-i 参数可以用于定义整型变量，做运算</td>
+</tr>
+</tbody>
+</table>
+<h3 id="运算符">(()) 运算符</h3>
+<p>用法示例：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 定义变量：</span></span><br><span class="line">[skinyi@fedora ~]$ i=1</span><br><span class="line"><span class="comment"># 错误示例：</span></span><br><span class="line">[skinyi@fedora ~]$ i=((i+1));<span class="built_in">echo</span> <span class="variable">$i</span></span><br><span class="line">bash: 未预期的符号“(”附近有语法错误</span><br><span class="line">[skinyi@fedora ~]$ <span class="built_in">echo</span> ((i+1))</span><br><span class="line">bash: 未预期的符号“(”附近有语法错误</span><br><span class="line"><span class="comment"># 正确示例：</span></span><br><span class="line">[skinyi@fedora ~]$ i=$((i+<span class="number">1</span>));<span class="built_in">echo</span> <span class="variable">$i</span></span><br><span class="line">2</span><br><span class="line">[skinyi@fedora ~]$ ((i=i+1));<span class="built_in">echo</span> <span class="variable">$i</span></span><br><span class="line">3</span><br><span class="line">[skinyi@fedora ~]$ i=$((i&gt;<span class="number">1</span>));<span class="built_in">echo</span> <span class="variable">$i</span></span><br><span class="line">1</span><br><span class="line">[skinyi@fedora ~]$ ((i=i&gt;1));<span class="built_in">echo</span> <span class="variable">$i</span></span><br><span class="line">0</span><br><span class="line">[skinyi@fedora ~]$ <span class="built_in">echo</span> $((i&lt;<span class="number">1</span>))</span><br><span class="line">1</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>总结：</p>
+<p>内部赋值（不直接引用）：((var=表达式))；<br>
+外部赋值（直接引用）：var=$((表达式))、echo $((表达式))。</p>
+</blockquote>
+<h3 id="let-指令">let 指令</h3>
+<p>用法示例：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 正确示例：</span></span><br><span class="line">[skinyi@fedora ~]$ <span class="built_in">let</span> num=1+1; <span class="built_in">echo</span> <span class="variable">$num</span></span><br><span class="line">2</span><br><span class="line">[skinyi@fedora ~]$ <span class="built_in">let</span> num=num+2; <span class="built_in">echo</span> <span class="variable">$num</span></span><br><span class="line">4</span><br><span class="line">[skinyi@fedora ~]$ <span class="built_in">let</span> num+=2; <span class="built_in">echo</span> <span class="variable">$num</span></span><br><span class="line">6</span><br><span class="line"><span class="comment"># 错误示例：</span></span><br><span class="line">[skinyi@fedora ~]$ <span class="built_in">let</span> num=2&gt;1; <span class="built_in">echo</span> <span class="variable">$num</span></span><br><span class="line">2               <span class="comment"># 无法根据比较结果赋值</span></span><br><span class="line">[skinyi@fedora ~]$ <span class="built_in">let</span> num**2; <span class="built_in">echo</span> <span class="variable">$num</span></span><br><span class="line">2               <span class="comment"># 只能是以赋值的形式进行计算</span></span><br><span class="line">[skinyi@fedora ~]$ <span class="built_in">let</span> num=$((<span class="number">2</span>&gt;<span class="number">1</span>)); <span class="built_in">echo</span> <span class="variable">$num</span></span><br><span class="line">1               <span class="comment"># 仅用双括号就能实现效果，用 let 冗余</span></span><br></pre></td></tr></table></figure>
+<h4 id="案例：监测网站服务的存活状态">案例：监测网站服务的存活状态</h4>
+<p>以下示例展示了一个简单的网站服务存活检测的脚本，其原理是对网站定时发送 head 请求以确认网站服务可用，当请求失败次数达到一定次数后给当前系统用户发送邮件告知网站服务出了问题并退出脚本的执行。要想再严格些可以考虑认为一定周期内达到最大失败次数才认为网站挂了，还有在脚本传参时可以进行 url 格式的正则检查，当然这里只是个小案例，主要还是将之前学到的没学到的东西都用了一遍，加深记忆。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/bin/sh</span></span><br><span class="line"><span class="comment">## Check web service status</span></span><br><span class="line"></span><br><span class="line">req_url=<span class="string">&#x27;&#x27;</span>            <span class="comment"># 请求的网址 url</span></span><br><span class="line">req_timeout=<span class="string">&#x27;5&#x27;</span>       <span class="comment"># 请求超时时间</span></span><br><span class="line">req_fails=<span class="string">&#x27;0&#x27;</span>         <span class="comment"># 最大尝试请求次数</span></span><br><span class="line">req_alert_fails=<span class="string">&#x27;10&#x27;</span>  <span class="comment"># 触发报警的最大尝试次数</span></span><br><span class="line">req_wait_time=<span class="string">&#x27;1&#x27;</span>     <span class="comment"># 每次请求间隔时间</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="title">check_parameters</span></span>()&#123;</span><br><span class="line">  <span class="keyword">if</span> [ <span class="variable">$#</span> -ne 1 ]; <span class="keyword">then</span> </span><br><span class="line">    <span class="built_in">printf</span> <span class="string">&quot;错误：未指定或指定了多个参数！\n用法：./check_website_status.sh &lt;url&gt;\n&quot;</span> 2&gt;&amp;1</span><br><span class="line">    <span class="built_in">exit</span> 1</span><br><span class="line">  <span class="keyword">else</span></span><br><span class="line">    req_url=<span class="variable">$1</span></span><br><span class="line">  <span class="keyword">fi</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="title">send_mail_alert</span></span>()&#123;</span><br><span class="line">  <span class="keyword">if</span> [ <span class="variable">$req_fails</span> -ge <span class="variable">$req_alert_fails</span> ]; <span class="keyword">then</span></span><br><span class="line">    <span class="built_in">local</span> mail_message=<span class="string">&quot;自脚本启动以来共发生了<span class="variable">$&#123;req_fails&#125;</span>次失败的请求，已达最大失败上限，请及时进行人工检查处理。\n&quot;</span></span><br><span class="line">    <span class="built_in">echo</span> -e <span class="variable">$mail_message</span> | mail -s <span class="string">&quot;警告：你的网站服务可能已经不可用&quot;</span> <span class="variable">$USER</span></span><br><span class="line">    <span class="built_in">exit</span> 0 <span class="comment"># 发送邮件后就退出，防止邮件轰炸</span></span><br><span class="line">  <span class="keyword">fi</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="title">check_status</span></span>()&#123;</span><br><span class="line">  <span class="keyword">while</span> <span class="literal">true</span>; <span class="keyword">do</span></span><br><span class="line">    <span class="built_in">local</span> <span class="built_in">date</span>=`<span class="built_in">date</span> --rfc-3339=seconds`</span><br><span class="line">    <span class="comment"># 使用 head 请求来进行网站是否存活检测</span></span><br><span class="line">    curl --<span class="built_in">head</span> --connect-timeout <span class="variable">$&#123;req_timeout&#125;</span> -s -f <span class="variable">$&#123;req_url&#125;</span> -o /dev/null</span><br><span class="line">    <span class="comment"># 若命令返回非 0 则表明请求失败</span></span><br><span class="line">    <span class="keyword">if</span> [ $? -ne 0 ]; <span class="keyword">then</span> </span><br><span class="line">      <span class="built_in">let</span> req_fails+=1  <span class="comment"># 请求失败次数自增</span></span><br><span class="line">      <span class="built_in">echo</span> <span class="string">&quot;<span class="variable">$&#123;date%+*&#125;</span> 时进行了一次失败的请求&quot;</span></span><br><span class="line">      send_mail_alert   <span class="comment"># 调用报警判断是否报警</span></span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">      <span class="built_in">echo</span> <span class="string">&quot;<span class="variable">$&#123;date%+*&#125;</span> 时进行了一次成功的请求&quot;</span></span><br><span class="line">    <span class="keyword">fi</span></span><br><span class="line">    <span class="comment"># 每次请求间隔一段时间</span></span><br><span class="line">    <span class="built_in">sleep</span> <span class="variable">$req_wait_time</span></span><br><span class="line">  <span class="keyword">done</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">check_parameters <span class="variable">$@</span>     <span class="comment"># 函数不会继承 shell 脚本的参数，调用时需进行传参</span></span><br><span class="line">check_status</span><br></pre></td></tr></table></figure>
+<h3 id="expr-命令">expr 命令</h3>
+<p>使用 <code>expr --help</code> 命令查看 <code>expr</code> 命令帮助信息。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line">[skinyi@fedora ~]$ <span class="built_in">expr</span> --<span class="built_in">help</span></span><br><span class="line">用法：<span class="built_in">expr</span> 表达式</span><br><span class="line">　或：<span class="built_in">expr</span> 选项</span><br><span class="line"></span><br><span class="line">      --<span class="built_in">help</span>            显示此帮助信息并退出</span><br><span class="line">      --version         显示版本信息并退出</span><br><span class="line"></span><br><span class="line">将表达式的值列印到标准输出，分隔符下面的空行可提升算式优先级。</span><br><span class="line">可用的表达式有：</span><br><span class="line"></span><br><span class="line">  ARG1 | ARG2       若ARG1 的值不为 0 或者为空，则返回 ARG1，否则返回 ARG2</span><br><span class="line"></span><br><span class="line">  ARG1 &amp; ARG2       若两边的值都不为 0 或为空，则返回 ARG1，否则返回 0</span><br><span class="line"></span><br><span class="line">  ARG1 &lt; ARG2       ARG1 小于 ARG2</span><br><span class="line">  ARG1 &lt;= ARG2      ARG1 小于或等于 ARG2</span><br><span class="line">  ARG1 = ARG2       ARG1 等于 ARG2</span><br><span class="line">  ARG1 != ARG2      ARG1 不等于 ARG2</span><br><span class="line">  ARG1 &gt;= ARG2      ARG1 大于或等于 ARG2</span><br><span class="line">  ARG1 &gt; ARG2       ARG1 大于 ARG2</span><br><span class="line"></span><br><span class="line">  ARG1 + ARG2       计算 ARG1 与 ARG2 相加之和</span><br><span class="line">  ARG1 - ARG2       计算 ARG1 与 ARG2 相减之差</span><br><span class="line"></span><br><span class="line">  ARG1 * ARG2       计算 ARG1 与 ARG2 相乘之积</span><br><span class="line">  ARG1 / ARG2       计算 ARG1 与 ARG2 相除之商</span><br><span class="line">  ARG1 % ARG2       计算 ARG1 与 ARG2 相除之余数</span><br><span class="line"></span><br><span class="line">  字符串 : 表达式               定位字符串中匹配表达式的模式</span><br><span class="line"></span><br><span class="line">  match 字符串 表达式           等于<span class="string">&quot;字符串 : 表达式&quot;</span></span><br><span class="line">  substr 字符串 偏移量 长度      替换字符串的子串，偏移的数值从 1 起计</span><br><span class="line">  index 字符串 字符             在字符串中发现字符的地方建立下标，或者标0</span><br><span class="line">  length 字符串                 字符串的长度</span><br><span class="line">  + 记号                     将给定记号解析为字符串，即使它是一个类似</span><br><span class="line">                               “match”或运算符<span class="string">&quot;/&quot;</span>那样的关键字</span><br><span class="line"></span><br><span class="line">  ( 表达式 )                 给定&lt;表达式&gt;的值</span><br><span class="line"></span><br><span class="line">请注意有许多运算操作符都可能需要由 shell 先实施转义。</span><br><span class="line">如果参与运算的 ARG 自变量都是数字，比较符就会被视作数学符号，否则就是多义的。</span><br><span class="line">模式匹配会返回<span class="string">&quot;\&quot;和&quot;</span>\&quot;之间被匹配的子字符串或空(null)；如果未使用<span class="string">&quot;\&quot;和&quot;</span>\&quot;，</span><br><span class="line">则会返回匹配字符数量或是 0。</span><br><span class="line"></span><br><span class="line">若表达式的值既不是空也不是 0，退出状态值为 0；若表达式的值为空或为 0，</span><br><span class="line">退出状态值为 1。如果表达式的句法无效，则会在出错时返回退出状态值 3。</span><br></pre></td></tr></table></figure>
+<p>用法示例：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 使用时最好都进行转义防止与 shell 特殊含义符号冲突</span></span><br><span class="line">[skinyi@fedora ~]$ <span class="built_in">expr</span> 1 + 3</span><br><span class="line">4</span><br><span class="line">[skinyi@fedora ~]$ <span class="built_in">expr</span> 2 \* 3</span><br><span class="line">6</span><br><span class="line">[skinyi@fedora ~]$ <span class="built_in">expr</span> 2 * 3</span><br><span class="line"><span class="built_in">expr</span>: 语法错误：未预期的参数 “check_website_status.sh”</span><br><span class="line">[skinyi@fedora ~]$ <span class="built_in">expr</span> 2 \+ 5</span><br><span class="line">7</span><br><span class="line"><span class="comment"># expr match 模式匹配，输出匹配字符个数</span></span><br><span class="line">[skinyi@fedora ~]$ <span class="built_in">expr</span> .bashrc.d \: <span class="string">&quot;.*&quot;</span></span><br><span class="line">9</span><br><span class="line">[skinyi@fedora ~]$ <span class="built_in">expr</span> match .bashrc.d <span class="string">&quot;.*\.d&quot;</span></span><br><span class="line">9</span><br><span class="line">[skinyi@fedora ~]$ <span class="built_in">expr</span> .bashrc.d \: <span class="string">&quot;.*b&quot;</span></span><br><span class="line">2</span><br><span class="line">[skinyi@fedora ~]$ <span class="built_in">expr</span> .bashrc.d \: <span class="string">&quot;.*p&quot;</span></span><br><span class="line">0</span><br><span class="line">[skinyi@fedora ~]$ <span class="built_in">expr</span> match zhiyaoniqingqingyixiao wodexinjiumizui</span><br><span class="line">0</span><br><span class="line">[skinyi@fedora ~]$ <span class="built_in">expr</span> match zhiyaoniqingqingyixiao zhiyaoni</span><br><span class="line">8</span><br><span class="line">[skinyi@fedora ~]$ <span class="built_in">expr</span> match zhiyaoniqingqingyixiao zhini</span><br><span class="line">0</span><br><span class="line"><span class="comment"># expr length 获取字符串长度</span></span><br><span class="line">[skinyi@fedora ~]$ <span class="built_in">expr</span> length 123456789</span><br><span class="line">9</span><br></pre></td></tr></table></figure>
+<h4 id="案例：参数传入一个文件的名字，判断其是否是-mp3-文件">案例：参数传入一个文件的名字，判断其是否是 mp3 文件</h4>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/bin/sh</span></span><br><span class="line"><span class="comment"># &amp;&amp; 分隔的两条语句前面的执行成功（退出码为 0）后才执行后面的语句，||反之</span></span><br><span class="line"><span class="built_in">expr</span> <span class="string">&quot;<span class="variable">$1</span>&quot;</span> <span class="string">&quot;:&quot;</span> <span class="string">&quot;.*\.mp3\$&quot;</span> 2&gt;&gt;/dev/null &amp;&amp; <span class="built_in">echo</span> <span class="string">&quot;这是个 mp3 文件&quot;</span> || <span class="built_in">echo</span> <span class="string">&quot;这不是 mp3 文件&quot;</span></span><br></pre></td></tr></table></figure>
+<h4 id="案例：参数传入一句话（拼音或单词），判断其长度大于-3-的拼音、单词个数">案例：参数传入一句话（拼音或单词），判断其长度大于 3 的拼音、单词个数</h4>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/bin/sh</span></span><br><span class="line">str_count=0</span><br><span class="line"><span class="keyword">for</span> word <span class="keyword">in</span> <span class="variable">$@</span>; <span class="keyword">do</span></span><br><span class="line">  <span class="keyword">if</span> [ `<span class="built_in">expr</span> length <span class="variable">$word</span>` -gt 3 ]; <span class="keyword">then</span></span><br><span class="line">    <span class="built_in">let</span> str_count+=1</span><br><span class="line">  <span class="keyword">fi</span></span><br><span class="line"><span class="keyword">done</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">&quot;大于 3 的拼音/单词个数为：<span class="variable">$str_count</span>&quot;</span></span><br></pre></td></tr></table></figure>
+<h3 id="bc-命令">bc 命令</h3>
+<p>bc 命令默认是以交互模式运行的，即执行 <code>bc</code> 命令会直接进入交互模式，用户可以输入表达式进行计算并得到结果，可以使用管道来传递单个表达式进行计算。bc 同时支持整数和小数计算。</p>
+<p>用法示例：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[skinyi@fedora ~]$ <span class="built_in">echo</span> 4.0/2.0 | bc</span><br><span class="line">2</span><br><span class="line">[skinyi@fedora ~]$ <span class="built_in">echo</span> 9/3 | bc</span><br><span class="line">3</span><br></pre></td></tr></table></figure>
+<h4 id="案例：计算-1-到-100-的和">案例：计算 1 到 100 的和</h4>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/bin/sh</span></span><br><span class="line"><span class="comment"># echo &#123;1..100&#125; 会打印以空格作为分隔符的 1 到 100 的数字</span></span><br><span class="line"><span class="comment"># tr 命令：用于转换或删除文件中的字符，`tr &#x27; &#x27; &#x27;+&#x27;` 代表将输入中的空格转换为 + 再输出</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">&quot;1 到 100 的和是 <span class="subst">$(echo &#123;1..100&#125; | tr &#x27; &#x27; &#x27;+&#x27; | bc)</span>。&quot;</span></span><br><span class="line"><span class="comment"># 或者</span></span><br><span class="line"><span class="comment"># seq 用于生成序列，-s 选项指定分隔符为 +</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">&quot;1 到 100 的和是 seq -s &#x27;+&#x27; 100 | bc。&quot;</span></span><br><span class="line"><span class="comment"># 使用双括号</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">&quot;1 到 100 的和是 <span class="subst">$((`seq -s &#x27;+&#x27; 100`)</span>)。&quot;</span></span><br><span class="line"><span class="comment"># 使用 expr，注意这次的分隔符</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">&quot;1 到 100 的和是 <span class="subst">$(seq -s &#x27; + &#x27; 100 | xargs expr)</span>。&quot;</span></span><br></pre></td></tr></table></figure>
+<h3 id="awk-命令">awk 命令</h3>
+<p>用法示例：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[skinyi@fedora ~]$ <span class="built_in">echo</span> <span class="string">&quot;4.2 2.4&quot;</span> | awk <span class="string">&#x27;&#123;print $1+$2&#125;&#x27;</span></span><br><span class="line">6.6</span><br><span class="line">[skinyi@fedora ~]$ <span class="built_in">echo</span> <span class="string">&quot;4.2 2.4&quot;</span> | awk <span class="string">&#x27;&#123;print $1*$2&#125;&#x27;</span></span><br><span class="line">10.08</span><br><span class="line">[skinyi@fedora ~]$ <span class="built_in">echo</span> <span class="string">&quot;4.2 2.4&quot;</span> | awk <span class="string">&#x27;&#123;print $1+4*$2&#125;&#x27;</span></span><br><span class="line">13.8</span><br></pre></td></tr></table></figure>
+<h3 id="表达式">$[表达式]</h3>
+<p><code>$[表达式]</code> 仅能用于整数运算，用法示例：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">[skinyi@fedora ~]$ <span class="built_in">echo</span> $[2**2]</span><br><span class="line">4</span><br><span class="line">[skinyi@fedora ~]$ <span class="built_in">echo</span> $[2+2+2]</span><br><span class="line">6</span><br><span class="line">[skinyi@fedora ~]$ num=5</span><br><span class="line">[skinyi@fedora ~]$ <span class="built_in">echo</span> $[num+2+2]</span><br><span class="line">9</span><br></pre></td></tr></table></figure>
+<h2 id="read-指令">read 指令</h2>
+<p>read 指令用于从标准输入设备中读取输入。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">[skinyi@fedora ~]$ <span class="built_in">read</span> --<span class="built_in">help</span></span><br><span class="line"><span class="built_in">read</span>: <span class="built_in">read</span> [-ers] [-a 数组] [-d 分隔符] [-i 缓冲区文字] [-n 读取字符数] [-N 读取字符数] [-p 提示符] [-t 超时] [-u 文件描述符] [名称 ...]</span><br><span class="line">    从标准输入读取一行并将其分为不同的域。</span><br><span class="line">    </span><br><span class="line">    从标准输入读取单独的一行，或者如果使用了 -u 选项，从文件描述符 FD 中读取。</span><br><span class="line">    该行被分割成域，如同词语分割一样，并且第一个词被赋值给第一个 NAME 变量，第二</span><br><span class="line">    个词被赋值给第二个 NAME 变量，如此继续，直到剩下所有的词被赋值给最后一个 NAME</span><br><span class="line">    变量。只有 <span class="variable">$IFS</span> 变量中的字符被认作是词语分隔符。</span><br><span class="line">    </span><br><span class="line">    如果没有提供 NAME 变量，则读取的行被存放在 REPLY 变量中。</span><br><span class="line">    </span><br><span class="line">    选项：</span><br><span class="line">      -a array  将词语赋值给 ARRAY 数组变量的序列下标成员，从零开始</span><br><span class="line">      -d delim  持续读取直到读入 DELIM 变量中的第一个字符，而不是换行符</span><br><span class="line">      -e        使用 Readline 获取行</span><br><span class="line">      -i text   使用 TEXT 文本作为 Readline 的初始文字</span><br><span class="line">      -n nchars 读取 nchars 个字符之后返回，而不是等到读取换行符。</span><br><span class="line">                但是分隔符仍然有效，如果遇到分隔符之前读取了不足 nchars 个字符。</span><br><span class="line">      -N nchars 在准确读取了 nchars 个字符之后返回，除非遇到文件结束符或者读超时，</span><br><span class="line">                任何的分隔符都被忽略</span><br><span class="line">      -p prompt 在尝试读取之前输出 PROMPT 提示符并且不带</span><br><span class="line">                换行符</span><br><span class="line">      -r        不允许反斜杠转义任何字符</span><br><span class="line">      -s        不回显终端的任何输入</span><br><span class="line">      -t <span class="built_in">timeout</span>        如果在 TIMEOUT 秒内没有读取一个完整的行则超时并且返回失败。</span><br><span class="line">                TMOUT 变量的值是默认的超时时间。TIMEOUT 可以是小数。</span><br><span class="line">                如果 TIMEOUT 是 0，那么仅当在指定的文件描述符上输入有效的时候，</span><br><span class="line">                <span class="built_in">read</span> 才返回成功；否则它将立刻返回而不尝试读取任何数据。</span><br><span class="line">                如果超过了超时时间，则返回状态码大于 128</span><br><span class="line">      -u fd     从文件描述符 FD 中读取，而不是标准输入</span><br><span class="line">    </span><br><span class="line">    退出状态：</span><br><span class="line">    返回码为零，除非遇到了文件结束符、读超时（且返回码不大于128）、</span><br><span class="line">    出现了变量赋值错误或者无效的文件描述符作为参数传递给了 -u 选项。</span><br></pre></td></tr></table></figure>
+<p>用法示例：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">[skinyi@fedora ~]$ <span class="built_in">read</span> -p <span class="string">&quot;给你五秒时间输入你的名字：&quot;</span> -t 5 name</span><br><span class="line">给你五秒时间输入你的名字：[skinyi@fedora ~]$</span><br><span class="line">[skinyi@fedora ~]$ <span class="built_in">read</span> -p <span class="string">&quot;给你五秒时间输入你的名字：&quot;</span> -t 5 name</span><br><span class="line">给你五秒时间输入你的名字：skinyi</span><br><span class="line">[skinyi@fedora ~]$ <span class="built_in">echo</span> <span class="variable">$name</span></span><br><span class="line">skinyi</span><br><span class="line">[skinyi@fedora ~]$ <span class="built_in">read</span> -p <span class="string">&quot;输入你的名字和年龄：&quot;</span>  name age ;<span class="built_in">echo</span> <span class="string">&quot;<span class="variable">$name</span> <span class="variable">$age</span>&quot;</span></span><br><span class="line">输入你的名字和年龄：skinyi <span class="comment"># 未输入的变量默认为空</span></span><br><span class="line">skinyi </span><br><span class="line">[skinyi@fedora ~]$ <span class="built_in">read</span> -p <span class="string">&quot;输入你的名字和年龄：&quot;</span>  name age ;<span class="built_in">echo</span> <span class="string">&quot;<span class="variable">$name</span> <span class="variable">$age</span>&quot;</span></span><br><span class="line">输入你的名字和年龄：skinyi 18</span><br><span class="line">skinyi 18</span><br></pre></td></tr></table></figure>
+
+        </div>
+        
+<blockquote class="copyright">
+    <p><strong>本文链接 : </strong><a class="permalink" href="https://skinyi.github.io/2022-03-30-Shell%20|%20%E9%87%8D%E5%AD%A6%20Shell%20%E7%BC%96%E7%A8%8B%E4%B9%8B%E5%9F%BA%E7%A1%80%E5%9B%9E%E9%A1%BE%EF%BC%88%E4%BA%8C%EF%BC%89.html">https://skinyi.github.io/2022-03-30-Shell | 重学 Shell 编程之基础回顾（二）.html</a></p>
+    <p><strong>这篇文章由作者胡编乱造或者由其他文章复制粘贴而来，其中有些内容可能已经过时，请谨慎参考复制文章中的内容。</strong></p>
+</blockquote>
+
+
+    </article>
+    
+    <section id="comments">
+        
+    </section>
+
+
+    
+
+</main>
+
+
+<aside style="" id="sidebar" class="aside aside-fixture">
+    <div class="toc-sidebar">
+        <nav id="toc" class="article-toc">
+            <h3 class="toc-title">文章目录</h3>
+            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BC%95%E7%94%A8%E5%91%BD%E4%BB%A4%E7%9A%84%E7%BB%93%E6%9E%9C"><span class="toc-number">1.</span> <span class="toc-text">引用命令的结果</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Shell-%E8%BF%90%E7%AE%97%E7%AC%A6"><span class="toc-number">2.</span> <span class="toc-text">Shell 运算符</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BF%90%E7%AE%97%E7%AC%A6"><span class="toc-number">2.1.</span> <span class="toc-text">(()) 运算符</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#let-%E6%8C%87%E4%BB%A4"><span class="toc-number">2.2.</span> <span class="toc-text">let 指令</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%A1%88%E4%BE%8B%EF%BC%9A%E7%9B%91%E6%B5%8B%E7%BD%91%E7%AB%99%E6%9C%8D%E5%8A%A1%E7%9A%84%E5%AD%98%E6%B4%BB%E7%8A%B6%E6%80%81"><span class="toc-number">2.2.1.</span> <span class="toc-text">案例：监测网站服务的存活状态</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#expr-%E5%91%BD%E4%BB%A4"><span class="toc-number">2.3.</span> <span class="toc-text">expr 命令</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%A1%88%E4%BE%8B%EF%BC%9A%E5%8F%82%E6%95%B0%E4%BC%A0%E5%85%A5%E4%B8%80%E4%B8%AA%E6%96%87%E4%BB%B6%E7%9A%84%E5%90%8D%E5%AD%97%EF%BC%8C%E5%88%A4%E6%96%AD%E5%85%B6%E6%98%AF%E5%90%A6%E6%98%AF-mp3-%E6%96%87%E4%BB%B6"><span class="toc-number">2.3.1.</span> <span class="toc-text">案例：参数传入一个文件的名字，判断其是否是 mp3 文件</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%A1%88%E4%BE%8B%EF%BC%9A%E5%8F%82%E6%95%B0%E4%BC%A0%E5%85%A5%E4%B8%80%E5%8F%A5%E8%AF%9D%EF%BC%88%E6%8B%BC%E9%9F%B3%E6%88%96%E5%8D%95%E8%AF%8D%EF%BC%89%EF%BC%8C%E5%88%A4%E6%96%AD%E5%85%B6%E9%95%BF%E5%BA%A6%E5%A4%A7%E4%BA%8E-3-%E7%9A%84%E6%8B%BC%E9%9F%B3%E3%80%81%E5%8D%95%E8%AF%8D%E4%B8%AA%E6%95%B0"><span class="toc-number">2.3.2.</span> <span class="toc-text">案例：参数传入一句话（拼音或单词），判断其长度大于 3 的拼音、单词个数</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#bc-%E5%91%BD%E4%BB%A4"><span class="toc-number">2.4.</span> <span class="toc-text">bc 命令</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%A1%88%E4%BE%8B%EF%BC%9A%E8%AE%A1%E7%AE%97-1-%E5%88%B0-100-%E7%9A%84%E5%92%8C"><span class="toc-number">2.4.1.</span> <span class="toc-text">案例：计算 1 到 100 的和</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#awk-%E5%91%BD%E4%BB%A4"><span class="toc-number">2.5.</span> <span class="toc-text">awk 命令</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%A1%A8%E8%BE%BE%E5%BC%8F"><span class="toc-number">2.6.</span> <span class="toc-text">$[表达式]</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#read-%E6%8C%87%E4%BB%A4"><span class="toc-number">3.</span> <span class="toc-text">read 指令</span></a></li></ol>
+        </nav>
+    </div>
+</aside>
+
+
+
+
+
+        </section>
+        <footer class="hidden lg:block fixed bottom-0 left-0 sm:w-1/12 lg:w-1/6 bg-gray-100 z-40">
+    
+    
+        <p class="footer-custom">❤ Powered by <a href="https://hexo.io/" target="_blank" rel="noopener noreferrer">Hexo</a> with <a href="https://github.com/fengkx/hexo-theme-purer" target="_blank" rel="noopener noreferrer">Purer theme</a> by fengkx.</p>
+    
+</footer>
+
+        <div id="mask" class="hidden mask fixed inset-0 bg-gray-900 opacity-75 z-40"></div>
+        <div id="search-view-container" class="hidden shadow-xl"></div>
+        
+<script src="/js/dom-event.min.js"></script>
+
+
+
+<script src="/js/local-search.min.js"></script>
+
+
+
+    <script src="//cdn.jsdelivr.net/npm/lightgallery.js@1.1.3/dist/js/lightgallery.min.js"></script>
+    
+<script src="/js/light-gallery.min.js"></script>
+
+
+
+
+
+
+    </body>
+</html>
