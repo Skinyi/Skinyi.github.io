@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html  lang="zh-CN,en,default" >
+    <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, maximum-scale=5, viewport-fit=cover">
+    <title>重学 Shell 编程之基础回顾（三） | Avery Ma 的个人网站</title>
+    <meta name="description" content="Shell 条件测试 条件测试只会得到真与假两种结果，常与 if 判断语句结合进行具有一定复杂逻辑的工作。以下是 shell 条件测试中一些比较常用的语法：  条件测试返回 0 时表示真，返回其他非 0 值时表示假，跟其他编程语言不一致！     语法 描述     test &lt;测试表达式&gt; 利用 test 命令进行条件测试，注意 test 命令和参数之间存在空格   [ &lt;测试">
+<meta property="og:type" content="article">
+<meta property="og:title" content="重学 Shell 编程之基础回顾（三）">
+<meta property="og:url" content="https://skinyi.github.io/2022-04-01-Shell%20|%20%E9%87%8D%E5%AD%A6%20Shell%20%E7%BC%96%E7%A8%8B%E4%B9%8B%E5%9F%BA%E7%A1%80%E5%9B%9E%E9%A1%BE%EF%BC%88%E4%B8%89%EF%BC%89.html">
+<meta property="og:site_name" content="Avery Ma 的个人网站">
+<meta property="og:description" content="Shell 条件测试 条件测试只会得到真与假两种结果，常与 if 判断语句结合进行具有一定复杂逻辑的工作。以下是 shell 条件测试中一些比较常用的语法：  条件测试返回 0 时表示真，返回其他非 0 值时表示假，跟其他编程语言不一致！     语法 描述     test &lt;测试表达式&gt; 利用 test 命令进行条件测试，注意 test 命令和参数之间存在空格   [ &lt;测试">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-04-01T06:40:56.259Z">
+<meta property="article:modified_time" content="2022-04-07T03:16:13.392Z">
+<meta property="article:author" content="skinyi">
+<meta property="article:tag" content="Linux">
+<meta property="article:tag" content="Shell">
+<meta property="article:tag" content="Bash">
+<meta property="article:tag" content="脚本编程">
+<meta name="twitter:card" content="summary">
+
+    
+    <link rel="icon" href="images/favicon.png" type="image/x-icon">
+
+    
+<link rel="stylesheet" href="/css/common.min.css">
+
+
+
+    
+    
+    
+    
+        <link href="//cdn.jsdelivr.net/npm/lightgallery.js@1.1.3/dist/css/lightgallery.min.css" rel="stylesheet">
+    
+    
+    
+<link rel="stylesheet" href="/css/iconfont.min.css">
+
+    
+<meta name="generator" content="Hexo 6.1.0"></head>
+
+    <body>
+        <header class="header header-fixture">
+    <div class="profile-search-wrap flex sm:block">
+        
+        
+        <div class="profile sm:text-center md:px-1 lg:px-3 sm:pb-4 sm:pt-6">
+            <a id="avatar" role="link" href="https://github.com/skinyi" class="inline-block lg:w-16 lg:h-16 w-8 h-8 m-2" target="_blank" rel="noopener" rel="noreferrer" >
+                <img src="/images/avatar.jpg" class="rounded-full" alt="avatar">
+            </a>
+            <h2 id="name" class="hidden lg:block">Avery Ma</h2>
+            <h3 id="title" class="hidden xl:block">IT 从业者</h3>
+            
+            <small id="location" class="hidden lg:block">
+                <i class="iconfont icon-map-icon"></i>
+                宁夏, 中国
+            </small>
+            
+        </div>
+        
+        
+<div class="search flex-1 flex lg:inline-block sm:hidden lg:px-4 lg:mt-2 lg:w-full">
+    <form id="search-form" class="my-auto flex-1 lg:border lg:border-solid lg:border-gray-200">
+        <div class="input-group table bg-gray-100 lg:bg-white w-full">
+            <input id="search-input" type="text" placeholder="搜索" class="inline-block w-full bg-gray-100 lg:bg-white">
+            <span class="table-cell">
+                <button name="search tigger button" disabled>
+                    <i class="iconfont icon-search m-2"></i>
+                </button>
+            </span>
+        </div>
+    </form>
+        
+<div id="content-json" data-placeholder="搜索" class="invisible hidden">/content.json</div>
+<script id="search-teamplate" type="text/html" data-path="/content.json">
+    <div>
+        <div class="search-header bg-gray-400">
+            <input id="actual-search-input" model="keyword" ref="input" class="inline-block w-full h-10 px-2 py-1" placeholder="搜索" type="text">
+        </div>
+        <div class="search-result bg-gray-200">
+            {{#each searchPosts}}
+            <a href="/{{ path }}" class="result-item block px-2 pb-3 mb-1 pt-1 hover:bg-indigo-100">
+                <i class="iconfont icon-file"></i>
+                <h1 class="result-title inline font-medium text-lg">{{ title }}</h1>
+                <p class="result-content text-gray-600 text-sm">{{{ text }}}</p>
+            </a>
+            {{/each}}
+        </div>
+    </div>
+</script>
+
+</div>
+
+
+        <button name="menu toogle button" id="menu-toggle-btn" class="block sm:hidden p-3" role="button" aria-expanded="false">
+            <i class="iconfont icon-hamburger"></i>
+        </button>
+    </div>
+    <nav id="menu-nav" class="hidden sm:flex flex-col">
+        
+        
+            <div class="menu-item menu-home" role="menuitem">
+                <a href="/.">
+                    <i class="iconfont icon-home" aria-hidden="true"></i>
+                    <span class="menu-title">首页</span>
+                </a>
+            </div>
+        
+        
+            <div class="menu-item menu-archives" role="menuitem">
+                <a href="/archives">
+                    <i class="iconfont icon-archive" aria-hidden="true"></i>
+                    <span class="menu-title">归档</span>
+                </a>
+            </div>
+        
+        
+            <div class="menu-item menu-categories" role="menuitem">
+                <a href="/categories">
+                    <i class="iconfont icon-folder" aria-hidden="true"></i>
+                    <span class="menu-title">分类</span>
+                </a>
+            </div>
+        
+        
+            <div class="menu-item menu-tags" role="menuitem">
+                <a href="/tags">
+                    <i class="iconfont icon-tag" aria-hidden="true"></i>
+                    <span class="menu-title">标签</span>
+                </a>
+            </div>
+        
+        
+            <div class="menu-item menu-repository" role="menuitem">
+                <a href="/repository">
+                    <i class="iconfont icon-project" aria-hidden="true"></i>
+                    <span class="menu-title">项目</span>
+                </a>
+            </div>
+        
+        
+            <div class="menu-item menu-about" role="menuitem">
+                <a href="/about">
+                    <i class="iconfont icon-cup" aria-hidden="true"></i>
+                    <span class="menu-title">关于</span>
+                </a>
+            </div>
+        
+        
+
+    </nav>
+</header>
+
+        <section class="main-section">
+            
+    <main class="flex-1 px-4 py-14 md:px-5 lg:px-8 lg:py-4 relative min-h-screen">
+    
+
+    <article class="content article article-archives article-type-list" itemscope="">
+        <header class="article-header">
+            
+    
+        <h1 class="article-title text-lg" itemprop="name">
+            重学 Shell 编程之基础回顾（三）
+        </h1>
+    
+
+
+
+            <p class="article-meta mb-3 text-xs">
+                <span class="article-date">
+    <i class="iconfont icon-calendar-check"></i>
+	<a href="/2022-04-01-Shell%20%7C%20%E9%87%8D%E5%AD%A6%20Shell%20%E7%BC%96%E7%A8%8B%E4%B9%8B%E5%9F%BA%E7%A1%80%E5%9B%9E%E9%A1%BE%EF%BC%88%E4%B8%89%EF%BC%89.html" class="article-date">
+	  <time datetime="2022-04-01T06:40:56.259Z" itemprop="datePublished">4月 1</time>
+	</a>
+</span>
+
+                
+    <span class="article-category">
+    <i class="iconfont icon-folder"></i>
+    <a class="article-category-link" href="/categories/%E5%AD%A6%E4%B9%A0/">学习</a> , <a class="article-category-link" href="/categories/%E5%AD%A6%E4%B9%A0/Shell/">Shell</a> , <a class="article-category-link" href="/categories/%E6%97%A5%E5%B8%B8%E8%AE%B0%E5%BD%95/">日常记录</a>
+  </span>
+
+
+                
+    <span class="article-tags">
+    <i class="iconfont icon-tag"></i>
+    <a class="article-tag-none-link" href="/tags/Bash/" rel="tag">Bash</a>, <a class="article-tag-none-link" href="/tags/Linux/" rel="tag">Linux</a>, <a class="article-tag-none-link" href="/tags/Shell/" rel="tag">Shell</a>, <a class="article-tag-none-link" href="/tags/%E8%84%9A%E6%9C%AC%E7%BC%96%E7%A8%8B/" rel="tag">脚本编程</a>
+  </span>
+
+
+                <span class="_partial/post-comment"><i class="icon icon-comment"></i>
+                    <a href="/2022-04-01-Shell%20%7C%20%E9%87%8D%E5%AD%A6%20Shell%20%E7%BC%96%E7%A8%8B%E4%B9%8B%E5%9F%BA%E7%A1%80%E5%9B%9E%E9%A1%BE%EF%BC%88%E4%B8%89%EF%BC%89.html#comments" class="article-comment-link">
+                        评论
+                    </a>
+                </span>
+                
+    
+        <span class="post-wordcount" itemprop="wordCount">字数统计: 2.3k(字)</span>
+    
+    
+        <span class="post-readcount" itemprop="timeRequired">阅读时长: 8(分)</span>
+    
+
+
+            </p>
+        </header>
+        <div class="marked-body article-body">
+            <h2 id="Shell-条件测试">Shell 条件测试</h2>
+<p>条件测试只会得到真与假两种结果，常与 if 判断语句结合进行具有一定复杂逻辑的工作。以下是 shell 条件测试中一些比较常用的语法：</p>
+<blockquote>
+<p>条件测试返回 0 时表示真，返回其他非 0 值时表示假，跟其他编程语言不一致！</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>语法</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>test &lt;测试表达式&gt;</td>
+<td>利用 test 命令进行条件测试，注意 test 命令和参数之间存在空格</td>
+</tr>
+<tr>
+<td>[ &lt;测试表达式&gt; ]</td>
+<td>推荐。等价于上条语法，注意左右中括号和表达式之间存在空格</td>
+</tr>
+<tr>
+<td>[[ &lt;测试表达式&gt; ]]</td>
+<td>扩展语法，较新，部分解释器可能不支持，注意左右双中括号和表达式之间存在空格</td>
+</tr>
+<tr>
+<td>((&lt;测试表达式&gt;))</td>
+<td>一般用于 if 语句，左右双小括号和表达式之间可以不存在空格</td>
+</tr>
+</tbody>
+</table>
+<h3 id="test-测试表达式-和-测试表达式-语法">test &lt;测试表达式&gt; 和 [ &lt;测试表达式&gt;  ] 语法</h3>
+<p>这两种语法需要记忆一些涉及文件、逻辑判断使用的特殊选项符号，将其整理如下：</p>
+<h4 id="文件测试语法">文件测试语法</h4>
+<table>
+<thead>
+<tr>
+<th>文件测试语法</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>归类</em></td>
+<td><strong>文件存在、类型判断</strong></td>
+</tr>
+<tr>
+<td>-e pathname</td>
+<td>当由 pathname 指定的文件或目录存在时返回真</td>
+</tr>
+<tr>
+<td>-s filename</td>
+<td>当 filename 存在并且文件大小大于 0 时返回真</td>
+</tr>
+<tr>
+<td>-f filename</td>
+<td>当 filename 存在并且是常规文件时返回真</td>
+</tr>
+<tr>
+<td>-d pathname</td>
+<td>当 pathname 存在并且是一个目录时返回真</td>
+</tr>
+<tr>
+<td>-b filename</td>
+<td>当 filename 存在并且是块文件时返回真</td>
+</tr>
+<tr>
+<td>-c filename</td>
+<td>当 filename 存在并且是字符文件时返回真</td>
+</tr>
+<tr>
+<td>-S filename</td>
+<td>当 filename 存在并且是 socket 时返回真</td>
+</tr>
+<tr>
+<td>-p filename</td>
+<td>当 filename 存在并且是命名管道时返回真</td>
+</tr>
+<tr>
+<td>-h filename</td>
+<td>当 filename 存在并且是符号链接文件时返回真 (或 -L filename)</td>
+</tr>
+<tr>
+<td>-t fd</td>
+<td>当 fd 是与终端设备相关联的文件描述符时返回真</td>
+</tr>
+<tr>
+<td><em>归类</em></td>
+<td><strong>文件权限位判断</strong></td>
+</tr>
+<tr>
+<td>-r pathname</td>
+<td>当由 pathname 指定的文件或目录存在并且可读时返回真</td>
+</tr>
+<tr>
+<td>-w pathname</td>
+<td>当由 pathname 指定的文件或目录存在并且可写时返回真</td>
+</tr>
+<tr>
+<td>-x pathname</td>
+<td>当由 pathname 指定的文件或目录存在并且可执行时返回真</td>
+</tr>
+<tr>
+<td>-u pathname</td>
+<td>当由 pathname 指定的文件或目录存在并且设置了 SUID 位时返回真</td>
+</tr>
+<tr>
+<td>-g pathname</td>
+<td>当由 pathname 指定的文件或目录存在并且设置了 SGID 位时返回真</td>
+</tr>
+<tr>
+<td>-k pathname</td>
+<td>当由 pathname 指定的文件或目录存在并且设置了&quot;粘滞&quot;位时返回真</td>
+</tr>
+<tr>
+<td>-O pathname</td>
+<td>当由 pathname 存在并且被当前进程的有效用户 id 的用户拥有时返回真(字母 O 大写)</td>
+</tr>
+<tr>
+<td>-G pathname</td>
+<td>当由 pathname 存在并且属于当前进程的有效用户 id 的用户的用户组时返回真</td>
+</tr>
+<tr>
+<td><em>归类</em></td>
+<td><strong>两个文件的比较</strong></td>
+</tr>
+<tr>
+<td>file1 -nt file2</td>
+<td>file1 比 file2 新时返回真</td>
+</tr>
+<tr>
+<td>file1 -ot file2</td>
+<td>file1 比 file2 旧时返回真</td>
+</tr>
+<tr>
+<td>file1 -ef file2</td>
+<td>file1 和 file2 是同一个文件的硬链接时返回真</td>
+</tr>
+</tbody>
+</table>
+<h4 id="逻辑测试语法">逻辑测试语法</h4>
+<table>
+<thead>
+<tr>
+<th>逻辑测试语法</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>-a</td>
+<td>逻辑与，操作符两边均为真，结果为真，否则为假。</td>
+</tr>
+<tr>
+<td>-o</td>
+<td>逻辑非，操作符两边一边为真，结果为真，否则为假。</td>
+</tr>
+<tr>
+<td>!</td>
+<td>取非，条件为假，结果为真。</td>
+</tr>
+</tbody>
+</table>
+<h4 id="常见字符串测试语法">常见字符串测试语法</h4>
+<table>
+<thead>
+<tr>
+<th>常见字符串测试语法</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>-z string</td>
+<td>字符串 string 为空串(长度为0)时返回真</td>
+</tr>
+<tr>
+<td>-n string</td>
+<td>字符串 string 为非空串时返回真</td>
+</tr>
+<tr>
+<td>str1 = str2</td>
+<td>字符串 str1 和字符串 str2 相等时返回真</td>
+</tr>
+<tr>
+<td>str1 == str2</td>
+<td>同 =</td>
+</tr>
+<tr>
+<td>str1 != str2</td>
+<td>字符串 str1 和字符串 str2 不相等时返回真</td>
+</tr>
+<tr>
+<td>str1 &lt; str2</td>
+<td>按字典顺序排序，字符串 str1 在字符串 str2 之前</td>
+</tr>
+<tr>
+<td>str1 &gt; str2</td>
+<td>按字典顺序排序，字符串 str1 在字符串 str2 之后</td>
+</tr>
+</tbody>
+</table>
+<h4 id="常见数值测试语法">常见数值测试语法</h4>
+<table>
+<thead>
+<tr>
+<th>常见数值测试语法</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>int1 -eq int2</td>
+<td>如果 int1 等于 int2，则返回真</td>
+</tr>
+<tr>
+<td>int1 -ne int2</td>
+<td>如果 int1 不等于 int2，则返回真</td>
+</tr>
+<tr>
+<td>int1 -lt int2</td>
+<td>如果 int1 小于 int2，则返回真</td>
+</tr>
+<tr>
+<td>int1 -le int2</td>
+<td>如果 int1 小于等于 int2，则返回真</td>
+</tr>
+<tr>
+<td>int1 -gt int2</td>
+<td>如果 int1 大于 int2，则返回真</td>
+</tr>
+<tr>
+<td>int1 -ge int2</td>
+<td>如果 int1 大于等于 int2，则返回真</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>单中括号语法引用变量除了要使用 $ 符号还需要用引号将变量括起来。</p>
+</blockquote>
+<h3 id="测试表达式-语法">[[ &lt;测试表达式&gt; ]] 语法</h3>
+<p>大部分情形下，双中括号语法与 test 和单中括号语法通用，但是仍存在以下区别：</p>
+<h4 id="逻辑测试">逻辑测试</h4>
+<p>[[ &lt;测试表达式&gt; ]] 语法中使用 &amp;&amp;、|| 表示逻辑与和逻辑非，但在 [ &lt;测试表达式&gt; ] 语法中使用 -a 和 -o 运算符。</p>
+<h4 id="通配符和正则">通配符和正则</h4>
+<p>[[ &lt;测试表达式&gt; ]] 语法中支持使用通配符和正则表达式。</p>
+<h4 id="字符串">字符串</h4>
+<p>[[ &lt;测试表达式&gt; ]] 语法中匹配字符串或通配符不需要引号括起来。</p>
+<h3 id="测试表达式-语法-2">((&lt;测试表达式&gt;)) 语法</h3>
+<p>((&lt;测试表达式&gt;)) 只支持算术运算比较。</p>
+<h3 id="案例：判断磁盘是否挂载且挂载点对当前用户是否可读可写">案例：判断磁盘是否挂载且挂载点对当前用户是否可读可写</h3>
+<figure class="highlight bash"><figcaption><span>check_disk.sh</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/bin/sh</span></span><br><span class="line">dev_name=<span class="string">&quot;sdb1&quot;</span></span><br><span class="line">dev_path=<span class="string">&quot;/dev/<span class="variable">$dev_name</span>&quot;</span></span><br><span class="line">mnt_path=<span class="string">&quot;/mnt/data&quot;</span></span><br><span class="line"><span class="keyword">if</span> [ -b <span class="string">&quot;<span class="variable">$dev_path</span>&quot;</span> -a -r <span class="string">&quot;<span class="variable">$mnt_path</span>&quot;</span> -a -w <span class="string">&quot;<span class="variable">$mnt_path</span>&quot;</span> ]; <span class="keyword">then</span></span><br><span class="line">  <span class="built_in">echo</span> <span class="string">&quot;磁盘 <span class="variable">$dev_path</span> 已挂载且当前用户可读写！&quot;</span></span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">  <span class="built_in">echo</span> <span class="string">&quot;磁盘未挂载或对当前用户不可读或不可写！&quot;</span></span><br><span class="line"><span class="keyword">fi</span></span><br></pre></td></tr></table></figure>
+<h2 id="Shell-分支语句结构">Shell 分支语句结构</h2>
+<h3 id="if-判断语句">if 判断语句</h3>
+<p>if 语句支持单分支和多分支选择结构，单/双分支语句的一般格式是：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> 条件; <span class="keyword">then</span></span><br><span class="line">  条件为真执行的语句</span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">  条件为假执行的语句  <span class="comment"># 单分支时不用 else 的部分</span></span><br><span class="line"><span class="keyword">fi</span></span><br></pre></td></tr></table></figure>
+<p>对于多分支：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> 条件1; <span class="keyword">then</span></span><br><span class="line">  条件1成立时执行的语句</span><br><span class="line"><span class="keyword">elif</span> 条件2; <span class="keyword">then</span></span><br><span class="line">  条件2成立时执行的语句</span><br><span class="line"><span class="keyword">elif</span> 条件n; <span class="keyword">then</span></span><br><span class="line">  条件n成立时执行的语句</span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">  以上条件都不成立时执行的语句</span><br><span class="line"><span class="keyword">fi</span></span><br></pre></td></tr></table></figure>
+<p>与其他编程语言类似，条件判断语句中可以使用 break 关键字进行跳出。</p>
+<h4 id="案例：编写脚本监测可用剩余内存并发邮件报警">案例：编写脚本监测可用剩余内存并发邮件报警</h4>
+<p>要求：</p>
+<ol>
+<li>
+<p>当内存可用大小小于 100m 时发邮件进行报警；</p>
+</li>
+<li>
+<p>将脚本加入 crontab 任务，定时每 30 分钟执行一次。</p>
+</li>
+</ol>
+<figure class="highlight bash"><figcaption><span>check_mem.sh</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/bin/sh</span></span><br><span class="line">mem_free=`free -m|awk <span class="string">&#x27;NR==2 &#123;print $NF&#125;&#x27;</span>`</span><br><span class="line"><span class="keyword">if</span> <span class="built_in">test</span> <span class="variable">$mem_free</span> -lt <span class="string">&#x27;100&#x27;</span>; <span class="keyword">then</span></span><br><span class="line">  <span class="built_in">local</span> msg=<span class="string">&quot;当前可用内存为 <span class="variable">$&#123;mem_free&#125;</span>m，已不足 100m！&quot;</span></span><br><span class="line">  <span class="built_in">echo</span> msg | mail -s <span class="string">&#x27;服务器内存告警&#x27;</span> user@mailsrv.com</span><br><span class="line"><span class="keyword">fi</span></span><br></pre></td></tr></table></figure>
+<p>执行 <code>crontab -e</code>，写入定时任务：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">* /30 * * * * /bin/bash /path/to/scripts/check_mem.sh</span><br></pre></td></tr></table></figure>
+<h3 id="case-in-判断语句">case in 判断语句</h3>
+<p>Case in 语句一般用于多分支且判断条件较简单的分支语句结构。Case in 语句的一般格式是：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">case</span> 表达式 <span class="keyword">in</span></span><br><span class="line">  匹配模式1)</span><br><span class="line">    匹配模式1成立时执行的语句</span><br><span class="line">  ;;</span><br><span class="line">  匹配模式2)</span><br><span class="line">    匹配模式2成立时执行的语句</span><br><span class="line">  ;;</span><br><span class="line">  匹配模式n)</span><br><span class="line">    匹配模式n成立时执行的语句</span><br><span class="line">  ;;</span><br><span class="line">  *)</span><br><span class="line">    其他匹配模式都不成立时执行的语句</span><br><span class="line"><span class="keyword">esac</span></span><br></pre></td></tr></table></figure>
+<p>其中，表达式既可以是一个变量、一个数字、一个字符串，还可以是一个数学计算表达式，或者是命令的执行结果，只要能够得到表达式的值就可以；匹配模式可以是一个数字、一个字符串，甚至是一个简单的正则表达式；<code>;;</code> 的作用相当于其他编程语言的 case 语句中的 break；<code>*)</code> 的作用相当于其他编程语言的 case 语句中的 default。</p>
+<h4 id="案例：模拟实现服务启停、重启、查询的管理脚本">案例：模拟实现服务启停、重启、查询的管理脚本</h4>
+<figure class="highlight bash"><figcaption><span>service.sh</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/bin/sh</span></span><br><span class="line"><span class="keyword">case</span> <span class="variable">$1</span> <span class="keyword">in</span></span><br><span class="line">  start)</span><br><span class="line">    <span class="built_in">echo</span> <span class="string">&quot;服务启动成功！&quot;</span></span><br><span class="line">  ;;</span><br><span class="line">  stop)</span><br><span class="line">    <span class="built_in">echo</span> <span class="string">&quot;服务停止成功！&quot;</span></span><br><span class="line">  ;;</span><br><span class="line">  restart)</span><br><span class="line">    <span class="built_in">echo</span> <span class="string">&quot;重启服务成功！&quot;</span></span><br><span class="line">  ;;</span><br><span class="line">  status)</span><br><span class="line">    <span class="built_in">echo</span> <span class="string">&quot;呃。。。。。。&quot;</span></span><br><span class="line">  ;;</span><br><span class="line">  *)</span><br><span class="line">    <span class="built_in">echo</span> <span class="string">&quot;Usage: <span class="variable">$0</span> &#123;start|stop|restart|status&#125;&quot;</span></span><br><span class="line">    <span class="built_in">exit</span> 1</span><br><span class="line"><span class="keyword">esac</span></span><br><span class="line"><span class="built_in">exit</span> 0</span><br></pre></td></tr></table></figure>
+<h2 id="函数">函数</h2>
+<p>基本格式：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 定义函数，function、return 关键字可省略 </span></span><br><span class="line"><span class="comment">## 标准写法</span></span><br><span class="line"><span class="keyword">function</span> <span class="function"><span class="title">func_name</span></span>()&#123;</span><br><span class="line">  do_something...</span><br><span class="line">  <span class="built_in">return</span> ret_val</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">## 省略花括号</span></span><br><span class="line"><span class="keyword">function</span> func_name(</span><br><span class="line">  do_something...</span><br><span class="line">  <span class="built_in">return</span> ret_val</span><br><span class="line">)</span><br><span class="line"><span class="comment">## 一般写法</span></span><br><span class="line"><span class="function"><span class="title">func_name</span></span>()&#123;</span><br><span class="line">  do_something...</span><br><span class="line">  retuen ret_val</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment"># 调用函数，其中 arg1 arg2 ... argN 都是参数</span></span><br><span class="line">func_name arg1 arg2 ... argN</span><br><span class="line"><span class="comment"># 必须先定义再调用</span></span><br></pre></td></tr></table></figure>
+<p>在日常工作中，一把将 shell 的函数定义和函数调用分布在两个脚本文件中，此行为有点类似 C 语言编程中设置头文件的行为，其初衷是模块化编程。</p>
+<figure class="highlight bash"><figcaption><span>def_func.sh</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="function"><span class="title">my_func</span></span>()&#123;</span><br><span class="line">  <span class="built_in">echo</span> <span class="string">&quot;单独定义的函数。&quot;</span></span><br><span class="line">  <span class="built_in">return</span> 0</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>调用独立定义的函数：</p>
+<figure class="highlight bash"><figcaption><span>exec_func.sh</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/bin/sh</span></span><br><span class="line">func_path=<span class="string">&quot;/path/to/def_func.sh&quot;</span></span><br><span class="line"><span class="comment"># 判断函数文件是否存在</span></span><br><span class="line">[ -f func_path ] &amp;&amp; . func_path || &#123;<span class="built_in">echo</span> <span class="string">&quot;找不到文件：<span class="variable">$func_path</span>&quot;</span> 2&gt;&amp;1; <span class="built_in">exit</span> 1&#125;</span><br><span class="line"><span class="comment"># 调用函数</span></span><br><span class="line">my_func</span><br></pre></td></tr></table></figure>
+<p>函数内部也有一些特殊变量，可进行传递的参数等的处理，可参考调用 shell 脚本时内部的特殊变量，脚本的特殊变量不会被函数内部自动继承，需要层层传递。</p>
+
+        </div>
+        
+<blockquote class="copyright">
+    <p><strong>本文链接 : </strong><a class="permalink" href="https://skinyi.github.io/2022-04-01-Shell%20|%20%E9%87%8D%E5%AD%A6%20Shell%20%E7%BC%96%E7%A8%8B%E4%B9%8B%E5%9F%BA%E7%A1%80%E5%9B%9E%E9%A1%BE%EF%BC%88%E4%B8%89%EF%BC%89.html">https://skinyi.github.io/2022-04-01-Shell | 重学 Shell 编程之基础回顾（三）.html</a></p>
+    <p><strong>这篇文章由作者胡编乱造或者由其他文章复制粘贴而来，其中有些内容可能已经过时，请谨慎参考复制文章中的内容。</strong></p>
+</blockquote>
+
+
+    </article>
+    
+    <section id="comments">
+        
+    </section>
+
+
+    
+
+</main>
+
+
+<aside style="" id="sidebar" class="aside aside-fixture">
+    <div class="toc-sidebar">
+        <nav id="toc" class="article-toc">
+            <h3 class="toc-title">文章目录</h3>
+            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Shell-%E6%9D%A1%E4%BB%B6%E6%B5%8B%E8%AF%95"><span class="toc-number">1.</span> <span class="toc-text">Shell 条件测试</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#test-%E6%B5%8B%E8%AF%95%E8%A1%A8%E8%BE%BE%E5%BC%8F-%E5%92%8C-%E6%B5%8B%E8%AF%95%E8%A1%A8%E8%BE%BE%E5%BC%8F-%E8%AF%AD%E6%B3%95"><span class="toc-number">1.1.</span> <span class="toc-text">test &lt;测试表达式&gt; 和 [ &lt;测试表达式&gt;  ] 语法</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%96%87%E4%BB%B6%E6%B5%8B%E8%AF%95%E8%AF%AD%E6%B3%95"><span class="toc-number">1.1.1.</span> <span class="toc-text">文件测试语法</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%80%BB%E8%BE%91%E6%B5%8B%E8%AF%95%E8%AF%AD%E6%B3%95"><span class="toc-number">1.1.2.</span> <span class="toc-text">逻辑测试语法</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%B8%B8%E8%A7%81%E5%AD%97%E7%AC%A6%E4%B8%B2%E6%B5%8B%E8%AF%95%E8%AF%AD%E6%B3%95"><span class="toc-number">1.1.3.</span> <span class="toc-text">常见字符串测试语法</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%B8%B8%E8%A7%81%E6%95%B0%E5%80%BC%E6%B5%8B%E8%AF%95%E8%AF%AD%E6%B3%95"><span class="toc-number">1.1.4.</span> <span class="toc-text">常见数值测试语法</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B5%8B%E8%AF%95%E8%A1%A8%E8%BE%BE%E5%BC%8F-%E8%AF%AD%E6%B3%95"><span class="toc-number">1.2.</span> <span class="toc-text">[[ &lt;测试表达式&gt; ]] 语法</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%80%BB%E8%BE%91%E6%B5%8B%E8%AF%95"><span class="toc-number">1.2.1.</span> <span class="toc-text">逻辑测试</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%80%9A%E9%85%8D%E7%AC%A6%E5%92%8C%E6%AD%A3%E5%88%99"><span class="toc-number">1.2.2.</span> <span class="toc-text">通配符和正则</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AD%97%E7%AC%A6%E4%B8%B2"><span class="toc-number">1.2.3.</span> <span class="toc-text">字符串</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B5%8B%E8%AF%95%E8%A1%A8%E8%BE%BE%E5%BC%8F-%E8%AF%AD%E6%B3%95-2"><span class="toc-number">1.3.</span> <span class="toc-text">((&lt;测试表达式&gt;)) 语法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A1%88%E4%BE%8B%EF%BC%9A%E5%88%A4%E6%96%AD%E7%A3%81%E7%9B%98%E6%98%AF%E5%90%A6%E6%8C%82%E8%BD%BD%E4%B8%94%E6%8C%82%E8%BD%BD%E7%82%B9%E5%AF%B9%E5%BD%93%E5%89%8D%E7%94%A8%E6%88%B7%E6%98%AF%E5%90%A6%E5%8F%AF%E8%AF%BB%E5%8F%AF%E5%86%99"><span class="toc-number">1.4.</span> <span class="toc-text">案例：判断磁盘是否挂载且挂载点对当前用户是否可读可写</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Shell-%E5%88%86%E6%94%AF%E8%AF%AD%E5%8F%A5%E7%BB%93%E6%9E%84"><span class="toc-number">2.</span> <span class="toc-text">Shell 分支语句结构</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#if-%E5%88%A4%E6%96%AD%E8%AF%AD%E5%8F%A5"><span class="toc-number">2.1.</span> <span class="toc-text">if 判断语句</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%A1%88%E4%BE%8B%EF%BC%9A%E7%BC%96%E5%86%99%E8%84%9A%E6%9C%AC%E7%9B%91%E6%B5%8B%E5%8F%AF%E7%94%A8%E5%89%A9%E4%BD%99%E5%86%85%E5%AD%98%E5%B9%B6%E5%8F%91%E9%82%AE%E4%BB%B6%E6%8A%A5%E8%AD%A6"><span class="toc-number">2.1.1.</span> <span class="toc-text">案例：编写脚本监测可用剩余内存并发邮件报警</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#case-in-%E5%88%A4%E6%96%AD%E8%AF%AD%E5%8F%A5"><span class="toc-number">2.2.</span> <span class="toc-text">case in 判断语句</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%A1%88%E4%BE%8B%EF%BC%9A%E6%A8%A1%E6%8B%9F%E5%AE%9E%E7%8E%B0%E6%9C%8D%E5%8A%A1%E5%90%AF%E5%81%9C%E3%80%81%E9%87%8D%E5%90%AF%E3%80%81%E6%9F%A5%E8%AF%A2%E7%9A%84%E7%AE%A1%E7%90%86%E8%84%9A%E6%9C%AC"><span class="toc-number">2.2.1.</span> <span class="toc-text">案例：模拟实现服务启停、重启、查询的管理脚本</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%87%BD%E6%95%B0"><span class="toc-number">3.</span> <span class="toc-text">函数</span></a></li></ol>
+        </nav>
+    </div>
+</aside>
+
+
+
+
+
+        </section>
+        <footer class="hidden lg:block fixed bottom-0 left-0 sm:w-1/12 bg-gray-100 z-40">
+    
+    
+        <p class="footer-custom">❤ Powered by <a href="https://hexo.io/" target="_blank" rel="noopener noreferrer">Hexo</a> with <a href="https://github.com/fengkx/hexo-theme-purer" target="_blank" rel="noopener noreferrer">Purer theme</a>.</p>
+    
+</footer>
+
+        <div id="mask" class="hidden mask fixed inset-0 bg-gray-900 opacity-75 z-40"></div>
+        <div id="search-view-container" class="hidden shadow-xl"></div>
+        
+<script src="/js/dom-event.min.js"></script>
+
+
+
+<script src="/js/local-search.min.js"></script>
+
+
+
+    <script src="//cdn.jsdelivr.net/npm/lightgallery.js@1.1.3/dist/js/lightgallery.min.js"></script>
+    
+<script src="/js/light-gallery.min.js"></script>
+
+
+
+
+
+
+    </body>
+</html>

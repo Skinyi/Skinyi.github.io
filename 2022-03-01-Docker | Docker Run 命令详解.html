@@ -61,7 +61,7 @@
         </div>
         
         
-<div class="search flex-1 flex lg:inline-block sm:hidden lg:px-4 lg:mt-2 lg:mb-4 lg:w-full">
+<div class="search flex-1 flex lg:inline-block sm:hidden lg:px-4 lg:mt-2 lg:w-full">
     <form id="search-form" class="my-auto flex-1 lg:border lg:border-solid lg:border-gray-200">
         <div class="input-group table bg-gray-100 lg:bg-white w-full">
             <input id="search-input" type="text" placeholder="搜索" class="inline-block w-full bg-gray-100 lg:bg-white">
@@ -258,9 +258,9 @@
 <h3 id="前台运行">前台运行</h3>
 <p>在前台模式下（默认模式当未指定 <code>-d</code> 选项），<code>docker run</code> 可以启动容器中的进程并且将当前终端附加到该进程的标准输入、输出以及标准错误流中。它甚至可以“假装”成为一个 TTY 会话（如大多数命令行可执行文件期望的那样）并且传递信号。以下这些选项都是可配置的：</p>
 <blockquote>
-<p>-a=[]           ：附加到标准输入、标准输出和 / 或标准错误流<br>
--t              ：分配一个伪 TTY<br>
-–sig-proxy=true：将所有收到的信号代理到进程(仅限非TTY模式)<br>
+<p>-a=[]           ：附加到标准输入、标准输出和 / 或标准错误流<br />
+-t              ：分配一个伪 TTY<br />
+--sig-proxy=true：将所有收到的信号代理到进程(仅限非TTY模式)<br />
 -i              ：即使没有连接，也保持标准输入流打开</p>
 </blockquote>
 <p>如果你没有指定 <code>-a</code> 选项，Docker 就会将进程的标准输入、错误流附加到当前终端中，你也可以通过 <code>-a</code> 选项指定哪个流进行附加，比如：</p>
@@ -271,7 +271,7 @@
 <p>🔴 注意：在容器中运行的 PID 为 1 的进程会被 Linux 特殊看待：它会忽略任何信号的默认行为。最终就会导致收到 <em>SIGINT</em> 和 <em>SIGTERM</em> 信号的进程不会终止除非它被编码进行指定。</p>
 </blockquote>
 <h2 id="容器标识">容器标识</h2>
-<h3 id="容器名称（–name）">容器名称（–name）</h3>
+<h3 id="容器名称（-name）">容器名称（--name）</h3>
 <p>用户可以通过三种方式来标识容器：</p>
 <table>
 <thead>
@@ -307,9 +307,9 @@
 <p>使用 v2 或更高版本镜像格式的镜像有一个称为摘要的内容可寻址标识符。只要用于生成镜像的输入不变，摘要值就是可预测和可参考的。</p>
 <p>以下示例使用在运行 alpine 镜像时使用了 sha256:9cacb71397b640ECA97488cf08582AE4068513101088e9f96c9814bfda95e0 摘要：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">\$ docker run alpine@sha256:9cacb71397b640eca97488cf08582ae4e4068513101088e9f96c9814bfda95e0 <span class="built_in">date</span></span><br></pre></td></tr></table></figure>
-<h2 id="PID-设置（–pid）">PID 设置（–pid）</h2>
+<h2 id="PID-设置（-pid）">PID 设置（--pid）</h2>
 <blockquote>
-<p>–pid=“” ：为容器设置 PID（进程） 命名空间模式。可选值：<strong>container:&lt;name|id&gt;</strong>：加入其他容器的 PID 命名空间；<strong>host</strong>：使用容器中的主机的 PID 命名空间。</p>
+<p>--pid=&quot;&quot; ：为容器设置 PID（进程） 命名空间模式。可选值：<strong>container:&lt;name|id&gt;</strong>：加入其他容器的 PID 命名空间；<strong>host</strong>：使用容器中的主机的 PID 命名空间。</p>
 </blockquote>
 <p>默认情况下，所有容器都启用了 PID 命名空间。</p>
 <p>PID 命名空间提供了进程的分离。PID 命名空间删除了系统进程的视图，并允许重用进程 ID，包括 pid 1。</p>
@@ -327,15 +327,15 @@
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">\$ docker run --name myredis -d redis</span><br></pre></td></tr></table></figure>
 <p>通过运行含有 <code>strace</code> 的其他容器来调试 redis 容器：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">\$ docker run -it --pid=container:my-redis my_strace_docker_image bash</span><br><span class="line">\$ strace -p 1</span><br></pre></td></tr></table></figure>
-<h2 id="UTS-设置（–uts）">UTS 设置（–uts）</h2>
+<h2 id="UTS-设置（-uts）">UTS 设置（--uts）</h2>
 <blockquote>
-<p>–uts=“”  : 设置容器的 UTS 命名空间。可选值：<strong>host</strong> 值代表使用主机的 uts 值。</p>
+<p>--uts=&quot;&quot;  : 设置容器的 UTS 命名空间。可选值：<strong>host</strong> 值代表使用主机的 uts 值。</p>
 </blockquote>
 <p>UTS 命名空间参数设置旨在使容器进程对于运行于目标 uts 设置中的目标进程的主机名和域可见。默认情况下所有的容器，包括指定了 <code>--network=host</code> 命名空间的容器，都有自己的 <code>uts</code> 命名空间。<code>--uts=host</code> 将会使容器使用和主机一样的 <code>uts</code> 命名空间。在指定了 <code>--uts=host</code> 设置后将不能再单独指定 <code>--hostname</code> 和 <code>--domainname</code> 设置。</p>
 <p>如果希望容器的主机名随着主机的主机名的更改而更改，即容器与主机共享主机名，更好的做法是从容器中更改主机的主机名。</p>
-<h2 id="IPC-设置（–ipc）">IPC 设置（–ipc）</h2>
+<h2 id="IPC-设置（-ipc）">IPC 设置（--ipc）</h2>
 <blockquote>
-<p>–ipc=“MODE”  : 设置容器的 IPC 模式</p>
+<p>--ipc=&quot;MODE&quot;  : 设置容器的 IPC 模式</p>
 </blockquote>
 <p>可以接受以下值：</p>
 <table>
@@ -377,14 +377,14 @@
 <p>共享内存段是用于以内存的速度加速进程间通信的一种方法，除此之外还有通过管道或网络堆栈的方法。共享内存通常用于涉及科学计算或金融服务等的数据库和构建的对高性能有要求的应用程序。如果你的这类应用程序被拆分成多个容器就要考虑可能需要共享这些容器之间的 IPC 机制，做法是对主容器使用 <code>--ipc=shareable</code> 的设置、其他容器使用 <code>--ipc=container:&lt;主容器名或其 ID&gt;</code> 的设置。</p>
 <h2 id="网络设置">网络设置</h2>
 <blockquote>
-<p>–dns=[]           : 为容器指定域名服务器<br>
-–network=“bridge” : 指定容器接入网络的方式，可选值：<strong>bridge</strong> 在默认的 Docker 网桥上创建网络栈（默认）；<strong>none</strong> 不联网；<strong>container:&lt;name|id&gt;</strong> 复用现有容器的网络栈；<strong>host</strong> 使用 Dockr 主机的网络栈；<strong>&lt;network-name&gt;|&lt;network-id&gt;</strong> 连接至用户自定义的网络。<br>
-–network-alias=[] : 为容器添加网络范围的别名<br>
-–add-host=“”      : 在 /etc/hosts 上自动添加一行记录 (host:IP)<br>
-–mac-address=“”   : 指定容器物理设备的 MAC 地址<br>
-–ip=“”            : 指定容器物理设备的 IPv4 地址<br>
-–ip6=“”           : 指定容器物理设备的 IPv6 地址<br>
-–link-local-ip=[] : 指定一个或多个容器的物理设备的链路的本地 IPv4 或 IPv6 地址</p>
+<p>--dns=[]           : 为容器指定域名服务器<br />
+--network=&quot;bridge&quot; : 指定容器接入网络的方式，可选值：<strong>bridge</strong> 在默认的 Docker 网桥上创建网络栈（默认）；<strong>none</strong> 不联网；<strong>container:&lt;name|id&gt;</strong> 复用现有容器的网络栈；<strong>host</strong> 使用 Dockr 主机的网络栈；<strong>&lt;network-name&gt;|&lt;network-id&gt;</strong> 连接至用户自定义的网络。<br />
+--network-alias=[] : 为容器添加网络范围的别名<br />
+--add-host=&quot;&quot;      : 在 /etc/hosts 上自动添加一行记录 (host:IP)<br />
+--mac-address=&quot;&quot;   : 指定容器物理设备的 MAC 地址<br />
+--ip=&quot;&quot;            : 指定容器物理设备的 IPv4 地址<br />
+--ip6=&quot;&quot;           : 指定容器物理设备的 IPv6 地址<br />
+--link-local-ip=[] : 指定一个或多个容器的物理设备的链路的本地 IPv4 或 IPv6 地址</p>
 </blockquote>
 <p>默认情况下，所有容器都会启用网络且对网络出口不做任何限制。可以通过指定 <code>--network none</code> 选项来禁用容器的网络，在这种情况下，可以仅通过文件、标准输入输出流来进行 I/O。</p>
 <p>要实现不同容器之间的互通只能通过默认的网桥模式设置，链接特性是一种经典的特性，更推荐使用基于链接特性的 Docker 网络驱动。</p>
@@ -417,7 +417,7 @@
 <blockquote>
 <p>🔵 注意：由于 Docker 可能会实时更新容器的 /etc/hosts 文件，因此可能会出现容器内的进程最终读取空的或不完整的 /etc/hosts 文件的情况。在大多数情况下，再次重试读取应该可以解决问题。</p>
 </blockquote>
-<h2 id="重启策略（–restart）">重启策略（–restart）</h2>
+<h2 id="重启策略（-restart）">重启策略（--restart）</h2>
 <p>使用 <code>docker run</code> 上的 <code>--restart</code> 标志可以指定容器的重启策略，决定容器在退出时应不应该以及如何重启。</p>
 <p>当重启策略在容器上被激活时，它将在 <code>docker ps</code> 中显示为 <strong>Up</strong> 或 <strong>Restarting</strong>。使用 <code>docker events</code> 查看重启策略的效果也很有用。</p>
 <table>
@@ -453,10 +453,10 @@
 <p>或者获得上次容器(重新)启动的时间:</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">\$ docker inspect -f <span class="string">&quot;&#123;&#123; .State.StartedAt &#125;&#125;&quot;</span> my-container</span><br></pre></td></tr></table></figure>
 <p>将 <code>--restart</code> (重新启动策略)与 <code>--rm</code> (清理)标志结合使用会导致错误。容器重启时，连接的客户端会断开连接。</p>
-<h2 id="自动清理（–rm）">自动清理（–rm）</h2>
+<h2 id="自动清理（-rm）">自动清理（--rm）</h2>
 <p>默认情况下，容器的文件系统即使在容器退出后仍然存在。这使得调试容易得多(因为您可以检查最终状态),并且在默认情况下保留所有数据。但是如果你运行的是短期前台进程，这些容器文件系统会不断堆积起来。相反，如果您希望 Docker 在容器退出时自动清理容器并删除文件系统，您可以添加 <code>--rm</code> 标志:</p>
 <blockquote>
-<p>–rm=false: 容器退出时自动清理</p>
+<p>--rm=false: 容器退出时自动清理</p>
 </blockquote>
 
         </div>
@@ -483,7 +483,7 @@
     <div class="toc-sidebar">
         <nav id="toc" class="article-toc">
             <h3 class="toc-title">文章目录</h3>
-            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#docker-run-%E5%91%BD%E4%BB%A4%E7%9A%84%E4%B8%80%E8%88%AC%E5%BD%A2%E5%BC%8F"><span class="toc-number">1.</span> <span class="toc-text">docker run 命令的一般形式</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%85%E7%94%A8%E6%88%B7%E5%8F%AF%E6%8C%87%E5%AE%9A%E7%9A%84%E9%80%89%E9%A1%B9"><span class="toc-number">2.</span> <span class="toc-text">仅用户可指定的选项</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%8B%AC%E7%AB%8B%E8%BF%9B%E7%A8%8B%E6%88%96%E5%89%8D%E5%8F%B0%E6%89%A7%E8%A1%8C"><span class="toc-number">2.1.</span> <span class="toc-text">独立进程或前台执行</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%89%8D%E5%8F%B0%E8%BF%90%E8%A1%8C"><span class="toc-number">2.2.</span> <span class="toc-text">前台运行</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%B9%E5%99%A8%E6%A0%87%E8%AF%86"><span class="toc-number">3.</span> <span class="toc-text">容器标识</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%B9%E5%99%A8%E5%90%8D%E7%A7%B0%EF%BC%88%E2%80%93name%EF%BC%89"><span class="toc-number">3.1.</span> <span class="toc-text">容器名称（–name）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%95%9C%E5%83%8F-%E6%A0%87%E7%AD%BE"><span class="toc-number">3.2.</span> <span class="toc-text">镜像[:标签]</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%95%9C%E5%83%8F-%E6%91%98%E8%A6%81"><span class="toc-number">3.3.</span> <span class="toc-text">镜像[@摘要]</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#PID-%E8%AE%BE%E7%BD%AE%EF%BC%88%E2%80%93pid%EF%BC%89"><span class="toc-number">4.</span> <span class="toc-text">PID 设置（–pid）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BE%8B%E5%AD%90%EF%BC%9A%E5%9C%A8%E5%AE%B9%E5%99%A8%E4%B8%AD%E6%89%A7%E8%A1%8C-htop"><span class="toc-number">4.1.</span> <span class="toc-text">例子：在容器中执行 &#96;htop&#96;</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BE%8B%E5%AD%90"><span class="toc-number">4.2.</span> <span class="toc-text">例子</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#UTS-%E8%AE%BE%E7%BD%AE%EF%BC%88%E2%80%93uts%EF%BC%89"><span class="toc-number">5.</span> <span class="toc-text">UTS 设置（–uts）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#IPC-%E8%AE%BE%E7%BD%AE%EF%BC%88%E2%80%93ipc%EF%BC%89"><span class="toc-number">6.</span> <span class="toc-text">IPC 设置（–ipc）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BD%91%E7%BB%9C%E8%AE%BE%E7%BD%AE"><span class="toc-number">7.</span> <span class="toc-text">网络设置</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Network-none"><span class="toc-number">7.1.</span> <span class="toc-text">Network:none</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Network-bridge"><span class="toc-number">7.2.</span> <span class="toc-text">Network:bridge</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Network-host"><span class="toc-number">7.3.</span> <span class="toc-text">Network:host</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Network-container"><span class="toc-number">7.4.</span> <span class="toc-text">Network:container</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%94%A8%E6%88%B7%E5%AE%9A%E4%B9%89%E7%9A%84%E7%BD%91%E7%BB%9C"><span class="toc-number">7.5.</span> <span class="toc-text">用户定义的网络</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AE%A1%E7%90%86-etc-hosts-%E6%96%87%E4%BB%B6"><span class="toc-number">7.6.</span> <span class="toc-text">管理 &#x2F;etc&#x2F;hosts 文件</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%87%8D%E5%90%AF%E7%AD%96%E7%95%A5%EF%BC%88%E2%80%93restart%EF%BC%89"><span class="toc-number">8.</span> <span class="toc-text">重启策略（–restart）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%87%AA%E5%8A%A8%E6%B8%85%E7%90%86%EF%BC%88%E2%80%93rm%EF%BC%89"><span class="toc-number">9.</span> <span class="toc-text">自动清理（–rm）</span></a></li></ol>
+            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#docker-run-%E5%91%BD%E4%BB%A4%E7%9A%84%E4%B8%80%E8%88%AC%E5%BD%A2%E5%BC%8F"><span class="toc-number">1.</span> <span class="toc-text">docker run 命令的一般形式</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%85%E7%94%A8%E6%88%B7%E5%8F%AF%E6%8C%87%E5%AE%9A%E7%9A%84%E9%80%89%E9%A1%B9"><span class="toc-number">2.</span> <span class="toc-text">仅用户可指定的选项</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%8B%AC%E7%AB%8B%E8%BF%9B%E7%A8%8B%E6%88%96%E5%89%8D%E5%8F%B0%E6%89%A7%E8%A1%8C"><span class="toc-number">2.1.</span> <span class="toc-text">独立进程或前台执行</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%89%8D%E5%8F%B0%E8%BF%90%E8%A1%8C"><span class="toc-number">2.2.</span> <span class="toc-text">前台运行</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%B9%E5%99%A8%E6%A0%87%E8%AF%86"><span class="toc-number">3.</span> <span class="toc-text">容器标识</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%B9%E5%99%A8%E5%90%8D%E7%A7%B0%EF%BC%88-name%EF%BC%89"><span class="toc-number">3.1.</span> <span class="toc-text">容器名称（--name）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%95%9C%E5%83%8F-%E6%A0%87%E7%AD%BE"><span class="toc-number">3.2.</span> <span class="toc-text">镜像[:标签]</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%95%9C%E5%83%8F-%E6%91%98%E8%A6%81"><span class="toc-number">3.3.</span> <span class="toc-text">镜像[@摘要]</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#PID-%E8%AE%BE%E7%BD%AE%EF%BC%88-pid%EF%BC%89"><span class="toc-number">4.</span> <span class="toc-text">PID 设置（--pid）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BE%8B%E5%AD%90%EF%BC%9A%E5%9C%A8%E5%AE%B9%E5%99%A8%E4%B8%AD%E6%89%A7%E8%A1%8C-htop"><span class="toc-number">4.1.</span> <span class="toc-text">例子：在容器中执行 &#96;htop&#96;</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BE%8B%E5%AD%90"><span class="toc-number">4.2.</span> <span class="toc-text">例子</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#UTS-%E8%AE%BE%E7%BD%AE%EF%BC%88-uts%EF%BC%89"><span class="toc-number">5.</span> <span class="toc-text">UTS 设置（--uts）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#IPC-%E8%AE%BE%E7%BD%AE%EF%BC%88-ipc%EF%BC%89"><span class="toc-number">6.</span> <span class="toc-text">IPC 设置（--ipc）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BD%91%E7%BB%9C%E8%AE%BE%E7%BD%AE"><span class="toc-number">7.</span> <span class="toc-text">网络设置</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Network-none"><span class="toc-number">7.1.</span> <span class="toc-text">Network:none</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Network-bridge"><span class="toc-number">7.2.</span> <span class="toc-text">Network:bridge</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Network-host"><span class="toc-number">7.3.</span> <span class="toc-text">Network:host</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Network-container"><span class="toc-number">7.4.</span> <span class="toc-text">Network:container</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%94%A8%E6%88%B7%E5%AE%9A%E4%B9%89%E7%9A%84%E7%BD%91%E7%BB%9C"><span class="toc-number">7.5.</span> <span class="toc-text">用户定义的网络</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AE%A1%E7%90%86-etc-hosts-%E6%96%87%E4%BB%B6"><span class="toc-number">7.6.</span> <span class="toc-text">管理 &#x2F;etc&#x2F;hosts 文件</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%87%8D%E5%90%AF%E7%AD%96%E7%95%A5%EF%BC%88-restart%EF%BC%89"><span class="toc-number">8.</span> <span class="toc-text">重启策略（--restart）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%87%AA%E5%8A%A8%E6%B8%85%E7%90%86%EF%BC%88-rm%EF%BC%89"><span class="toc-number">9.</span> <span class="toc-text">自动清理（--rm）</span></a></li></ol>
         </nav>
     </div>
 </aside>
@@ -493,10 +493,10 @@
 
 
         </section>
-        <footer class="hidden lg:block fixed bottom-0 left-0 sm:w-1/12 lg:w-1/6 bg-gray-100 z-40">
+        <footer class="hidden lg:block fixed bottom-0 left-0 sm:w-1/12 bg-gray-100 z-40">
     
     
-        <p class="footer-custom">❤ Powered by <a href="https://hexo.io/" target="_blank" rel="noopener noreferrer">Hexo</a> with <a href="https://github.com/fengkx/hexo-theme-purer" target="_blank" rel="noopener noreferrer">Purer theme</a> by fengkx.</p>
+        <p class="footer-custom">❤ Powered by <a href="https://hexo.io/" target="_blank" rel="noopener noreferrer">Hexo</a> with <a href="https://github.com/fengkx/hexo-theme-purer" target="_blank" rel="noopener noreferrer">Purer theme</a>.</p>
     
 </footer>
 

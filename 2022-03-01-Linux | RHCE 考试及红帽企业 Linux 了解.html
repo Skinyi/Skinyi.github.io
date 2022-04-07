@@ -21,9 +21,9 @@
 <meta property="article:modified_time" content="2022-03-05T12:58:15.221Z">
 <meta property="article:author" content="skinyi">
 <meta property="article:tag" content="Linux">
-<meta property="article:tag" content="认证考试">
 <meta property="article:tag" content="RHEL">
 <meta property="article:tag" content="RHCE">
+<meta property="article:tag" content="认证考试">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://skinyi.github.io/images/linux/RHEL8.3-%E7%BB%83%E4%B9%A0%E7%8E%AF%E5%A2%83%E8%99%9A%E6%8B%9F%E6%9C%BA%E9%85%8D%E7%BD%AE.png">
 
@@ -68,7 +68,7 @@
         </div>
         
         
-<div class="search flex-1 flex lg:inline-block sm:hidden lg:px-4 lg:mt-2 lg:mb-4 lg:w-full">
+<div class="search flex-1 flex lg:inline-block sm:hidden lg:px-4 lg:mt-2 lg:w-full">
     <form id="search-form" class="my-auto flex-1 lg:border lg:border-solid lg:border-gray-200">
         <div class="input-group table bg-gray-100 lg:bg-white w-full">
             <input id="search-input" type="text" placeholder="搜索" class="inline-block w-full bg-gray-100 lg:bg-white">
@@ -256,16 +256,16 @@
 </blockquote>
 <h3 id="虚拟机安装-RHEL8-3-操作系统">虚拟机安装 RHEL8.3 操作系统</h3>
 <p>​如图，虚拟机的配置如下，可根据自己个人硬件设备情况按需调整。</p>
-<p><img src="images/linux/RHEL8.3-%E7%BB%83%E4%B9%A0%E7%8E%AF%E5%A2%83%E8%99%9A%E6%8B%9F%E6%9C%BA%E9%85%8D%E7%BD%AE.png" alt="练习环境虚拟机配置"></p>
+<p><img src="images/linux/RHEL8.3-%E7%BB%83%E4%B9%A0%E7%8E%AF%E5%A2%83%E8%99%9A%E6%8B%9F%E6%9C%BA%E9%85%8D%E7%BD%AE.png" alt="练习环境虚拟机配置" /></p>
 <p>虚拟机软件选择如下：</p>
-<p><img src="images/linux/%E5%AE%89%E8%A3%85%E8%BD%AF%E4%BB%B6%E9%80%89%E6%8B%A9.png" alt="安装软件选择"></p>
+<p><img src="images/linux/%E5%AE%89%E8%A3%85%E8%BD%AF%E4%BB%B6%E9%80%89%E6%8B%A9.png" alt="安装软件选择" /></p>
 <p>设置 root 用户和普通用户后开始安装，等待进度条跑完重启虚拟机，重启后同意 Redhat 的 EULA，选择 <em>FINISH CONFIGURATION</em> 进入图形界面。图形界面默认为刚才创建的普通用户，新安装的 RHEL 还需要进行一些系统级的配置才行。</p>
 <p>在此之前我们需要登陆 root 账户来配置我们新安装的操作系统。下图为使用 root 用户登陆后的界面。</p>
-<p><img src="images/linux/Gnome-%E6%AC%A2%E8%BF%8E%E7%95%8C%E9%9D%A2.png" alt="Gnome 欢迎界面"></p>
+<p><img src="images/linux/Gnome-%E6%AC%A2%E8%BF%8E%E7%95%8C%E9%9D%A2.png" alt="Gnome 欢迎界面" /></p>
 <h3 id="安装完操作系统后的配置">安装完操作系统后的配置</h3>
 <h4 id="配置网络设置">配置网络设置</h4>
 <p>​使用 <code>ip addr show</code> 命令来查看操作系统的网络配置结果如图所示：</p>
-<p><img src="images/linux/%E6%9F%A5%E7%9C%8B%E7%BD%91%E7%BB%9C%E9%85%8D%E7%BD%AE.png" alt="查看操作系统网络配置"></p>
+<p><img src="images/linux/%E6%9F%A5%E7%9C%8B%E7%BD%91%E7%BB%9C%E9%85%8D%E7%BD%AE.png" alt="查看操作系统网络配置" /></p>
 <blockquote>
 <p>🟢 其它网卡设备介绍：</p>
 <ul>
@@ -274,7 +274,7 @@
 <li>birbr0-nic, 同上由 KVM 服务创建，可以使用 <code>brctl</code> 命令进行管理。</li>
 </ul>
 </blockquote>
-<p>其中 <em>ens160</em> 才是连接外网所需要的网卡设备。可以看到此网卡没有绑定 ip 地址，但虚拟机软件是设置的 NAT 且已开启了 DHCP 服务，因此导致此问题的原因可能是我们的网卡设备没有启动或启用。需要检查此网卡设备的配置文件，其路径为：<code>/etc/sysconfig/network-scripts/ifcfg-ens160</code>（可以推断 RHEL 的网卡配置文件名称都是由 “ifcfg-” 和网卡名组成的），使用 <code>vim</code> 编辑器来编辑此文件，此文件内容如下：</p>
+<p>其中 <em>ens160</em> 才是连接外网所需要的网卡设备。可以看到此网卡没有绑定 ip 地址，但虚拟机软件是设置的 NAT 且已开启了 DHCP 服务，因此导致此问题的原因可能是我们的网卡设备没有启动或启用。需要检查此网卡设备的配置文件，其路径为：<code>/etc/sysconfig/network-scripts/ifcfg-ens160</code>（可以推断 RHEL 的网卡配置文件名称都是由 &quot;ifcfg-&quot; 和网卡名组成的），使用 <code>vim</code> 编辑器来编辑此文件，此文件内容如下：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">TYPE=Ethernet								# 网络类型：以太网</span><br><span class="line">PROXY_METHOD=none							# 网络代理方法</span><br><span class="line">BROWSER_ONLY=no	</span><br><span class="line">BOOTPROTO=dhcp								# 激活设备使用的地址配置协议：dhcp,static,none,bootp</span><br><span class="line">DEFROUTE=yes								# ipv4 默认路由设备：yes,no</span><br><span class="line">IPV4_FAILURE_FATAL=no</span><br><span class="line">IPV6INIT=yes								# 初始化 ipv6 协议栈：yes,no</span><br><span class="line">IPV6_AUTOCONF=yes							# 自动配置 ipv6：yes,no</span><br><span class="line">IPV6_DEFROUTE=yes</span><br><span class="line">IPV6_FAILURE_FATAL=no</span><br><span class="line">IPV6_ADDR_GEN_MODE=stable-privacy</span><br><span class="line">NAME=ens160									# 网卡名</span><br><span class="line">UUID=74e066fb-4f82-4422-ae3f-570dd2fca5a5	</span><br><span class="line">DEVICE=ens160								# 应用到的设备（和 HWADDR 必须留一个，后者指网卡物理地址）</span><br><span class="line">ONBOOT=no									# 开机后自动激活此设备</span><br></pre></td></tr></table></figure>
 <blockquote>
 <p>🟢 Linux 网络配置说明：</p>
@@ -285,10 +285,10 @@
 </ul>
 </blockquote>
 <p>需要将 <code>ONBOOT=no</code> 更改为 <code>ONBOOT=yes</code> 以使此网卡开机就激活启用，重启虚拟机，验证网卡是否已经自动激活（自动获得了 ip 地址则配置成功）。</p>
-<p><img src="images/linux/%E9%AA%8C%E8%AF%81%E7%BD%91%E7%BB%9C%E9%85%8D%E7%BD%AE.png" alt="验证操作系统网络配置"></p>
+<p><img src="images/linux/%E9%AA%8C%E8%AF%81%E7%BD%91%E7%BB%9C%E9%85%8D%E7%BD%AE.png" alt="验证操作系统网络配置" /></p>
 <h4 id="使用-Xshell-远程登陆">使用 Xshell 远程登陆</h4>
 <p>​在 Xshell 里新建连接，进行配置即可远程登陆到此虚拟机。</p>
-<p><img src="images/linux/%E4%BD%BF%E7%94%A8-Xshell-%E8%BF%9B%E8%A1%8C%E8%BF%9C%E7%A8%8B%E7%99%BB%E9%99%86.png" alt="使用Xshell远程连接虚拟机"></p>
+<p><img src="images/linux/%E4%BD%BF%E7%94%A8-Xshell-%E8%BF%9B%E8%A1%8C%E8%BF%9C%E7%A8%8B%E7%99%BB%E9%99%86.png" alt="使用Xshell远程连接虚拟机" /></p>
 <h2 id="RHEL-和-CentOS-的区别">RHEL 和 CentOS 的区别</h2>
 <table>
 <thead>
@@ -352,10 +352,10 @@
 
 
         </section>
-        <footer class="hidden lg:block fixed bottom-0 left-0 sm:w-1/12 lg:w-1/6 bg-gray-100 z-40">
+        <footer class="hidden lg:block fixed bottom-0 left-0 sm:w-1/12 bg-gray-100 z-40">
     
     
-        <p class="footer-custom">❤ Powered by <a href="https://hexo.io/" target="_blank" rel="noopener noreferrer">Hexo</a> with <a href="https://github.com/fengkx/hexo-theme-purer" target="_blank" rel="noopener noreferrer">Purer theme</a> by fengkx.</p>
+        <p class="footer-custom">❤ Powered by <a href="https://hexo.io/" target="_blank" rel="noopener noreferrer">Hexo</a> with <a href="https://github.com/fengkx/hexo-theme-purer" target="_blank" rel="noopener noreferrer">Purer theme</a>.</p>
     
 </footer>
 
