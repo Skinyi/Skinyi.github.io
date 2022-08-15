@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html  lang="zh-CN,en,default" >
+    <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, maximum-scale=5, viewport-fit=cover">
+    <title>管理本地用户和组（二） | Avery Ma 的个人网站</title>
+    <meta name="description" content="🔴 此文章由之前的 Typora 笔记迁移过来，内容可能已经过时。  管理本地用户账户 使用 useradd 命令创建新用户 ​添加用户所使用的默认配置保存在 &#x2F;etc&#x2F;default&#x2F;useradd 中，同时还有一些默认配置从 &#x2F;etc&#x2F;login.defs 文件中读取。这两个文件只会影响新创建的用户，更改这两个文件不会影响现有用户。没有设置密码的用户是无法登陆系统的。 1234567891">
+<meta property="og:type" content="article">
+<meta property="og:title" content="管理本地用户和组（二）">
+<meta property="og:url" content="https://skinyi.github.io/2022-08-15-Linux%20|%20%E7%AE%A1%E7%90%86%E6%9C%AC%E5%9C%B0%E7%94%A8%E6%88%B7%E5%92%8C%E7%BB%84%EF%BC%88%E4%BA%8C%EF%BC%89.html">
+<meta property="og:site_name" content="Avery Ma 的个人网站">
+<meta property="og:description" content="🔴 此文章由之前的 Typora 笔记迁移过来，内容可能已经过时。  管理本地用户账户 使用 useradd 命令创建新用户 ​添加用户所使用的默认配置保存在 &#x2F;etc&#x2F;default&#x2F;useradd 中，同时还有一些默认配置从 &#x2F;etc&#x2F;login.defs 文件中读取。这两个文件只会影响新创建的用户，更改这两个文件不会影响现有用户。没有设置密码的用户是无法登陆系统的。 1234567891">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://skinyi.github.io/images/linux/chage-%E5%91%BD%E4%BB%A4%E5%AF%86%E7%A0%81%E5%91%A8%E6%9C%9F.png">
+<meta property="article:published_time" content="2022-08-15T02:07:41.170Z">
+<meta property="article:modified_time" content="2022-08-15T02:16:26.482Z">
+<meta property="article:author" content="skinyi">
+<meta property="article:tag" content="Linux">
+<meta property="article:tag" content="RHEL">
+<meta property="article:tag" content="RHCE">
+<meta property="article:tag" content="认证考试">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://skinyi.github.io/images/linux/chage-%E5%91%BD%E4%BB%A4%E5%AF%86%E7%A0%81%E5%91%A8%E6%9C%9F.png">
+
+    
+    <link rel="icon" href="images/favicon.png" type="image/x-icon">
+
+    
+<link rel="stylesheet" href="/css/common.min.css">
+
+
+
+    
+    
+    
+    
+        <link href="//cdn.jsdelivr.net/npm/lightgallery.js@1.1.3/dist/css/lightgallery.min.css" rel="stylesheet">
+    
+    
+    
+<link rel="stylesheet" href="/css/iconfont.min.css">
+
+    
+<meta name="generator" content="Hexo 6.2.0"></head>
+
+    <body>
+        <header class="header header-fixture">
+    <div class="profile-search-wrap flex sm:block">
+        
+        
+        <div class="profile sm:text-center md:px-1 lg:px-3 sm:pb-4 sm:pt-6">
+            <a id="avatar" role="link" href="https://github.com/skinyi" class="inline-block lg:w-16 lg:h-16 w-8 h-8 m-2" target="_blank" rel="noopener" rel="noreferrer" >
+                <img src="/images/avatar.jpg" class="rounded-full" alt="avatar">
+            </a>
+            <h2 id="name" class="hidden lg:block">Avery Ma</h2>
+            <h3 id="title" class="hidden xl:block">IT 从业者</h3>
+            
+            <small id="location" class="hidden lg:block">
+                <i class="iconfont icon-map-icon"></i>
+                宁夏, 中国
+            </small>
+            
+        </div>
+        
+        
+<div class="search flex-1 flex lg:inline-block sm:hidden lg:px-4 lg:mt-2 lg:w-full">
+    <form id="search-form" class="my-auto flex-1 lg:border lg:border-solid lg:border-gray-200">
+        <div class="input-group table bg-gray-100 lg:bg-white w-full">
+            <input id="search-input" type="text" placeholder="搜索" class="inline-block w-full bg-gray-100 lg:bg-white">
+            <span class="table-cell">
+                <button name="search tigger button" disabled>
+                    <i class="iconfont icon-search m-2"></i>
+                </button>
+            </span>
+        </div>
+    </form>
+        
+<div id="content-json" data-placeholder="搜索" class="invisible hidden">/content.json</div>
+<script id="search-teamplate" type="text/html" data-path="/content.json">
+    <div>
+        <div class="search-header bg-gray-400">
+            <input id="actual-search-input" model="keyword" ref="input" class="inline-block w-full h-10 px-2 py-1" placeholder="搜索" type="text">
+        </div>
+        <div class="search-result bg-gray-200">
+            {{#each searchPosts}}
+            <a href="/{{ path }}" class="result-item block px-2 pb-3 mb-1 pt-1 hover:bg-indigo-100">
+                <i class="iconfont icon-file"></i>
+                <h1 class="result-title inline font-medium text-lg">{{ title }}</h1>
+                <p class="result-content text-gray-600 text-sm">{{{ text }}}</p>
+            </a>
+            {{/each}}
+        </div>
+    </div>
+</script>
+
+</div>
+
+
+        <button name="menu toogle button" id="menu-toggle-btn" class="block sm:hidden p-3" role="button" aria-expanded="false">
+            <i class="iconfont icon-hamburger"></i>
+        </button>
+    </div>
+    <nav id="menu-nav" class="hidden sm:flex flex-col">
+        
+        
+            <div class="menu-item menu-home" role="menuitem">
+                <a href="/.">
+                    <i class="iconfont icon-home" aria-hidden="true"></i>
+                    <span class="menu-title">首页</span>
+                </a>
+            </div>
+        
+        
+            <div class="menu-item menu-archives" role="menuitem">
+                <a href="/archives">
+                    <i class="iconfont icon-archive" aria-hidden="true"></i>
+                    <span class="menu-title">归档</span>
+                </a>
+            </div>
+        
+        
+            <div class="menu-item menu-categories" role="menuitem">
+                <a href="/categories">
+                    <i class="iconfont icon-folder" aria-hidden="true"></i>
+                    <span class="menu-title">分类</span>
+                </a>
+            </div>
+        
+        
+            <div class="menu-item menu-tags" role="menuitem">
+                <a href="/tags">
+                    <i class="iconfont icon-tag" aria-hidden="true"></i>
+                    <span class="menu-title">标签</span>
+                </a>
+            </div>
+        
+        
+            <div class="menu-item menu-repository" role="menuitem">
+                <a href="/repository">
+                    <i class="iconfont icon-project" aria-hidden="true"></i>
+                    <span class="menu-title">项目</span>
+                </a>
+            </div>
+        
+        
+            <div class="menu-item menu-about" role="menuitem">
+                <a href="/about">
+                    <i class="iconfont icon-cup" aria-hidden="true"></i>
+                    <span class="menu-title">关于</span>
+                </a>
+            </div>
+        
+        
+
+    </nav>
+</header>
+
+        <section class="main-section">
+            
+    <main class="flex-1 px-4 py-14 md:px-5 lg:px-8 lg:py-4 relative min-h-screen">
+    
+
+    <article class="content article article-archives article-type-list" itemscope="">
+        <header class="article-header">
+            
+    
+        <h1 class="article-title text-lg" itemprop="name">
+            管理本地用户和组（二）
+        </h1>
+    
+
+
+
+            <p class="article-meta mb-3 text-xs">
+                <span class="article-date">
+    <i class="iconfont icon-calendar-check"></i>
+	<a href="/2022-08-15-Linux%20%7C%20%E7%AE%A1%E7%90%86%E6%9C%AC%E5%9C%B0%E7%94%A8%E6%88%B7%E5%92%8C%E7%BB%84%EF%BC%88%E4%BA%8C%EF%BC%89.html" class="article-date">
+	  <time datetime="2022-08-15T02:07:41.170Z" itemprop="datePublished">8月 15</time>
+	</a>
+</span>
+
+                
+    <span class="article-category">
+    <i class="iconfont icon-folder"></i>
+    <a class="article-category-link" href="/categories/%E5%AD%A6%E4%B9%A0/">学习</a> , <a class="article-category-link" href="/categories/%E5%AD%A6%E4%B9%A0/Linux/">Linux</a> , <a class="article-category-link" href="/categories/%E6%97%A5%E5%B8%B8%E8%AE%B0%E5%BD%95/">日常记录</a> , <a class="article-category-link" href="/categories/%E8%BF%81%E7%A7%BB%E6%96%87%E7%AB%A0/">迁移文章</a>
+  </span>
+
+
+                
+    <span class="article-tags">
+    <i class="iconfont icon-tag"></i>
+    <a class="article-tag-none-link" href="/tags/Linux/" rel="tag">Linux</a>, <a class="article-tag-none-link" href="/tags/RHCE/" rel="tag">RHCE</a>, <a class="article-tag-none-link" href="/tags/RHEL/" rel="tag">RHEL</a>, <a class="article-tag-none-link" href="/tags/%E8%AE%A4%E8%AF%81%E8%80%83%E8%AF%95/" rel="tag">认证考试</a>
+  </span>
+
+
+                
+                
+    
+        <span class="post-wordcount" itemprop="wordCount">字数统计: 2.1k(字)</span>
+    
+    
+        <span class="post-readcount" itemprop="timeRequired">阅读时长: 7(分)</span>
+    
+
+
+            </p>
+        </header>
+        <div class="marked-body article-body">
+            <blockquote>
+<p>🔴 此文章由之前的 Typora 笔记迁移过来，内容可能已经过时。</p>
+</blockquote>
+<h2 id="管理本地用户账户">管理本地用户账户</h2>
+<h3 id="使用-useradd-命令创建新用户">使用 <code>useradd</code> 命令创建新用户</h3>
+<p>​添加用户所使用的默认配置保存在 <em>/etc/default/useradd</em> 中，同时还有一些默认配置从 <em>/etc/login.defs</em> 文件中读取。这两个文件只会影响新创建的用户，更改这两个文件不会影响现有用户。没有设置密码的用户是无法登陆系统的。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">useradd [OPTION]... LOGIN_NAME    <span class="comment"># 新建登陆用户</span></span><br><span class="line">useradd -D [-befgs]    <span class="comment"># 查看或修改创建用户使用的默认设置，</span></span><br><span class="line"><span class="comment"># 常见选项</span></span><br><span class="line">-b, --base-dir BASE_DIR <span class="comment"># 指定创建用户家目录的基目录（一般为 /home ）</span></span><br><span class="line">-u, --uid UID <span class="comment"># 为新账户指定 UID</span></span><br><span class="line">-c, --comment COMMENT <span class="comment"># 指定新用户描述信息或真实姓名</span></span><br><span class="line">-d, --home-dir HOME_DIR <span class="comment"># 指定新用户的家目录，默认 $BASE_DIR/LOGIN_NAME</span></span><br><span class="line">-D, --difaults <span class="comment"># 打印或改变默认的 useradd 配置</span></span><br><span class="line">-g, --gid GROUP <span class="comment"># 指定新账户的主要组的 ID 或名字</span></span><br><span class="line">-G, --<span class="built_in">groups</span> GROUPS <span class="comment"># 指定新账户的补充组</span></span><br><span class="line">-m, --create-home <span class="comment"># 创建用户的家目录（指定该字段或 CREATE_HOME 配置项为 yes 才会创建）</span></span><br><span class="line">-M, --no-create-home <span class="comment"># 不创建用户的家目录，即使 /etc/login.defs 中的 CREATE_HOME 字段的值为 yes</span></span><br><span class="line">-U, --user-group <span class="comment"># 为用户创建与用户同名的用户组</span></span><br><span class="line">-N, --no-user-group <span class="comment"># 不创建与用户同名的用户组</span></span><br><span class="line">-p, --password PASSWORD <span class="comment"># 为该新账户设置加密的密码（不推荐）</span></span><br><span class="line">-r, --system <span class="comment"># 创建系统账户</span></span><br><span class="line">-s, --shell SHELL <span class="comment"># 为新账户指定登陆 shell</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]\<span class="comment"># useradd -D    # 添加用户所使用的默认配置</span></span><br><span class="line">GROUP=100</span><br><span class="line">HOME=/home</span><br><span class="line">INACTIVE=-1</span><br><span class="line">EXPIRE=</span><br><span class="line">SHELL=/bin/bash</span><br><span class="line">SKEL=/etc/skel</span><br><span class="line">CREATE_MAIL_SPOOL=<span class="built_in">yes</span></span><br><span class="line">[root@localhost ~]\<span class="comment"># getent group 100 # 查询 GID 100 对应的 group 信息</span></span><br><span class="line"><span class="built_in">users</span>:x:100:    <span class="comment"># 添加的新用户会默认将其主要组设置为 users 组</span></span><br></pre></td></tr></table></figure>
+<p>​以上示例中使用了 <code>getent</code> 命令，在本章结尾对这个命令会有更详细的介绍。</p>
+<h3 id="使用-usermod-命令修改现有用户">使用 <code>usermod</code> 命令修改现有用户</h3>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">usermod [OPTION]... LOGIN_NAME <span class="comment"># 修改用户账户</span></span><br><span class="line"><span class="comment"># 以下 useradd 中的选项也适用于 usermod，只不过行为变成了更改而不是创建，将不再赘述：</span></span><br><span class="line">-u, -d, -g, -G, -c, -s, -p</span><br><span class="line"><span class="comment"># 其余常见选项：</span></span><br><span class="line">-a, --append <span class="comment"># 与 -G 搭配，追加加入补充组模式（-G 默认是替换）</span></span><br><span class="line">-l, --login NEW_LOGIN <span class="comment"># 修改用户名</span></span><br><span class="line">-L, --lock <span class="comment"># 锁定账户</span></span><br><span class="line">-U, --unlock <span class="comment"># 解锁账户</span></span><br><span class="line">-m, --move-home <span class="comment"># 与 -d 搭配，立即移动到新的家目录</span></span><br></pre></td></tr></table></figure>
+<h3 id="使用-userdel-命令删除现有用户">使用 <code>userdel</code> 命令删除现有用户</h3>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">userdel [OPTION]... LOGIN_NAME <span class="comment"># 删除用户账户（默认不删除此用户的文件，创建的新用户如果使用了之前被删的用户的 uid 则新用户会默认获得旧用户文件的所属权）</span></span><br><span class="line"><span class="comment"># 常见选项：</span></span><br><span class="line">-f, --force <span class="comment"># 强制删除普通删除会失败的账户（如：删除有人登陆的账户）</span></span><br><span class="line">-r, --remove <span class="comment"># 同时删除该用户家目录和邮箱目录（推荐）</span></span><br></pre></td></tr></table></figure>
+<h3 id="使用-passwd-命令设置用户初始密码或更改现有的密码">使用 <code>passwd</code> 命令设置用户初始密码或更改现有的密码</h3>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">passwd [-k] [-l] [-u] [-e] [-d] [-S] [--stdin] [username]</span><br><span class="line"><span class="comment"># 常见选项：</span></span><br><span class="line">-k, --keep-tokens <span class="comment"># 继续使用旧密码，重新计算过期时间</span></span><br><span class="line">-l, --lock <span class="comment"># 仅 root 可用，锁定指定账户的密码（但账户没有被锁，其他方式仍能登陆）</span></span><br><span class="line">-u, --unlock <span class="comment"># 仅 root 可用，解锁指定账户的密码</span></span><br><span class="line">-d, --delete <span class="comment"># 仅 root 可用，删除某个账户的密码</span></span><br><span class="line">-e, --expire <span class="comment"># 仅 root 可用，强制某个用户下次登陆时修改密码</span></span><br><span class="line">-S, --status <span class="comment"># 输出账户的账户密码状态信息</span></span><br><span class="line">--stdin, <span class="comment"># 从标准输入中读取密码（常与管道配合）</span></span><br><span class="line"><span class="comment"># 不使用任何选项时可省略 username, 默认修改当前登陆账户的用户密码</span></span><br></pre></td></tr></table></figure>
+<h2 id="管理本地组账户">管理本地组账户</h2>
+<h3 id="使用-groupadd-命令添加用户组">使用 <code>groupadd</code> 命令添加用户组</h3>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">groupadd [OPTIONS] GROUP <span class="comment"># 创建新用户组</span></span><br><span class="line"><span class="comment"># 常见选项：</span></span><br><span class="line">-g, --gid GID <span class="comment"># 指定 GID</span></span><br><span class="line">-K, --key KEY=VALUE <span class="comment"># 覆盖 /etc/login.defs 中的默认值，可以指定多个 -K 选项</span></span><br><span class="line">-r, --system <span class="comment"># 创建系统组</span></span><br></pre></td></tr></table></figure>
+<h3 id="使用-groupmod-命令修改用户组">使用 <code>groupmod</code> 命令修改用户组</h3>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">groupmod [OPTIONS] GROUP <span class="comment"># 修改系统中的用户组的定义</span></span><br><span class="line"><span class="comment"># 常见选项：</span></span><br><span class="line">-g, --gid GID <span class="comment"># 改变组 ID</span></span><br><span class="line">-n, --new-name NEW_GROUP <span class="comment"># 修改组名</span></span><br></pre></td></tr></table></figure>
+<h3 id="使用-groupdel-命令删除用户组">使用 <code>groupdel</code> 命令删除用户组</h3>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">groupdel [OPTIONS] GROUP <span class="comment"># 删除用户组</span></span><br></pre></td></tr></table></figure>
+<h2 id="管理用户密码">管理用户密码</h2>
+<p>​用户密码存放文件 /etc/shadow 的格式：</p>
+<p>​        <code>用户名</code>:<code>加密后的密码</code>[^1]:<code>上次更改密码的日期</code>:<code>从上次更改密码到下一次可以更改所必须经过的最短天数</code>:<code>在密码过期之前不进行密码更改可以经过的最长天数</code>[^2]:<code>警告期</code>[^3]:<code>非活动期</code>[^4]:<code>密码过期日</code>[^5]:<code>预留字段</code></p>
+<p>[^1]: 加密密码字符串的不同部分由美元符号 $ 隔开，第一个 $ 后的数字代表此密码所用的哈希算法，数字 6 代表使用的是 SHA-512 哈希算法（红帽 8 默认算法），1 代表 MD5 哈希算法，5 代表 SHA-256 哈希算法。第二个 $ 后面的是加密密码使用的盐值。第三个 $ 后面的是用户密码的加密哈希值，前面盐值和用户未加密密码进行组合加密生成的密码哈希串。<br />
+[^2]: 空字段表示它不会根据上次更改以来的时间失效。<br />
+[^3]: 当用户在截止日前之前登陆达到该天数时，会收到有关密码过期的警告。<br />
+[^4]: 一旦密码过期，这些天内仍可以接受登陆，过了这一时期之后，账户将被锁定。<br />
+[^5]: 其设置值为从 1970 年 1 月 1 日起的天数，并按 UTC 时区计算。空字段表示它不会在特定的日期失效。</p>
+<p>​当用户尝试登陆时，系统会从 /etc/shadow 中查询用户的密码条目，并将用户的盐值和键入的未加密密码组合，再使用指定的哈希算法加密。如果结果与已加密哈希匹配，则用户输入了正确的密码，即会登陆成功，否则表示用户输入了错误的密码，登陆尝试也会失败。</p>
+<p>​下图展示了相关密码期限参数及其周期作用。</p>
+<p><img src="images/linux/chage-%E5%91%BD%E4%BB%A4%E5%AF%86%E7%A0%81%E5%91%A8%E6%9C%9F.png" alt="chage 命令密码周期" /></p>
+<h4 id="使用-chage-命令修改用户密码过期设置">使用 <code>chage</code> 命令修改用户密码过期设置</h4>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">chage [OPTIONS] LOGIN_NAME <span class="comment"># 修改用户密码过期信息</span></span><br><span class="line"><span class="comment"># 常见选项：</span></span><br><span class="line">-d, --lastday LAST_DAY <span class="comment"># 修改最后一次更改密码的时间，可以设置为从 1970 年 1 月 1 日起度过的天数，也可以以 YYYY-MM-DD 的形式进行设置，如果设置为 0 的话，则该用户在下次登陆时会被强制要求更改密码</span></span><br><span class="line">-E, --expiredate EXPIRE_DATE <span class="comment"># 修改密码强制过期时间，过期将无法登陆，只能由 root 解锁后才能继续使用，可以设置为 1970 年 1 月 1 日起度过的天数，也可以以 YYYY-MM-DD 的形式进行设置，设置为 -1 密码将永不过期</span></span><br><span class="line">-I, --inactive INACTIVE <span class="comment"># 设置宽限期（天数，即密码已过期到用户账户被锁这段时间）,设置为 -1 则没有宽限期</span></span><br><span class="line">-l, --list <span class="comment"># 显示账户密码的重要时间段</span></span><br><span class="line">-m, --mindays MIN_DAYS <span class="comment"># 设置两次更改密码的最小间隔（天数），设置为 0 代表没有限制</span></span><br><span class="line">-M, --maxdays MAX_DAYS <span class="comment"># 设置密码可用的最大天数，超过时间即会过期，设置为 -1 会移除密码过期限制</span></span><br><span class="line">-W, --warndays WARN_DAYS <span class="comment"># 设置密码到期前发出改密警告的天数 </span></span><br></pre></td></tr></table></figure>
+<p>​如果没有指定选项，则 <code>chage</code> 会进入交互式操作模式。</p>
+<h2 id="GETENT-命令介绍">GETENT 命令介绍</h2>
+<p>​使用 <code>getent</code> 命令来查看系统的数据库中的相关记录。</p>
+<h3 id="语法">语法</h3>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">getent database [key ...]    <span class="comment"># Get entries from administrative database.</span></span><br><span class="line">-s, --service=CONFIG    <span class="comment"># 要使用的服务配置</span></span><br><span class="line">-?, --<span class="built_in">help</span>                <span class="comment"># 给出该系统求助列表</span></span><br><span class="line">    --usage                <span class="comment"># 给出简要的用法信息</span></span><br><span class="line">-V, --version            <span class="comment"># 打印程序版本号</span></span><br></pre></td></tr></table></figure>
+<h3 id="支持的系统数据库">支持的系统数据库</h3>
+<p>​包含：ahosts、ahostsv4、ahostsv6、alias、ethers、group、gshadow、hosts、netgroup、networks、passwd、protocols、rpc、services、shadow。</p>
+<h3 id="示例">示例</h3>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 1. 查看前三项系统注册的服务及其占用的端口和协议</span></span><br><span class="line">[root@vmrhelskinyi ~]\<span class="comment"># getent services | head -3</span></span><br><span class="line">tcpmux                1/tcp</span><br><span class="line">tcpmux                1/udp</span><br><span class="line">rje                   5/tcp</span><br><span class="line"><span class="comment"># 2. 根据当前登陆信息查找 UID</span></span><br><span class="line">[root@vmrhelskinyi ~]\<span class="comment"># getent passwd `whoami`</span></span><br><span class="line">root:x:0:0:root:/root:/bin/bash</span><br><span class="line"><span class="comment"># 3. 进行 DNS 反查</span></span><br><span class="line">[root@vmrhelskinyi ~]\<span class="comment"># getent hosts kernel.org</span></span><br><span class="line">198.145.29.83   kernel.org</span><br></pre></td></tr></table></figure>
+
+        </div>
+        
+<blockquote class="copyright">
+    <p><strong>本文链接 : </strong><a class="permalink" href="https://skinyi.github.io/2022-08-15-Linux%20|%20%E7%AE%A1%E7%90%86%E6%9C%AC%E5%9C%B0%E7%94%A8%E6%88%B7%E5%92%8C%E7%BB%84%EF%BC%88%E4%BA%8C%EF%BC%89.html">https://skinyi.github.io/2022-08-15-Linux | 管理本地用户和组（二）.html</a></p>
+    <p><strong>这篇文章由作者胡编乱造或者由其他文章复制粘贴而来，其中有些内容可能已经过时，请谨慎参考复制文章中的内容。</strong></p>
+</blockquote>
+
+
+    </article>
+    
+    <section id="comments">
+        
+    </section>
+
+
+    
+
+</main>
+
+
+<aside style="" id="sidebar" class="aside aside-fixture">
+    <div class="toc-sidebar">
+        <nav id="toc" class="article-toc">
+            <h3 class="toc-title">文章目录</h3>
+            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AE%A1%E7%90%86%E6%9C%AC%E5%9C%B0%E7%94%A8%E6%88%B7%E8%B4%A6%E6%88%B7"><span class="toc-number">1.</span> <span class="toc-text">管理本地用户账户</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8-useradd-%E5%91%BD%E4%BB%A4%E5%88%9B%E5%BB%BA%E6%96%B0%E7%94%A8%E6%88%B7"><span class="toc-number">1.1.</span> <span class="toc-text">使用 useradd 命令创建新用户</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8-usermod-%E5%91%BD%E4%BB%A4%E4%BF%AE%E6%94%B9%E7%8E%B0%E6%9C%89%E7%94%A8%E6%88%B7"><span class="toc-number">1.2.</span> <span class="toc-text">使用 usermod 命令修改现有用户</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8-userdel-%E5%91%BD%E4%BB%A4%E5%88%A0%E9%99%A4%E7%8E%B0%E6%9C%89%E7%94%A8%E6%88%B7"><span class="toc-number">1.3.</span> <span class="toc-text">使用 userdel 命令删除现有用户</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8-passwd-%E5%91%BD%E4%BB%A4%E8%AE%BE%E7%BD%AE%E7%94%A8%E6%88%B7%E5%88%9D%E5%A7%8B%E5%AF%86%E7%A0%81%E6%88%96%E6%9B%B4%E6%94%B9%E7%8E%B0%E6%9C%89%E7%9A%84%E5%AF%86%E7%A0%81"><span class="toc-number">1.4.</span> <span class="toc-text">使用 passwd 命令设置用户初始密码或更改现有的密码</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AE%A1%E7%90%86%E6%9C%AC%E5%9C%B0%E7%BB%84%E8%B4%A6%E6%88%B7"><span class="toc-number">2.</span> <span class="toc-text">管理本地组账户</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8-groupadd-%E5%91%BD%E4%BB%A4%E6%B7%BB%E5%8A%A0%E7%94%A8%E6%88%B7%E7%BB%84"><span class="toc-number">2.1.</span> <span class="toc-text">使用 groupadd 命令添加用户组</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8-groupmod-%E5%91%BD%E4%BB%A4%E4%BF%AE%E6%94%B9%E7%94%A8%E6%88%B7%E7%BB%84"><span class="toc-number">2.2.</span> <span class="toc-text">使用 groupmod 命令修改用户组</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8-groupdel-%E5%91%BD%E4%BB%A4%E5%88%A0%E9%99%A4%E7%94%A8%E6%88%B7%E7%BB%84"><span class="toc-number">2.3.</span> <span class="toc-text">使用 groupdel 命令删除用户组</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AE%A1%E7%90%86%E7%94%A8%E6%88%B7%E5%AF%86%E7%A0%81"><span class="toc-number">3.</span> <span class="toc-text">管理用户密码</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8-chage-%E5%91%BD%E4%BB%A4%E4%BF%AE%E6%94%B9%E7%94%A8%E6%88%B7%E5%AF%86%E7%A0%81%E8%BF%87%E6%9C%9F%E8%AE%BE%E7%BD%AE"><span class="toc-number">3.0.1.</span> <span class="toc-text">使用 chage 命令修改用户密码过期设置</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#GETENT-%E5%91%BD%E4%BB%A4%E4%BB%8B%E7%BB%8D"><span class="toc-number">4.</span> <span class="toc-text">GETENT 命令介绍</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AF%AD%E6%B3%95"><span class="toc-number">4.1.</span> <span class="toc-text">语法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%94%AF%E6%8C%81%E7%9A%84%E7%B3%BB%E7%BB%9F%E6%95%B0%E6%8D%AE%E5%BA%93"><span class="toc-number">4.2.</span> <span class="toc-text">支持的系统数据库</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%A4%BA%E4%BE%8B"><span class="toc-number">4.3.</span> <span class="toc-text">示例</span></a></li></ol></li></ol>
+        </nav>
+    </div>
+</aside>
+
+
+
+
+
+        </section>
+        <footer class="hidden lg:block fixed bottom-0 left-0 sm:w-1/12 bg-gray-100 z-40">
+    
+    
+        <p class="footer-custom">❤ Powered by <a href="https://hexo.io/" target="_blank" rel="noopener noreferrer">Hexo</a> with <a href="https://github.com/fengkx/hexo-theme-purer" target="_blank" rel="noopener noreferrer">Purer theme</a>.</p>
+    
+</footer>
+
+        <div id="mask" class="hidden mask fixed inset-0 bg-gray-900 opacity-75 z-40"></div>
+        <div id="search-view-container" class="hidden shadow-xl"></div>
+        
+<script src="/js/dom-event.min.js"></script>
+
+
+
+<script src="/js/local-search.min.js"></script>
+
+
+
+    <script src="//cdn.jsdelivr.net/npm/lightgallery.js@1.1.3/dist/js/lightgallery.min.js"></script>
+    
+<script src="/js/light-gallery.min.js"></script>
+
+
+
+
+
+
+    </body>
+</html>

@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html  lang="zh-CN,en,default" >
+    <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, maximum-scale=5, viewport-fit=cover">
+    <title>使用 Stratis 管理分层存储 | Avery Ma 的个人网站</title>
+    <meta name="description" content="🔴 此文章由之前的 Typora 笔记迁移过来，内容可能已经过时。  STRATIS 架构概述 ​RHEL 当前的本地存储解决方案中包含许多成熟、稳定的技术，其中包括设备映射器（dm）、逻辑卷管理器（LVM）及 XFS 文件系统。这些组件提供的功能包括可大规模扩展的文件系统、快照、冗余（RAID）逻辑设备、多路径、精简配置、缓存、重复数据删除，以及对虚拟机和容器的支持。每个存储堆栈层（dm、L">
+<meta property="og:type" content="article">
+<meta property="og:title" content="使用 Stratis 管理分层存储">
+<meta property="og:url" content="https://skinyi.github.io/2022-08-15-Linux%20|%20%E4%BD%BF%E7%94%A8%20Stratis%20%E7%AE%A1%E7%90%86%E5%88%86%E5%B1%82%E5%AD%98%E5%82%A8.html">
+<meta property="og:site_name" content="Avery Ma 的个人网站">
+<meta property="og:description" content="🔴 此文章由之前的 Typora 笔记迁移过来，内容可能已经过时。  STRATIS 架构概述 ​RHEL 当前的本地存储解决方案中包含许多成熟、稳定的技术，其中包括设备映射器（dm）、逻辑卷管理器（LVM）及 XFS 文件系统。这些组件提供的功能包括可大规模扩展的文件系统、快照、冗余（RAID）逻辑设备、多路径、精简配置、缓存、重复数据删除，以及对虚拟机和容器的支持。每个存储堆栈层（dm、L">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://skinyi.github.io/images/linux/Stratis-%E5%AD%98%E5%82%A8%E7%A4%BA%E4%BE%8B%EF%BC%88%E4%B8%80%EF%BC%89.png">
+<meta property="og:image" content="https://skinyi.github.io/images/linux/Stratis-%E5%AD%98%E5%82%A8%E7%A4%BA%E4%BE%8B%EF%BC%88%E4%BA%8C%EF%BC%89.png">
+<meta property="og:image" content="https://skinyi.github.io/images/linux/Stratis-%E5%AD%98%E5%82%A8%E7%A4%BA%E4%BE%8B%EF%BC%88%E4%B8%89%EF%BC%89.png">
+<meta property="og:image" content="https://skinyi.github.io/images/linux/vdo-%E5%AD%98%E5%82%A8%E6%A6%82%E5%BF%B5%E5%9B%BE.png">
+<meta property="article:published_time" content="2022-08-15T06:50:24.466Z">
+<meta property="article:modified_time" content="2022-08-15T07:01:55.282Z">
+<meta property="article:author" content="skinyi">
+<meta property="article:tag" content="Linux">
+<meta property="article:tag" content="RHEL">
+<meta property="article:tag" content="RHCE">
+<meta property="article:tag" content="认证考试">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://skinyi.github.io/images/linux/Stratis-%E5%AD%98%E5%82%A8%E7%A4%BA%E4%BE%8B%EF%BC%88%E4%B8%80%EF%BC%89.png">
+
+    
+    <link rel="icon" href="images/favicon.png" type="image/x-icon">
+
+    
+<link rel="stylesheet" href="/css/common.min.css">
+
+
+
+    
+    
+    
+    
+        <link href="//cdn.jsdelivr.net/npm/lightgallery.js@1.1.3/dist/css/lightgallery.min.css" rel="stylesheet">
+    
+    
+    
+<link rel="stylesheet" href="/css/iconfont.min.css">
+
+    
+<meta name="generator" content="Hexo 6.2.0"></head>
+
+    <body>
+        <header class="header header-fixture">
+    <div class="profile-search-wrap flex sm:block">
+        
+        
+        <div class="profile sm:text-center md:px-1 lg:px-3 sm:pb-4 sm:pt-6">
+            <a id="avatar" role="link" href="https://github.com/skinyi" class="inline-block lg:w-16 lg:h-16 w-8 h-8 m-2" target="_blank" rel="noopener" rel="noreferrer" >
+                <img src="/images/avatar.jpg" class="rounded-full" alt="avatar">
+            </a>
+            <h2 id="name" class="hidden lg:block">Avery Ma</h2>
+            <h3 id="title" class="hidden xl:block">IT 从业者</h3>
+            
+            <small id="location" class="hidden lg:block">
+                <i class="iconfont icon-map-icon"></i>
+                宁夏, 中国
+            </small>
+            
+        </div>
+        
+        
+<div class="search flex-1 flex lg:inline-block sm:hidden lg:px-4 lg:mt-2 lg:w-full">
+    <form id="search-form" class="my-auto flex-1 lg:border lg:border-solid lg:border-gray-200">
+        <div class="input-group table bg-gray-100 lg:bg-white w-full">
+            <input id="search-input" type="text" placeholder="搜索" class="inline-block w-full bg-gray-100 lg:bg-white">
+            <span class="table-cell">
+                <button name="search tigger button" disabled>
+                    <i class="iconfont icon-search m-2"></i>
+                </button>
+            </span>
+        </div>
+    </form>
+        
+<div id="content-json" data-placeholder="搜索" class="invisible hidden">/content.json</div>
+<script id="search-teamplate" type="text/html" data-path="/content.json">
+    <div>
+        <div class="search-header bg-gray-400">
+            <input id="actual-search-input" model="keyword" ref="input" class="inline-block w-full h-10 px-2 py-1" placeholder="搜索" type="text">
+        </div>
+        <div class="search-result bg-gray-200">
+            {{#each searchPosts}}
+            <a href="/{{ path }}" class="result-item block px-2 pb-3 mb-1 pt-1 hover:bg-indigo-100">
+                <i class="iconfont icon-file"></i>
+                <h1 class="result-title inline font-medium text-lg">{{ title }}</h1>
+                <p class="result-content text-gray-600 text-sm">{{{ text }}}</p>
+            </a>
+            {{/each}}
+        </div>
+    </div>
+</script>
+
+</div>
+
+
+        <button name="menu toogle button" id="menu-toggle-btn" class="block sm:hidden p-3" role="button" aria-expanded="false">
+            <i class="iconfont icon-hamburger"></i>
+        </button>
+    </div>
+    <nav id="menu-nav" class="hidden sm:flex flex-col">
+        
+        
+            <div class="menu-item menu-home" role="menuitem">
+                <a href="/.">
+                    <i class="iconfont icon-home" aria-hidden="true"></i>
+                    <span class="menu-title">首页</span>
+                </a>
+            </div>
+        
+        
+            <div class="menu-item menu-archives" role="menuitem">
+                <a href="/archives">
+                    <i class="iconfont icon-archive" aria-hidden="true"></i>
+                    <span class="menu-title">归档</span>
+                </a>
+            </div>
+        
+        
+            <div class="menu-item menu-categories" role="menuitem">
+                <a href="/categories">
+                    <i class="iconfont icon-folder" aria-hidden="true"></i>
+                    <span class="menu-title">分类</span>
+                </a>
+            </div>
+        
+        
+            <div class="menu-item menu-tags" role="menuitem">
+                <a href="/tags">
+                    <i class="iconfont icon-tag" aria-hidden="true"></i>
+                    <span class="menu-title">标签</span>
+                </a>
+            </div>
+        
+        
+            <div class="menu-item menu-repository" role="menuitem">
+                <a href="/repository">
+                    <i class="iconfont icon-project" aria-hidden="true"></i>
+                    <span class="menu-title">项目</span>
+                </a>
+            </div>
+        
+        
+            <div class="menu-item menu-about" role="menuitem">
+                <a href="/about">
+                    <i class="iconfont icon-cup" aria-hidden="true"></i>
+                    <span class="menu-title">关于</span>
+                </a>
+            </div>
+        
+        
+
+    </nav>
+</header>
+
+        <section class="main-section">
+            
+    <main class="flex-1 px-4 py-14 md:px-5 lg:px-8 lg:py-4 relative min-h-screen">
+    
+
+    <article class="content article article-archives article-type-list" itemscope="">
+        <header class="article-header">
+            
+    
+        <h1 class="article-title text-lg" itemprop="name">
+            使用 Stratis 管理分层存储
+        </h1>
+    
+
+
+
+            <p class="article-meta mb-3 text-xs">
+                <span class="article-date">
+    <i class="iconfont icon-calendar-check"></i>
+	<a href="/2022-08-15-Linux%20%7C%20%E4%BD%BF%E7%94%A8%20Stratis%20%E7%AE%A1%E7%90%86%E5%88%86%E5%B1%82%E5%AD%98%E5%82%A8.html" class="article-date">
+	  <time datetime="2022-08-15T06:50:24.466Z" itemprop="datePublished">8月 15</time>
+	</a>
+</span>
+
+                
+    <span class="article-category">
+    <i class="iconfont icon-folder"></i>
+    <a class="article-category-link" href="/categories/%E5%AD%A6%E4%B9%A0/">学习</a> , <a class="article-category-link" href="/categories/%E5%AD%A6%E4%B9%A0/Linux/">Linux</a> , <a class="article-category-link" href="/categories/%E6%97%A5%E5%B8%B8%E8%AE%B0%E5%BD%95/">日常记录</a> , <a class="article-category-link" href="/categories/%E8%BF%81%E7%A7%BB%E6%96%87%E7%AB%A0/">迁移文章</a>
+  </span>
+
+
+                
+    <span class="article-tags">
+    <i class="iconfont icon-tag"></i>
+    <a class="article-tag-none-link" href="/tags/Linux/" rel="tag">Linux</a>, <a class="article-tag-none-link" href="/tags/RHCE/" rel="tag">RHCE</a>, <a class="article-tag-none-link" href="/tags/RHEL/" rel="tag">RHEL</a>, <a class="article-tag-none-link" href="/tags/%E8%AE%A4%E8%AF%81%E8%80%83%E8%AF%95/" rel="tag">认证考试</a>
+  </span>
+
+
+                
+                
+    
+        <span class="post-wordcount" itemprop="wordCount">字数统计: 2.7k(字)</span>
+    
+    
+        <span class="post-readcount" itemprop="timeRequired">阅读时长: 9(分)</span>
+    
+
+
+            </p>
+        </header>
+        <div class="marked-body article-body">
+            <blockquote>
+<p>🔴 此文章由之前的 Typora 笔记迁移过来，内容可能已经过时。</p>
+</blockquote>
+<h2 id="STRATIS-架构概述">STRATIS 架构概述</h2>
+<p>​RHEL 当前的本地存储解决方案中包含许多成熟、稳定的技术，其中包括设备映射器（dm）、逻辑卷管理器（LVM）及 XFS 文件系统。这些组件提供的功能包括可大规模扩展的文件系统、快照、冗余（RAID）逻辑设备、多路径、精简配置、缓存、重复数据删除，以及对虚拟机和容器的支持。每个存储堆栈层（dm、LVM 和 XFS）均使用专门面向层的命令和实用程序进行管理，这就要求系统管理员将物理设备、固定大小的卷和文件系统作为独立的存储组件进行管理。</p>
+<p>​在 RHEL 8 中，红帽推出了 Stratis 存储管理解决方案。Straits 以管理物理存储设备池的服务形式运行，并透明地为所创建的文件系统创建和管理卷。由于 Stratis 使用现有的存储驱动程序和工具，因此 Stratis 也支持当前在 LVM、XFS 和设备映射器中使用的所有高级存储功能。</p>
+<p>​在卷管理文件系统中，文件系统借助一个名为精简配置的概念内置于磁盘设备的共享池中。Straits 文件系统没有固定大小，也不再预分配未使用的快空间。尽管文件系统仍构建在隐藏的 LVM 卷上，但 Stratis 会管理基础卷，并可在需要时对其进行扩展。文件系统的 “使用中” 大小可视作所含文件占用的实际块数量。文件系统的可用空间就是它所驻留的池设备中仍未使用的空间量。多个文件系统可以驻留在同一磁盘设备池中，共享可用空间，但文件系统也可以保留池空间，以便在需要时保证可用性。</p>
+<p>​Straitis 使用存储的元数据来识别所管理的池、卷和文件系统。因此，绝不应该对 Stratis 创建的文件系统进行手动重新格式化或重新配置；只应使用 Straitis 工具和命令对它们进行管理。手动配置 Stratis 文件系统可能会导致该元数据丢失，并阻止 Stratis 识别它已创建的文件系统。</p>
+<p>​可以使用不同组的块设备来创建多个池。在每个池中，可以创建一个或多个文件系统。目前，每个池最多可以创建 2<sup>24</sup> 个文件系统。下图说明了 Stratis 存储管理解决方案的元素是如何定位的。</p>
+<p><img src="images/linux/Stratis-%E5%AD%98%E5%82%A8%E7%A4%BA%E4%BE%8B%EF%BC%88%E4%B8%80%EF%BC%89.png" alt="Stratis 存储示例一" /></p>
+<p>​存储池可将块设备分组到数据层，或分组到缓存层。数据层侧重于灵活性和完整性，而缓存层则侧重于提高性能。由于缓存层旨在提高性能，因此应使用具有更高每秒输入、输出操作次数（IOPS）的块设备，如 SSD。</p>
+<p><img src="images/linux/Stratis-%E5%AD%98%E5%82%A8%E7%A4%BA%E4%BE%8B%EF%BC%88%E4%BA%8C%EF%BC%89.png" alt="Stratis 存储示例二" /></p>
+<p>​在内部，Stratis 使用 <em>Backstore</em> 子系统来管理块设备，并使用 Thinpool 子系统来管理池。<em>Backstore</em> 有一个数据层，负责维护块设备磁盘上的元数据，以及检测和纠正数据损坏。缓存层使用高性能块设备，作为数据层之上的缓存。<em>Thinpool</em> 子系统管理与 <em>Straitis</em> 文件系统关联的精简部署卷。该子系统使用 <em>dm-thin</em> 设备映射器驱动程序取代 LVM 进行虚拟卷大小调整和管理。<em>dm-thin</em> 可以创建虚拟大小比较大、采用 XFS 格式，但物理大小比较小的卷。当物理大小快要满时，Stratis 会自动将其扩大。</p>
+<p><img src="images/linux/Stratis-%E5%AD%98%E5%82%A8%E7%A4%BA%E4%BE%8B%EF%BC%88%E4%B8%89%EF%BC%89.png" alt="Stratis 存储示例三" /></p>
+<h2 id="管理精简配置的文件系统">管理精简配置的文件系统</h2>
+<p>​要使用 Stratis 存储管理解决方案来管理精简配置的文件系统，可以安装 stratis-cli 和 stratisd 软件包。stratis-cli 软件包中提供了 <em>stratis</em> 命令，它通过 <em>D-Bus</em> API 将用户请求转换为 <em>stratisd</em> 服务。<em>stratisd</em> 软件包中提供了 <em>stratisd</em> 服务，它实现 <em>D-Bus</em> 接口并管理和监控 Stratis 的元素，如块设备、池和文件系统。当 stratisd 服务处于运行状态时，可以使用 <em>D-Bus</em> API。</p>
+<p>​使用常用工具安装并激活 Stratis：</p>
+<ol>
+<li>使用 <code>yum install</code> 命令安装 <em>stratis-cli</em> 和 <em>stratisd</em>；</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]\<span class="comment"># yum install stratis-cli stratisd</span></span><br><span class="line">......</span><br><span class="line">Is this ok [y/N]: y</span><br><span class="line">......</span><br><span class="line">complete!</span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li>使用 <code>systemctl</code> 命令激活 <em>stratisd</em> 服务；</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]\<span class="comment"># systemctl enable --now stratisd</span></span><br></pre></td></tr></table></figure>
+<p>​使用 <em>stratis</em> 存储管理解决方案执行常见管理操作：</p>
+<ol>
+<li>使用 <code>stratis pool create</code> 命令来创建包含一个或多个块设备的池；</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]\# stratis pool create pool1 /dev/vdb</span><br></pre></td></tr></table></figure>
+<p>​每个池都是 <em>/stratis</em> 目录下的一个子目录。使用 <code>stratis pool list</code> 命令查看可用池的列表：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]\<span class="comment"># stratis pool list</span></span><br><span class="line">Name	Total Physical Size		Total	Physical Used</span><br><span class="line">pool1				  5 GiB					   52 MiB</span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li>使用 <code>stratis pool add-data</code> 命令向池中添加额外的块设备；</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]\<span class="comment"># stratis pool add-data pool1 /dev/vdc</span></span><br></pre></td></tr></table></figure>
+<p>​使用 <code>stratis pool list</code> 命令查看可用池的块设备：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]\<span class="comment"># stratis pool list pool1</span></span><br><span class="line">Pool Name	Device Node		Physical Size		State	Tier</span><br><span class="line">pool1		   /dev/vdb		  		5 GiB	   In-use	Data</span><br><span class="line">pool1		   /dev/vdc				5 GiB	   In-use	Data</span><br></pre></td></tr></table></figure>
+<ol start="3">
+<li>使用 <code>stratis filesystem create</code> 命令为池创建动态、灵活的文件系统；</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]\<span class="comment"># stratis filesystem create pool1 filesystem1</span></span><br></pre></td></tr></table></figure>
+<p>​Stratis 文件系统的链接位于 <em>/stratis/pool1</em> 目录中。</p>
+<ol start="4">
+<li>Stratis 支持通过 <code>stratis filesystem snapshot</code> 命令创建文件系统快照。快照独立于源文件系统。</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]\<span class="comment"># stratis filesystem snapshot pool1 filesystem1 snapshot1</span></span><br></pre></td></tr></table></figure>
+<ol start="5">
+<li>使用 <code>stratis filesystem list</code> 命令查看可用文件系统的列表。</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]\<span class="comment"># stratis filesystem list</span></span><br><span class="line">......</span><br></pre></td></tr></table></figure>
+<p>​为了确保持久挂载 <em>Stratis</em> 文件系统，请编辑 <em>/etc/fstab</em> 并指定文件系统的详细信息。以下命令显示文件系统 UUID，在 <em>/etc/fstab</em> 中应使用该 UUID 来识别文件系统。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]\<span class="comment"># lsblk --output=UUID /stratis/pool1/filesystem1</span></span><br><span class="line">UUID	31b9363b-add8-4b46-a4bf-c199cd478c55</span><br></pre></td></tr></table></figure>
+<p>​以下是 <em>/etc/fstab</em> 文件中用于持久挂载 Stratis 文件系统的条目示例。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">UUID=31b9363b-add8-4b46-a4bf-c199cd478c55	/dir1 xfs defaults,x-systemd.requires=stratisd.service 0 0</span><br></pre></td></tr></table></figure>
+<p>​<em>x-systemd.requires=stratisd.service</em> 挂载选项可延迟挂载文件系统，直到 systemd 在启动过程中启动 <code>stratisd.service</code> 为止。</p>
+<blockquote>
+<p>如果在 <em>/etc/fstab</em> 中未对 stratis 文件系统使用 <em>x-systemd.requires=stratisd.service</em> 挂载选项，将会导致计算机在下一次重启时引导至 emergency.target。</p>
+</blockquote>
+<h2 id="使用-VDO-压缩存储和删除重复数据">使用 VDO 压缩存储和删除重复数据</h2>
+<p>​红帽企业 Linux8 包含虚拟数据优化器（VDO）驱动程序，可以优化块设备上数据的空间占用。VDO 是一个 Linux 设备映射器驱动程序，它可以减少块设备上的磁盘空间使用，同时最大限度减少数据重复，从而节省磁盘空间，甚至提高数据吞吐量。VDO 包括两个内核模块：kvdo 模块用于以透明的方式控制数据压缩，uds 则可用于重复数据删除。</p>
+<p>​VDO 层位于现有块存储设备（如 RAID设备或本地磁盘）的顶部。这些块设备也可以是加密设备。存储层（如 LVM逻辑卷和文件系统）位于 VDO 设备之上。下图显示了在一个由使用优化存储设备的 KVM 虚拟机构成的基础架构中，VDO 所处的位置。</p>
+<p><img src="images/linux/vdo-%E5%AD%98%E5%82%A8%E6%A6%82%E5%BF%B5%E5%9B%BE.png" alt="vdo 存储概念图" /></p>
+<p>​VDO 会按以下顺序对数据实施三个阶段的处理，以减少存储设备上的空间占用：</p>
+<ol>
+<li>
+<p>零块消除将过滤掉仅包含零（0）的数据块，且仅在元数据中记录这些块的信息。非零数据块随即被传递到下一个处理阶段。该阶段将启用VDO设备中的精简配置功能。</p>
+</li>
+<li>
+<p>重复数据删除将去除几余的数据块。在创建相同数据的多个副本时，VDO 会检测重复数据块并更新元数据，以便使用这些重复块来引用原始数据块，而不会创建几余数据块。通用重复数据删除服务（UDS）内核模块将通过其维护的元数据来检查数据的几余。该内核模块是作为 VDO 的一部分而提供的。</p>
+</li>
+<li>
+<p>最后一个阶段是压缩。kvdo 内核模块使用 LZ4 压缩对块进行压缩，并以 4KB 块进行分组。</p>
+</li>
+</ol>
+<h3 id="实施虚拟数据优化器">实施虚拟数据优化器</h3>
+<p>​利用 VDO 创建的逻辑设备被称为 VDO 卷。VDO 卷与磁盘分区类似；您可以将这些卷格式化为所需的文件系统类型，并像常规文件系统那样进行挂载。此外，您还可以将 VDO 卷用作LVM物理卷。</p>
+<p>​要创建 VDO 卷，请指定块设备以及 VDO 向用户显示的逻辑设备的名称。您可以指定 VDO 卷的逻辑大小（可选）。VDO 卷的逻辑大小可以大于实际块设备的物理大小。</p>
+<p>​由于 VDO 卷采用了精简配置，因此用户只能看到正在使用的逻辑空间，而无法了解实际可用的物理空间。如果在创建卷时未指定逻辑大小，则 VDO 会将实际物理大小视为卷的逻辑大小。这种采用 1:1 的比率映射逻辑大小与物理大小的方式有利于提高性能，但同时也会降低存储空间的使用效率。应根据您的基础架构要求来确定是优先考虑性能还是空间效率。</p>
+<p>​当 VDO 卷的逻辑大小超过实际物理大小时，应使用 <code>vdostats--verbose</code> 命令主动监控卷统计信息，以查看实际使用情况。</p>
+<h4 id="启用-VDO">启用 VDO</h4>
+<p>​安装 <em>VDO</em> 和 <em>kmod</em> 软件包，以便在系统中启用 VDO。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]\<span class="comment"># yum install vdo kmod-kvdo</span></span><br><span class="line">......</span><br><span class="line">Is this ok [y/N]: y</span><br><span class="line">......</span><br><span class="line">complete!</span><br></pre></td></tr></table></figure>
+<h4 id="创建-VDO">创建 VDO</h4>
+<p>​要创建 VDO 卷，请运行 <code>vdo create</code> 命令。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]\<span class="comment"># vdo create --name=vdo1 --device=/dev/vdd --vdoLogicalSize=50G</span></span><br><span class="line">......</span><br></pre></td></tr></table></figure>
+<p>​如果省略逻辑大小，则生成的VDO卷将与其物理设备的大小相同。</p>
+<p>​当 VDO 卷就位时，可以将它格式化为所选的文件系统类型并挂载于系统的文件系统层次结构下。</p>
+<h4 id="分析-VDO-卷">分析 VDO 卷</h4>
+<p>​要分析 VDO 卷，请运行 <code>vdostatus</code> 命令。此命令将以 YAML 格式显示有关 VDO 系统的报告以及 VDO 卷的状态。此外，它还显示 VDO 卷的属性。使用 <em>--name=</em> 选项可指定特定卷的名称。如果省略特定卷的名称，<code>vdostatus</code> 命令的输出中将显示所有VDO卷的状态。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]\<span class="comment"># vdo status --name=vdo1</span></span><br><span class="line">......</span><br></pre></td></tr></table></figure>
+<p>​<code>vdolist</code> 命令显示当前启动的 VDO 卷的列表。您可以分别使用 <code>vdostart</code> 和 <code>vdostop</code> 命令来启动和停止 VDO 卷。</p>
+
+        </div>
+        
+<blockquote class="copyright">
+    <p><strong>本文链接 : </strong><a class="permalink" href="https://skinyi.github.io/2022-08-15-Linux%20|%20%E4%BD%BF%E7%94%A8%20Stratis%20%E7%AE%A1%E7%90%86%E5%88%86%E5%B1%82%E5%AD%98%E5%82%A8.html">https://skinyi.github.io/2022-08-15-Linux | 使用 Stratis 管理分层存储.html</a></p>
+    <p><strong>这篇文章由作者胡编乱造或者由其他文章复制粘贴而来，其中有些内容可能已经过时，请谨慎参考复制文章中的内容。</strong></p>
+</blockquote>
+
+
+    </article>
+    
+    <section id="comments">
+        
+    </section>
+
+
+    
+
+</main>
+
+
+<aside style="" id="sidebar" class="aside aside-fixture">
+    <div class="toc-sidebar">
+        <nav id="toc" class="article-toc">
+            <h3 class="toc-title">文章目录</h3>
+            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#STRATIS-%E6%9E%B6%E6%9E%84%E6%A6%82%E8%BF%B0"><span class="toc-number">1.</span> <span class="toc-text">STRATIS 架构概述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AE%A1%E7%90%86%E7%B2%BE%E7%AE%80%E9%85%8D%E7%BD%AE%E7%9A%84%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F"><span class="toc-number">2.</span> <span class="toc-text">管理精简配置的文件系统</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8-VDO-%E5%8E%8B%E7%BC%A9%E5%AD%98%E5%82%A8%E5%92%8C%E5%88%A0%E9%99%A4%E9%87%8D%E5%A4%8D%E6%95%B0%E6%8D%AE"><span class="toc-number">3.</span> <span class="toc-text">使用 VDO 压缩存储和删除重复数据</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9E%E6%96%BD%E8%99%9A%E6%8B%9F%E6%95%B0%E6%8D%AE%E4%BC%98%E5%8C%96%E5%99%A8"><span class="toc-number">3.1.</span> <span class="toc-text">实施虚拟数据优化器</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%90%AF%E7%94%A8-VDO"><span class="toc-number">3.1.1.</span> <span class="toc-text">启用 VDO</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%88%9B%E5%BB%BA-VDO"><span class="toc-number">3.1.2.</span> <span class="toc-text">创建 VDO</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%88%86%E6%9E%90-VDO-%E5%8D%B7"><span class="toc-number">3.1.3.</span> <span class="toc-text">分析 VDO 卷</span></a></li></ol></li></ol></li></ol>
+        </nav>
+    </div>
+</aside>
+
+
+
+
+
+        </section>
+        <footer class="hidden lg:block fixed bottom-0 left-0 sm:w-1/12 bg-gray-100 z-40">
+    
+    
+        <p class="footer-custom">❤ Powered by <a href="https://hexo.io/" target="_blank" rel="noopener noreferrer">Hexo</a> with <a href="https://github.com/fengkx/hexo-theme-purer" target="_blank" rel="noopener noreferrer">Purer theme</a>.</p>
+    
+</footer>
+
+        <div id="mask" class="hidden mask fixed inset-0 bg-gray-900 opacity-75 z-40"></div>
+        <div id="search-view-container" class="hidden shadow-xl"></div>
+        
+<script src="/js/dom-event.min.js"></script>
+
+
+
+<script src="/js/local-search.min.js"></script>
+
+
+
+    <script src="//cdn.jsdelivr.net/npm/lightgallery.js@1.1.3/dist/js/lightgallery.min.js"></script>
+    
+<script src="/js/light-gallery.min.js"></script>
+
+
+
+
+
+
+    </body>
+</html>

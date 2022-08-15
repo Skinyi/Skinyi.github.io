@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html  lang="zh-CN,en,default" >
+    <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, maximum-scale=5, viewport-fit=cover">
+    <title>Linux 文件与目录管理 | Avery Ma 的个人网站</title>
+    <meta name="description" content="🔴 此文章由之前的 Typora 笔记迁移过来，内容可能已经过时。  文件目录操作 使用 mkdir 创建目录 12345mkdir [OPTION]... DIRECTORY...    # 如果不存在则创建目录# 常见可选选项-m, --mode&#x3D;MODE # 设置文件读写执行权限（跟 chmod 以数字设置文件权限的方法一样）-v, --verbose # 打印创建的每一个目录的信息-p">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Linux 文件与目录管理">
+<meta property="og:url" content="https://skinyi.github.io/2022-08-13-Linux%20|%20Linux%20%E6%96%87%E4%BB%B6%E4%B8%8E%E7%9B%AE%E5%BD%95%E7%AE%A1%E7%90%86.html">
+<meta property="og:site_name" content="Avery Ma 的个人网站">
+<meta property="og:description" content="🔴 此文章由之前的 Typora 笔记迁移过来，内容可能已经过时。  文件目录操作 使用 mkdir 创建目录 12345mkdir [OPTION]... DIRECTORY...    # 如果不存在则创建目录# 常见可选选项-m, --mode&#x3D;MODE # 设置文件读写执行权限（跟 chmod 以数字设置文件权限的方法一样）-v, --verbose # 打印创建的每一个目录的信息-p">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-08-13T00:52:07.799Z">
+<meta property="article:modified_time" content="2022-08-15T01:05:53.722Z">
+<meta property="article:author" content="skinyi">
+<meta property="article:tag" content="Linux">
+<meta property="article:tag" content="RHEL">
+<meta property="article:tag" content="RHCE">
+<meta property="article:tag" content="认证考试">
+<meta name="twitter:card" content="summary">
+
+    
+    <link rel="icon" href="images/favicon.png" type="image/x-icon">
+
+    
+<link rel="stylesheet" href="/css/common.min.css">
+
+
+
+    
+    
+    
+    
+        <link href="//cdn.jsdelivr.net/npm/lightgallery.js@1.1.3/dist/css/lightgallery.min.css" rel="stylesheet">
+    
+    
+    
+<link rel="stylesheet" href="/css/iconfont.min.css">
+
+    
+<meta name="generator" content="Hexo 6.2.0"></head>
+
+    <body>
+        <header class="header header-fixture">
+    <div class="profile-search-wrap flex sm:block">
+        
+        
+        <div class="profile sm:text-center md:px-1 lg:px-3 sm:pb-4 sm:pt-6">
+            <a id="avatar" role="link" href="https://github.com/skinyi" class="inline-block lg:w-16 lg:h-16 w-8 h-8 m-2" target="_blank" rel="noopener" rel="noreferrer" >
+                <img src="/images/avatar.jpg" class="rounded-full" alt="avatar">
+            </a>
+            <h2 id="name" class="hidden lg:block">Avery Ma</h2>
+            <h3 id="title" class="hidden xl:block">IT 从业者</h3>
+            
+            <small id="location" class="hidden lg:block">
+                <i class="iconfont icon-map-icon"></i>
+                宁夏, 中国
+            </small>
+            
+        </div>
+        
+        
+<div class="search flex-1 flex lg:inline-block sm:hidden lg:px-4 lg:mt-2 lg:w-full">
+    <form id="search-form" class="my-auto flex-1 lg:border lg:border-solid lg:border-gray-200">
+        <div class="input-group table bg-gray-100 lg:bg-white w-full">
+            <input id="search-input" type="text" placeholder="搜索" class="inline-block w-full bg-gray-100 lg:bg-white">
+            <span class="table-cell">
+                <button name="search tigger button" disabled>
+                    <i class="iconfont icon-search m-2"></i>
+                </button>
+            </span>
+        </div>
+    </form>
+        
+<div id="content-json" data-placeholder="搜索" class="invisible hidden">/content.json</div>
+<script id="search-teamplate" type="text/html" data-path="/content.json">
+    <div>
+        <div class="search-header bg-gray-400">
+            <input id="actual-search-input" model="keyword" ref="input" class="inline-block w-full h-10 px-2 py-1" placeholder="搜索" type="text">
+        </div>
+        <div class="search-result bg-gray-200">
+            {{#each searchPosts}}
+            <a href="/{{ path }}" class="result-item block px-2 pb-3 mb-1 pt-1 hover:bg-indigo-100">
+                <i class="iconfont icon-file"></i>
+                <h1 class="result-title inline font-medium text-lg">{{ title }}</h1>
+                <p class="result-content text-gray-600 text-sm">{{{ text }}}</p>
+            </a>
+            {{/each}}
+        </div>
+    </div>
+</script>
+
+</div>
+
+
+        <button name="menu toogle button" id="menu-toggle-btn" class="block sm:hidden p-3" role="button" aria-expanded="false">
+            <i class="iconfont icon-hamburger"></i>
+        </button>
+    </div>
+    <nav id="menu-nav" class="hidden sm:flex flex-col">
+        
+        
+            <div class="menu-item menu-home" role="menuitem">
+                <a href="/.">
+                    <i class="iconfont icon-home" aria-hidden="true"></i>
+                    <span class="menu-title">首页</span>
+                </a>
+            </div>
+        
+        
+            <div class="menu-item menu-archives" role="menuitem">
+                <a href="/archives">
+                    <i class="iconfont icon-archive" aria-hidden="true"></i>
+                    <span class="menu-title">归档</span>
+                </a>
+            </div>
+        
+        
+            <div class="menu-item menu-categories" role="menuitem">
+                <a href="/categories">
+                    <i class="iconfont icon-folder" aria-hidden="true"></i>
+                    <span class="menu-title">分类</span>
+                </a>
+            </div>
+        
+        
+            <div class="menu-item menu-tags" role="menuitem">
+                <a href="/tags">
+                    <i class="iconfont icon-tag" aria-hidden="true"></i>
+                    <span class="menu-title">标签</span>
+                </a>
+            </div>
+        
+        
+            <div class="menu-item menu-repository" role="menuitem">
+                <a href="/repository">
+                    <i class="iconfont icon-project" aria-hidden="true"></i>
+                    <span class="menu-title">项目</span>
+                </a>
+            </div>
+        
+        
+            <div class="menu-item menu-about" role="menuitem">
+                <a href="/about">
+                    <i class="iconfont icon-cup" aria-hidden="true"></i>
+                    <span class="menu-title">关于</span>
+                </a>
+            </div>
+        
+        
+
+    </nav>
+</header>
+
+        <section class="main-section">
+            
+    <main class="flex-1 px-4 py-14 md:px-5 lg:px-8 lg:py-4 relative min-h-screen">
+    
+
+    <article class="content article article-archives article-type-list" itemscope="">
+        <header class="article-header">
+            
+    
+        <h1 class="article-title text-lg" itemprop="name">
+            Linux 文件与目录管理
+        </h1>
+    
+
+
+
+            <p class="article-meta mb-3 text-xs">
+                <span class="article-date">
+    <i class="iconfont icon-calendar-check"></i>
+	<a href="/2022-08-13-Linux%20%7C%20Linux%20%E6%96%87%E4%BB%B6%E4%B8%8E%E7%9B%AE%E5%BD%95%E7%AE%A1%E7%90%86.html" class="article-date">
+	  <time datetime="2022-08-13T00:52:07.799Z" itemprop="datePublished">8月 13</time>
+	</a>
+</span>
+
+                
+    <span class="article-category">
+    <i class="iconfont icon-folder"></i>
+    <a class="article-category-link" href="/categories/%E5%AD%A6%E4%B9%A0/">学习</a> , <a class="article-category-link" href="/categories/%E5%AD%A6%E4%B9%A0/Linux/">Linux</a> , <a class="article-category-link" href="/categories/%E6%97%A5%E5%B8%B8%E8%AE%B0%E5%BD%95/">日常记录</a> , <a class="article-category-link" href="/categories/%E8%BF%81%E7%A7%BB%E6%96%87%E7%AB%A0/">迁移文章</a>
+  </span>
+
+
+                
+    <span class="article-tags">
+    <i class="iconfont icon-tag"></i>
+    <a class="article-tag-none-link" href="/tags/Linux/" rel="tag">Linux</a>, <a class="article-tag-none-link" href="/tags/RHCE/" rel="tag">RHCE</a>, <a class="article-tag-none-link" href="/tags/RHEL/" rel="tag">RHEL</a>, <a class="article-tag-none-link" href="/tags/%E8%AE%A4%E8%AF%81%E8%80%83%E8%AF%95/" rel="tag">认证考试</a>
+  </span>
+
+
+                
+                
+    
+        <span class="post-wordcount" itemprop="wordCount">字数统计: 4k(字)</span>
+    
+    
+        <span class="post-readcount" itemprop="timeRequired">阅读时长: 15(分)</span>
+    
+
+
+            </p>
+        </header>
+        <div class="marked-body article-body">
+            <blockquote>
+<p>🔴 此文章由之前的 Typora 笔记迁移过来，内容可能已经过时。</p>
+</blockquote>
+<h2 id="文件目录操作">文件目录操作</h2>
+<h3 id="使用-mkdir-创建目录">使用 <code>mkdir</code> 创建目录</h3>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">mkdir</span> [OPTION]... DIRECTORY...    <span class="comment"># 如果不存在则创建目录</span></span><br><span class="line"><span class="comment"># 常见可选选项</span></span><br><span class="line">-m, --mode=MODE <span class="comment"># 设置文件读写执行权限（跟 chmod 以数字设置文件权限的方法一样）</span></span><br><span class="line">-v, --verbose <span class="comment"># 打印创建的每一个目录的信息</span></span><br><span class="line">-p, --parents <span class="comment"># 递归创建每层目录，即如果父目录不存在则创建好父目录后再创建自己</span></span><br></pre></td></tr></table></figure>
+<h3 id="使用-rmdir-删除空的目录">使用 <code>rmdir</code> 删除空的目录</h3>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">rmdir</span> [OPTION]... DIRECTORY... <span class="comment"># 要删除的目录必须为空</span></span><br><span class="line"><span class="comment"># 常见选项</span></span><br><span class="line">-p, --parents <span class="comment"># 递归删除</span></span><br><span class="line">-v, --verbose <span class="comment"># 打印程序执行过程</span></span><br><span class="line">--ignore-fail-on-non-empty <span class="comment"># 忽略目录非空错误</span></span><br></pre></td></tr></table></figure>
+<h3 id="使用-cd-切换工作目录">使用 <code>cd</code> 切换工作目录</h3>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> [-L|[-P [-e]] [-@]] [DIR]    <span class="comment"># 切换 shell 工作目录到 DIR（默认未当前用户家目录，可省略）</span></span><br><span class="line"><span class="comment"># 常见选项</span></span><br><span class="line">-P，<span class="comment"># 符号链接直接转到物理目录结构中，例：cd -L /bin/ &amp;&amp; pwd 输出 /usr/bin</span></span><br></pre></td></tr></table></figure>
+<p>​常见且典型的例子：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost cups]\<span class="comment"># cd &amp;&amp; pwd    # 不跟参数默认切换到家目录</span></span><br><span class="line">/root</span><br><span class="line">[root@localhost home]\<span class="comment"># cd ~ &amp;&amp; pwd    # cd ~ 切换到家目录</span></span><br><span class="line">/root</span><br><span class="line">[root@localhost home]\<span class="comment"># cd -    # cd - 为返回旧的工作目录</span></span><br><span class="line">/root</span><br><span class="line">[root@localhost ~]\<span class="comment"># ls /etc/    # 省略输出</span></span><br><span class="line">[root@localhost ~]\<span class="comment"># cd !$    # cd !$ 将上条命令的参数作为 cd 的参数</span></span><br><span class="line"><span class="built_in">cd</span> /etc/</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>🟢 想玩点花的😎：<code>touch 1.txt &amp;&amp; rm -rf !$</code>，如果你不巧是在执行了以某个存在的文件或目录作为参数的命令之后执行的这条语句，那么你刚才操作的那个文件或目录将不幸被删除😢！人生忠告：在删除文件前一定要确保知道你在干什么。一个例子：<code>rm -rf $VAR_NOT_DEFINED/*</code>，这个例子中使用了一个环境变量 <code>VAR_NOT_DEFINED</code>，但该变量未在系统中定义，故原命令就相当于 <code>rm -rf /*</code>，根目录下的所有文件和目录将不保😂。一定切记：<em>删东西需谨慎，验证后再玩花的</em>。献上我差点中招的例子：</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]\<span class="comment"># cd /etc</span></span><br><span class="line">[root@localhost etc]\<span class="comment"># touch 1.txt &amp;&amp; rm -f !$    # 一条语句 != 一条命令，幸好我没指定 -r</span></span><br><span class="line"><span class="built_in">touch</span> 1.txt &amp;&amp; <span class="built_in">rm</span> -f /etc</span><br><span class="line"><span class="built_in">rm</span>: cannot remove <span class="string">&#x27;/etc&#x27;</span>: Is a directory</span><br></pre></td></tr></table></figure>
+<h3 id="列出目录里的内容">列出目录里的内容</h3>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">ls</span> [OPTION]... [FILE]...</span><br><span class="line"><span class="comment"># 常见可选选项：</span></span><br><span class="line">-a, --all <span class="comment"># 列出所有文件（包括 ./、../以及隐藏文件）</span></span><br><span class="line">-A, --almost-all <span class="comment"># 列出所有文件（包括隐藏文件）</span></span><br><span class="line">--color[=WHEN] <span class="comment"># 用颜色渲染输出：always 总是（默认），auto 自动, never 永不</span></span><br><span class="line">-r, <span class="comment"># 将文件以相反次序显示（原来以英文字母次序排序）</span></span><br><span class="line">-t, <span class="comment"># 将文件依建立时间之先后次序列出</span></span><br><span class="line">-R, <span class="comment"># 递归显示子目录的内容</span></span><br><span class="line">-l, <span class="comment"># 一行展示一个文件（包括文件夹），更加详细</span></span><br><span class="line">    </span><br><span class="line">ll [OPTION]... [FILE]...    <span class="comment"># ll 实际上是 ls -l --color=auto 的别名，有些发行版可能不会默认设置</span></span><br><span class="line"><span class="comment"># 例子</span></span><br><span class="line">[root@localhost ~]\<span class="comment"># ll /home</span></span><br><span class="line">total 0</span><br><span class="line">drwx------. 3 student student 99 Apr 11 00:22 student</span><br><span class="line"><span class="comment"># 可选选项</span></span><br><span class="line">-h, <span class="comment"># 人类友好方式显示文件大小</span></span><br><span class="line">-d，<span class="comment"># 列出目录或文件自己本身的属性</span></span><br></pre></td></tr></table></figure>
+<p>​ <code>ls -l</code> 命令执行结果的各个部分的意义如下表所示：</p>
+<table>
+<thead>
+<tr>
+<th>部分</th>
+<th>意义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>drwx------.</td>
+<td>文件类型读写执行权限属性标识，其中第一个字母代表文件类型，<code>-</code> 代表普通文件，<code>d</code> 代表目录，<code>l</code> 符号链接，<code>b</code> 块设备文件，<code>c</code> 字符设备文件，<code>c</code> 套接字文件，接下来每三位分别代表文件所有者、所有者处于的组、其余用户的读取执行权限：<code>-</code> 代表无权限，<code>r</code> 代表有读取权限，<code>w</code> 代表有写入权限，<code>x</code> 代表有执行该文件的权限</td>
+</tr>
+<tr>
+<td>3</td>
+<td>链接数，表示有多少个文件链接到inode号码，普通文件为 1，目录的话是其包含的文件或目录的个数</td>
+</tr>
+<tr>
+<td>student</td>
+<td>该文件或目录的拥有者</td>
+</tr>
+<tr>
+<td>student</td>
+<td>该文件拥有者的分组</td>
+</tr>
+<tr>
+<td>99</td>
+<td>文件大小，默认用 byte 来表示</td>
+</tr>
+<tr>
+<td>Apr 11 00:22</td>
+<td>文件最后一次修改的时间，格式：<em>月-日-时间</em></td>
+</tr>
+<tr>
+<td>student</td>
+<td>文件名</td>
+</tr>
+</tbody>
+</table>
+<h3 id="使用-mv-命令重命名或移动文件或目录">使用 <code>mv</code> 命令重命名或移动文件或目录</h3>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">mv</span> <span class="built_in">cp</span> [OPTION]... [-T] SOURCE DEST    <span class="comment"># 重命名|产生文件的不同名的副本</span></span><br><span class="line"><span class="built_in">mv</span> <span class="built_in">cp</span> [OPTION]... SOURCE... DIRECTORY    <span class="comment"># 将所有 SOURCE 参数代表的文件移动|复制到 DIRECTORY 目录中</span></span><br><span class="line"><span class="built_in">mv</span> <span class="built_in">cp</span> [OPTION]... -t DIRECTORY SOURCE...    <span class="comment"># 传参顺序改变，更容易理解</span></span><br><span class="line"><span class="comment"># 常见参数</span></span><br><span class="line">--backup[=CONTROL]    <span class="comment"># 备份已存在的目标文件，通过选项传参决定：none|off 不备份，numbered|t 产生有编号的备份文件 existing|nil 如果已存在有编号的备份则编号备份，否则不编号，simple|never 普通备份，也可以通过环境变量 $VERSION_CONTROL 决定备份类型</span></span><br><span class="line">-b <span class="comment"># 同 --backup，不过不接受参数</span></span><br><span class="line">-S, --suffix=SUFFIX <span class="comment"># 指定备份文件后缀名，默认 ~ 。</span></span><br><span class="line"><span class="comment"># -i, -n, -f 同时指定则仅最后一个生效</span></span><br><span class="line">-f, --force <span class="comment"># 不询问，直接覆盖移动</span></span><br><span class="line">-i, --interactive <span class="comment"># 在覆盖前询问</span></span><br><span class="line">-n, --no-clobber <span class="comment"># 不覆盖已存在的文件</span></span><br><span class="line">--strip-trailing-slashes <span class="comment"># 从源参数中移除尾随斜杠</span></span><br><span class="line">-t, --target-directory=DIRECTORY <span class="comment"># 将所有 SOURCE 参数代表的文件移动到 DIRECTORY 目录中</span></span><br><span class="line">-T, --no-target-directory <span class="comment"># 将 DESC 视作正常文件</span></span><br><span class="line">-u, --update <span class="comment"># 仅当源文件比目标文件新或目标文件丢失的时候移动</span></span><br><span class="line">-v, --verbose <span class="comment"># 输出操作的详细信息</span></span><br></pre></td></tr></table></figure>
+<h3 id="使用-cp-命令复制文件或目录">使用 <code>cp</code> 命令复制文件或目录</h3>
+<p>​ <code>cp</code> 命令格式见 <code>mv</code>。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 其它常见选项</span></span><br><span class="line">--attributes-only <span class="comment"># 不要复制文件数据，仅复制文件的属性</span></span><br><span class="line">-R, -r, --recursive <span class="comment"># 递归复制，即包括目录里的内容也复制</span></span><br></pre></td></tr></table></figure>
+<h3 id="使用-rm-命令删除文件或目录">使用 <code>rm</code> 命令删除文件或目录</h3>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">rm</span> [OPTION]... [FILE]...</span><br><span class="line">-f, --force <span class="comment"># 忽略不存在的文件或参数报错，不提示</span></span><br><span class="line">-i, <span class="comment"># 删除前需确认操作</span></span><br><span class="line">-I, <span class="comment"># 删除三个以上目录或文件时，或者在递归删除时，仅提示一次</span></span><br><span class="line">-r, -R, --recursive <span class="comment"># 递归删除目录和其中的文件</span></span><br><span class="line">-d, --<span class="built_in">dir</span> <span class="comment"># 删除空目录</span></span><br><span class="line">-v, --verbose <span class="comment"># 删除时输出操作信息</span></span><br><span class="line">--, <span class="comment"># 删除以 - 为开头的文件时使用</span></span><br></pre></td></tr></table></figure>
+<h2 id="链接文件">链接文件</h2>
+<h3 id="了解-linux-文件底层机制">了解 linux 文件底层机制</h3>
+<p>​Linux 下的文件除了文件数据内容（block 节点）本身之外，还包含对这些纯文件数据内容的管理信息，如：文件名、访问权限、文件的属主以及该文件的数据所对应的磁盘块等，这些管理信息称之为元数据（meta data)，元数据保存在文件的 inode 节点之中。</p>
+<p>​可以通过 <code>stat</code> 命令查看一个文件的 <code>inode</code> 信息。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]\<span class="comment"># stat /var/log/messages # linux 下 inode 是该文件系统中的某一文件的唯一标识</span></span><br><span class="line">   File: /var/log/messages</span><br><span class="line">   Size: 1378414       Blocks: 2696       IO Block: 4096   regular file</span><br><span class="line"> Device: fd00h/64768d    Inode: 34218021    Links: 1</span><br><span class="line"> Access: (0600/-rw-------)  Uid: (    0/    root)   Gid: (    0/    root)</span><br><span class="line">Context: system_u:object_r:var_log_t:s0</span><br><span class="line"> Access: 2021-04-14 18:41:03.906745879 +0800</span><br><span class="line"> Modify: 2021-04-14 18:41:03.906745879 +0800</span><br><span class="line"> Change: 2021-04-14 18:41:03.906745879 +0800</span><br><span class="line">  Birth: -</span><br><span class="line"></span><br><span class="line"><span class="comment">## stat 显示文件或文件系统状态</span></span><br><span class="line"><span class="built_in">stat</span> [OPTIONS]... FILE...</span><br><span class="line"><span class="comment"># 常见选项：</span></span><br><span class="line">-L, --dereference <span class="comment"># 跟随链接</span></span><br><span class="line">-f, --file-system <span class="comment"># 显示文件系统状态而不是文件状态</span></span><br><span class="line">-t, --terse <span class="comment"># 以精小的方式打印信息（不常用）</span></span><br></pre></td></tr></table></figure>
+<p>​使用 <code>df -ih</code> 命令查看系统给每个文件系统的 inode 区域划分情况。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]\<span class="comment"># df -ih</span></span><br><span class="line">Filesystem            Inodes IUsed IFree IUse% Mounted on</span><br><span class="line">devtmpfs                457K   426  456K    1% /dev</span><br><span class="line">tmpfs                   464K     1  464K    1% /dev/shm</span><br><span class="line">tmpfs                   464K   987  463K    1% /run</span><br><span class="line">tmpfs                   464K    17  464K    1% /sys/fs/cgroup</span><br><span class="line">/dev/mapper/rhel-root    18M  120K   18M    1% /</span><br><span class="line">/dev/nvme0n1p1          512K   302  512K    1% /boot</span><br><span class="line">tmpfs                   464K    20  464K    1% /run/user/42</span><br><span class="line">tmpfs                   464K    32  464K    1% /run/user/0</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>某个文件系统的 inode 区域被使用完了就无法在该文件系统下创建文件了，即使该文件系统还有磁盘块可以存放文件数据。</p>
+</blockquote>
+<p>​Linux 下的目录其实是一类特殊的文件，”目录“文件下保存着该目录下所有文件的文件名到 inode 号的对应关系，这里的每个对应关系被称为一个目录项（directory entry，即 dentry）。</p>
+<h3 id="硬链接（hard-link）">硬链接（hard link）</h3>
+<p>​硬链接的实质是现有文件在文件目录树中的另一个入口，即分居于不同或相同目录下的指向同一个 inode 的 dentry，其文件内容也位于相同的磁盘数据库，具有相同的访问权限、属性等。硬链接可以理解为给已存在的文件取一个别名，只删除一个硬连接并不影响索引节点本身和其它的链接，只有当最后一个链接被删除后，文件的数据块及目录的链接才会被释放。也就是说，文件真正删除的条件是与之相关的所有硬连接文件均被删除。</p>
+<p>​硬链接的优点是几乎不占磁盘空间，因为仅仅是在一个目录文件中增加了一个目录项的对应关系，但这一有点相较软连接并不明显，软链接占用的磁盘空间也很小。硬链接的缺点是：1. 不能跨文件系统创建硬链接；2. 不能对目录创建硬链接原因可以参照网络上的这篇<a target="_blank" rel="noopener" href="https://www.jb51.net/LINUXjishu/513216_all.html">文章</a>。</p>
+<h3 id="符号链接（symlink-symbolic-link-也称软链接）">符号链接（symlink,symbolic link, 也称软链接）</h3>
+<p>​符号链接其本身也是一个文件，不过这个文件的内容是另一个文件的指针。当要查看某个软链接指向文件的内容时，系统会循着指针找出含有实际数据的目标文件，并读取其内容。</p>
+<p>​软连接可以跨越文件系统指向另一个分区的文件，甚至可以跨越主机指向远程主机的一个文件，也可以指向目录文件。软连接文件的权限是 777，即所有权限都是开放的，且无法更改，但实际文件的权限保护机制仍然起作用。符号链接可以指向一个不存在的文件，即与目标文件处于断裂状态，硬链接不能。</p>
+<h3 id="使用链接的好处">使用链接的好处</h3>
+<h4 id="保持软件的兼容性">保持软件的兼容性</h4>
+<p>​在 RHEL8 操作系统中，<code>sh</code> 命令的二进制文件实际上是 <code>bash</code> 文件的一个软连接：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]\<span class="comment"># ll /bin/sh</span></span><br><span class="line">lrwxrwxrwx. 1 root root 4 Jun 23  2020 /bin/sh -&gt; bash</span><br></pre></td></tr></table></figure>
+<p>​这样做的好处是方便系统向后兼容，因为有些较为早期的脚本文件其默认使用的解释器还默认是 <code>sh</code> ,而 <code>bash</code> 是后来 sh 的最成功的改进版本，为了使这些较为早期的脚本也能在 bash 上正常的执行，故将 sh 作为 bash 的一个链接，实现了不用更改脚本内容就可以使用 bash 来解释执行它们。</p>
+<h4 id="方便使用">方便使用</h4>
+<p>​如当我们在 /opt 目录下安装了大型软件后，可在 /usr/bin 目录下为其启动脚本或可执行文件创建链接，这样就可以实现不用修改环境变量，在命令行直接输入软链接的文件名执行就可以打开安装好的软件。</p>
+<h4 id="维持旧的操作习惯">维持旧的操作习惯</h4>
+<p>​比如在 SuSE 中，启动脚本的位置是放在 /etc/init.d 目录下，而在 RedHat 的发行版中，是放在 /etc/rc.d/init.d 目录下。为了避免因为从 SuSE 转换到 RedHat 系统而导致管理员找不到位置的情况，我们可以创建一个符号链接 /etc/init.d 使其指向 /etc/rc.d/init.d 即可。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]\<span class="comment"># ll -d /etc/init.d</span></span><br><span class="line">lrwxrwxrwx. 1 root root 11 Apr 17  2020 /etc/init.d -&gt; rc.d/init.d</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>RHEL8 版本中，原先的 service 机制（包括 init.d 控制启动项的机制）已经 systemd 机制取代了。但为了向后兼容，现版本还存在这些文件目录。</p>
+</blockquote>
+<h3 id="使用-ln-命令创建链接">使用 <code>ln</code> 命令创建链接</h3>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">ln</span> [OPTION]... [-T] TARGET LINK_NAME <span class="comment"># 为 TARGET 创建一个名为 LINK_NAME 的链接</span></span><br><span class="line"><span class="built_in">ln</span> [OPTION]... TARGET <span class="comment"># 在当前工作目录中为 TARGET 创建一个链接</span></span><br><span class="line"><span class="built_in">ls</span> [OPTION]... TARGET... DIRECTORY <span class="comment"># 在 DIRECTORY 中为每一个 TARGET 创建链接（默认硬链接，默认链接文件的文件名不允许在该目录中已存在）</span></span><br><span class="line"><span class="built_in">ls</span> [OPTION]... -t DIRECTORY TARGET... <span class="comment"># 硬链接的目标文件必须存在</span></span><br><span class="line"><span class="comment"># 常见选项：</span></span><br><span class="line">--backup=[CONTROL] <span class="comment"># 为每个已存在的目标文件创建备份，详见 mv 的 --backup 选项</span></span><br><span class="line">-b, <span class="comment"># 类似 --backup 但不接受参数</span></span><br><span class="line">-f, --force <span class="comment"># 如果目标文件已经存在则删除它</span></span><br><span class="line">-i, --interactive <span class="comment"># 交互询问是否删除已存在的目标文件</span></span><br><span class="line">-L, --logical <span class="comment"># 断开符号链接文件和目标文件之间的链接</span></span><br><span class="line">-n, --no-dereference <span class="comment"># 将 LINK_NAME 视作正常文件如果它是目录的一个软连接</span></span><br><span class="line">-P, --physical <span class="comment"># 使硬链接直接指向符号链接</span></span><br><span class="line">-s, --symbolic <span class="comment"># 创建软连接而不是硬链接</span></span><br><span class="line">-t, --target-directory=DIRECTORY <span class="comment"># 指定在哪个目录下创建链接</span></span><br><span class="line">-T, --no-target-directory <span class="comment"># 将链接名总是视作正常文件</span></span><br><span class="line">-v, --verbose <span class="comment"># 打印每个创建好的链接文件名</span></span><br></pre></td></tr></table></figure>
+<p>相关例子如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 创建练习文件 file.txt 并为其创建软链接和硬链接</span></span><br><span class="line">[student@localhost ~]\$ <span class="built_in">touch</span> file.txt &amp;&amp; <span class="built_in">echo</span> <span class="string">&quot;this is an example file of links&quot;</span> &gt; file.txt &amp;&amp; ll</span><br><span class="line">total 4</span><br><span class="line">-rw-rw-r--. 1 student student 33 Apr 14 22:13 file.txt</span><br><span class="line">[student@localhost ~]\$ <span class="built_in">ln</span> -s file.txt symlink_file</span><br><span class="line">[student@localhost ~]\$ <span class="built_in">ln</span> file.txt hlink_file</span><br><span class="line">[student@localhost ~]\$ ll</span><br><span class="line">total 8</span><br><span class="line">-rw-rw-r--. 2 student student 33 Apr 14 22:13 file.txt</span><br><span class="line">-rw-rw-r--. 2 student student 33 Apr 14 22:13 hlink_file</span><br><span class="line">lrwxrwxrwx. 1 student student  8 Apr 14 22:15 symlink_file -&gt; file.txt</span><br><span class="line"><span class="comment"># 使用 stat 命令检查这三个文件</span></span><br><span class="line">[student@localhost ~]\$ <span class="built_in">stat</span> *</span><br><span class="line">  File: file.txt</span><br><span class="line">  Size: 33            Blocks: 8          IO Block: 4096   regular file</span><br><span class="line">Device: fd00h/64768d    Inode: 3252736     Links: 2</span><br><span class="line">Access: (0664/-rw-rw-r--)  Uid: ( 1000/ student)   Gid: ( 1000/ student)</span><br><span class="line">Context: unconfined_u:object_r:user_home_t:s0</span><br><span class="line">Access: 2021-04-14 22:13:47.856472747 +0800</span><br><span class="line">Modify: 2021-04-14 22:13:47.857472747 +0800</span><br><span class="line">Change: 2021-04-14 22:16:20.095481417 +0800</span><br><span class="line"> Birth: -</span><br><span class="line">  File: hlink_file</span><br><span class="line">  Size: 33            Blocks: 8          IO Block: 4096   regular file</span><br><span class="line">Device: fd00h/64768d    Inode: 3252736     Links: 2</span><br><span class="line">Access: (0664/-rw-rw-r--)  Uid: ( 1000/ student)   Gid: ( 1000/ student)</span><br><span class="line">Context: unconfined_u:object_r:user_home_t:s0</span><br><span class="line">Access: 2021-04-14 22:13:47.856472747 +0800</span><br><span class="line">Modify: 2021-04-14 22:13:47.857472747 +0800</span><br><span class="line">Change: 2021-04-14 22:16:20.095481417 +0800</span><br><span class="line"> Birth: -</span><br><span class="line">  File: symlink_file -&gt; file.txt</span><br><span class="line">  Size: 8             Blocks: 0          IO Block: 4096   symbolic <span class="built_in">link</span></span><br><span class="line">Device: fd00h/64768d    Inode: 3252737     Links: 1</span><br><span class="line">Access: (0777/lrwxrwxrwx)  Uid: ( 1000/ student)   Gid: ( 1000/ student)</span><br><span class="line">Context: unconfined_u:object_r:user_home_t:s0</span><br><span class="line">Access: 2021-04-14 22:16:23.155481591 +0800</span><br><span class="line">Modify: 2021-04-14 22:15:43.072479308 +0800</span><br><span class="line">Change: 2021-04-14 22:15:43.072479308 +0800</span><br><span class="line"> Birth: -</span><br></pre></td></tr></table></figure>
+<p>​经过对比这三个文件可以发现：源文件和其硬链接文件共同指向了同一个 inode (Inode:3252736) ,硬链接数（Links）字段同为 2，表示有两个目录项指向该 inode，有多少个硬链接其值就为多少（普通文件必存在一个硬链接），它们的文件元数据是一样的；而软链接与源文件相比，其访问权限为 0777，且 inode 号也与源文件不同，其所占的文件数据块大小为0。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 删除源文件后看看</span></span><br><span class="line">[student@localhost ~]\$ <span class="built_in">rm</span> file.txt &amp;&amp; ll -i &amp;&amp; <span class="built_in">cat</span> hlink_file</span><br><span class="line">total 4</span><br><span class="line">3252736 -rw-rw-r--. 1 student student 33 Apr 14 22:13 hlink_file</span><br><span class="line">3252737 lrwxrwxrwx. 1 student student  8 Apr 14 22:15 symlink_file -&gt; file.txt</span><br><span class="line">this is an example file of links</span><br><span class="line">[student@localhost ~]\$ <span class="built_in">cat</span> symlink_file </span><br><span class="line"><span class="built_in">cat</span>: symlink_file: No such file or directory</span><br></pre></td></tr></table></figure>
+<p>​删除了源文件后还可以通过硬链接访问文件内容，但该文件的元数据的 Links 字段重新变回了 1（第三列），其 inode（第一列） 没有改变，软链接的记录会不断闪烁表明该软链接已经断裂失效，通过 cat 命令查看其内容也会提示没有该文件。</p>
+<h3 id="追随链接">追随链接</h3>
+<p>​自从有了软链接，当要备份、复制或者移动目录或文件的时候，就会出现是否要”追随链接“的问题。如果是，则会操作链接所指的对象，如果不是，则仅仅操作链接本身。一些命令工具会出现是否追随的选项，如 <code>cp</code>：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># cp 命令关于链接的选项</span></span><br><span class="line">-L, --dereference <span class="comment"># 追随链接（复制链接所指向的目标）</span></span><br><span class="line">-P, --no-dereference <span class="comment"># 不追随链接（复制链接本身）</span></span><br></pre></td></tr></table></figure>
+
+        </div>
+        
+<blockquote class="copyright">
+    <p><strong>本文链接 : </strong><a class="permalink" href="https://skinyi.github.io/2022-08-13-Linux%20|%20Linux%20%E6%96%87%E4%BB%B6%E4%B8%8E%E7%9B%AE%E5%BD%95%E7%AE%A1%E7%90%86.html">https://skinyi.github.io/2022-08-13-Linux | Linux 文件与目录管理.html</a></p>
+    <p><strong>这篇文章由作者胡编乱造或者由其他文章复制粘贴而来，其中有些内容可能已经过时，请谨慎参考复制文章中的内容。</strong></p>
+</blockquote>
+
+
+    </article>
+    
+    <section id="comments">
+        
+    </section>
+
+
+    
+
+</main>
+
+
+<aside style="" id="sidebar" class="aside aside-fixture">
+    <div class="toc-sidebar">
+        <nav id="toc" class="article-toc">
+            <h3 class="toc-title">文章目录</h3>
+            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%96%87%E4%BB%B6%E7%9B%AE%E5%BD%95%E6%93%8D%E4%BD%9C"><span class="toc-number">1.</span> <span class="toc-text">文件目录操作</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8-mkdir-%E5%88%9B%E5%BB%BA%E7%9B%AE%E5%BD%95"><span class="toc-number">1.1.</span> <span class="toc-text">使用 mkdir 创建目录</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8-rmdir-%E5%88%A0%E9%99%A4%E7%A9%BA%E7%9A%84%E7%9B%AE%E5%BD%95"><span class="toc-number">1.2.</span> <span class="toc-text">使用 rmdir 删除空的目录</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8-cd-%E5%88%87%E6%8D%A2%E5%B7%A5%E4%BD%9C%E7%9B%AE%E5%BD%95"><span class="toc-number">1.3.</span> <span class="toc-text">使用 cd 切换工作目录</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%97%E5%87%BA%E7%9B%AE%E5%BD%95%E9%87%8C%E7%9A%84%E5%86%85%E5%AE%B9"><span class="toc-number">1.4.</span> <span class="toc-text">列出目录里的内容</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8-mv-%E5%91%BD%E4%BB%A4%E9%87%8D%E5%91%BD%E5%90%8D%E6%88%96%E7%A7%BB%E5%8A%A8%E6%96%87%E4%BB%B6%E6%88%96%E7%9B%AE%E5%BD%95"><span class="toc-number">1.5.</span> <span class="toc-text">使用 mv 命令重命名或移动文件或目录</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8-cp-%E5%91%BD%E4%BB%A4%E5%A4%8D%E5%88%B6%E6%96%87%E4%BB%B6%E6%88%96%E7%9B%AE%E5%BD%95"><span class="toc-number">1.6.</span> <span class="toc-text">使用 cp 命令复制文件或目录</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8-rm-%E5%91%BD%E4%BB%A4%E5%88%A0%E9%99%A4%E6%96%87%E4%BB%B6%E6%88%96%E7%9B%AE%E5%BD%95"><span class="toc-number">1.7.</span> <span class="toc-text">使用 rm 命令删除文件或目录</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%93%BE%E6%8E%A5%E6%96%87%E4%BB%B6"><span class="toc-number">2.</span> <span class="toc-text">链接文件</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BA%86%E8%A7%A3-linux-%E6%96%87%E4%BB%B6%E5%BA%95%E5%B1%82%E6%9C%BA%E5%88%B6"><span class="toc-number">2.1.</span> <span class="toc-text">了解 linux 文件底层机制</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%A1%AC%E9%93%BE%E6%8E%A5%EF%BC%88hard-link%EF%BC%89"><span class="toc-number">2.2.</span> <span class="toc-text">硬链接（hard link）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AC%A6%E5%8F%B7%E9%93%BE%E6%8E%A5%EF%BC%88symlink-symbolic-link-%E4%B9%9F%E7%A7%B0%E8%BD%AF%E9%93%BE%E6%8E%A5%EF%BC%89"><span class="toc-number">2.3.</span> <span class="toc-text">符号链接（symlink,symbolic link, 也称软链接）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8%E9%93%BE%E6%8E%A5%E7%9A%84%E5%A5%BD%E5%A4%84"><span class="toc-number">2.4.</span> <span class="toc-text">使用链接的好处</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BF%9D%E6%8C%81%E8%BD%AF%E4%BB%B6%E7%9A%84%E5%85%BC%E5%AE%B9%E6%80%A7"><span class="toc-number">2.4.1.</span> <span class="toc-text">保持软件的兼容性</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%96%B9%E4%BE%BF%E4%BD%BF%E7%94%A8"><span class="toc-number">2.4.2.</span> <span class="toc-text">方便使用</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%BB%B4%E6%8C%81%E6%97%A7%E7%9A%84%E6%93%8D%E4%BD%9C%E4%B9%A0%E6%83%AF"><span class="toc-number">2.4.3.</span> <span class="toc-text">维持旧的操作习惯</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8-ln-%E5%91%BD%E4%BB%A4%E5%88%9B%E5%BB%BA%E9%93%BE%E6%8E%A5"><span class="toc-number">2.5.</span> <span class="toc-text">使用 ln 命令创建链接</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BF%BD%E9%9A%8F%E9%93%BE%E6%8E%A5"><span class="toc-number">2.6.</span> <span class="toc-text">追随链接</span></a></li></ol></li></ol>
+        </nav>
+    </div>
+</aside>
+
+
+
+
+
+        </section>
+        <footer class="hidden lg:block fixed bottom-0 left-0 sm:w-1/12 bg-gray-100 z-40">
+    
+    
+        <p class="footer-custom">❤ Powered by <a href="https://hexo.io/" target="_blank" rel="noopener noreferrer">Hexo</a> with <a href="https://github.com/fengkx/hexo-theme-purer" target="_blank" rel="noopener noreferrer">Purer theme</a>.</p>
+    
+</footer>
+
+        <div id="mask" class="hidden mask fixed inset-0 bg-gray-900 opacity-75 z-40"></div>
+        <div id="search-view-container" class="hidden shadow-xl"></div>
+        
+<script src="/js/dom-event.min.js"></script>
+
+
+
+<script src="/js/local-search.min.js"></script>
+
+
+
+    <script src="//cdn.jsdelivr.net/npm/lightgallery.js@1.1.3/dist/js/lightgallery.min.js"></script>
+    
+<script src="/js/light-gallery.min.js"></script>
+
+
+
+
+
+
+    </body>
+</html>

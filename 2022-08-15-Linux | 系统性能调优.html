@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html  lang="zh-CN,en,default" >
+    <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, maximum-scale=5, viewport-fit=cover">
+    <title>系统性能调优 | Avery Ma 的个人网站</title>
+    <meta name="description" content="🔴 此文章由之前的 Typora 笔记迁移过来，内容可能已经过时。  概述 ​系统管理员可以基于多种用例工作负载来调整各种设备设置，以此优化系统性能。tuned 守护进程会利用反映特定工作负载要求的调优配置文件，以静态和动态两种方式应用调优调整。 静态调优 ​tuned 守护进程会在服务启动时或选择新的调优配置文件时应用系统设置。静态调优会对配置文件中由 tuned 在运行时应用的预定义 ke">
+<meta property="og:type" content="article">
+<meta property="og:title" content="系统性能调优">
+<meta property="og:url" content="https://skinyi.github.io/2022-08-15-Linux%20|%20%E7%B3%BB%E7%BB%9F%E6%80%A7%E8%83%BD%E8%B0%83%E4%BC%98.html">
+<meta property="og:site_name" content="Avery Ma 的个人网站">
+<meta property="og:description" content="🔴 此文章由之前的 Typora 笔记迁移过来，内容可能已经过时。  概述 ​系统管理员可以基于多种用例工作负载来调整各种设备设置，以此优化系统性能。tuned 守护进程会利用反映特定工作负载要求的调优配置文件，以静态和动态两种方式应用调优调整。 静态调优 ​tuned 守护进程会在服务启动时或选择新的调优配置文件时应用系统设置。静态调优会对配置文件中由 tuned 在运行时应用的预定义 ke">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-08-15T06:18:03.264Z">
+<meta property="article:modified_time" content="2022-08-15T06:20:03.403Z">
+<meta property="article:author" content="skinyi">
+<meta property="article:tag" content="Linux">
+<meta property="article:tag" content="RHEL">
+<meta property="article:tag" content="RHCE">
+<meta property="article:tag" content="认证考试">
+<meta name="twitter:card" content="summary">
+
+    
+    <link rel="icon" href="images/favicon.png" type="image/x-icon">
+
+    
+<link rel="stylesheet" href="/css/common.min.css">
+
+
+
+    
+    
+    
+    
+        <link href="//cdn.jsdelivr.net/npm/lightgallery.js@1.1.3/dist/css/lightgallery.min.css" rel="stylesheet">
+    
+    
+    
+<link rel="stylesheet" href="/css/iconfont.min.css">
+
+    
+<meta name="generator" content="Hexo 6.2.0"></head>
+
+    <body>
+        <header class="header header-fixture">
+    <div class="profile-search-wrap flex sm:block">
+        
+        
+        <div class="profile sm:text-center md:px-1 lg:px-3 sm:pb-4 sm:pt-6">
+            <a id="avatar" role="link" href="https://github.com/skinyi" class="inline-block lg:w-16 lg:h-16 w-8 h-8 m-2" target="_blank" rel="noopener" rel="noreferrer" >
+                <img src="/images/avatar.jpg" class="rounded-full" alt="avatar">
+            </a>
+            <h2 id="name" class="hidden lg:block">Avery Ma</h2>
+            <h3 id="title" class="hidden xl:block">IT 从业者</h3>
+            
+            <small id="location" class="hidden lg:block">
+                <i class="iconfont icon-map-icon"></i>
+                宁夏, 中国
+            </small>
+            
+        </div>
+        
+        
+<div class="search flex-1 flex lg:inline-block sm:hidden lg:px-4 lg:mt-2 lg:w-full">
+    <form id="search-form" class="my-auto flex-1 lg:border lg:border-solid lg:border-gray-200">
+        <div class="input-group table bg-gray-100 lg:bg-white w-full">
+            <input id="search-input" type="text" placeholder="搜索" class="inline-block w-full bg-gray-100 lg:bg-white">
+            <span class="table-cell">
+                <button name="search tigger button" disabled>
+                    <i class="iconfont icon-search m-2"></i>
+                </button>
+            </span>
+        </div>
+    </form>
+        
+<div id="content-json" data-placeholder="搜索" class="invisible hidden">/content.json</div>
+<script id="search-teamplate" type="text/html" data-path="/content.json">
+    <div>
+        <div class="search-header bg-gray-400">
+            <input id="actual-search-input" model="keyword" ref="input" class="inline-block w-full h-10 px-2 py-1" placeholder="搜索" type="text">
+        </div>
+        <div class="search-result bg-gray-200">
+            {{#each searchPosts}}
+            <a href="/{{ path }}" class="result-item block px-2 pb-3 mb-1 pt-1 hover:bg-indigo-100">
+                <i class="iconfont icon-file"></i>
+                <h1 class="result-title inline font-medium text-lg">{{ title }}</h1>
+                <p class="result-content text-gray-600 text-sm">{{{ text }}}</p>
+            </a>
+            {{/each}}
+        </div>
+    </div>
+</script>
+
+</div>
+
+
+        <button name="menu toogle button" id="menu-toggle-btn" class="block sm:hidden p-3" role="button" aria-expanded="false">
+            <i class="iconfont icon-hamburger"></i>
+        </button>
+    </div>
+    <nav id="menu-nav" class="hidden sm:flex flex-col">
+        
+        
+            <div class="menu-item menu-home" role="menuitem">
+                <a href="/.">
+                    <i class="iconfont icon-home" aria-hidden="true"></i>
+                    <span class="menu-title">首页</span>
+                </a>
+            </div>
+        
+        
+            <div class="menu-item menu-archives" role="menuitem">
+                <a href="/archives">
+                    <i class="iconfont icon-archive" aria-hidden="true"></i>
+                    <span class="menu-title">归档</span>
+                </a>
+            </div>
+        
+        
+            <div class="menu-item menu-categories" role="menuitem">
+                <a href="/categories">
+                    <i class="iconfont icon-folder" aria-hidden="true"></i>
+                    <span class="menu-title">分类</span>
+                </a>
+            </div>
+        
+        
+            <div class="menu-item menu-tags" role="menuitem">
+                <a href="/tags">
+                    <i class="iconfont icon-tag" aria-hidden="true"></i>
+                    <span class="menu-title">标签</span>
+                </a>
+            </div>
+        
+        
+            <div class="menu-item menu-repository" role="menuitem">
+                <a href="/repository">
+                    <i class="iconfont icon-project" aria-hidden="true"></i>
+                    <span class="menu-title">项目</span>
+                </a>
+            </div>
+        
+        
+            <div class="menu-item menu-about" role="menuitem">
+                <a href="/about">
+                    <i class="iconfont icon-cup" aria-hidden="true"></i>
+                    <span class="menu-title">关于</span>
+                </a>
+            </div>
+        
+        
+
+    </nav>
+</header>
+
+        <section class="main-section">
+            
+    <main class="flex-1 px-4 py-14 md:px-5 lg:px-8 lg:py-4 relative min-h-screen">
+    
+
+    <article class="content article article-archives article-type-list" itemscope="">
+        <header class="article-header">
+            
+    
+        <h1 class="article-title text-lg" itemprop="name">
+            系统性能调优
+        </h1>
+    
+
+
+
+            <p class="article-meta mb-3 text-xs">
+                <span class="article-date">
+    <i class="iconfont icon-calendar-check"></i>
+	<a href="/2022-08-15-Linux%20%7C%20%E7%B3%BB%E7%BB%9F%E6%80%A7%E8%83%BD%E8%B0%83%E4%BC%98.html" class="article-date">
+	  <time datetime="2022-08-15T06:18:03.264Z" itemprop="datePublished">8月 15</time>
+	</a>
+</span>
+
+                
+    <span class="article-category">
+    <i class="iconfont icon-folder"></i>
+    <a class="article-category-link" href="/categories/%E5%AD%A6%E4%B9%A0/">学习</a> , <a class="article-category-link" href="/categories/%E5%AD%A6%E4%B9%A0/Linux/">Linux</a> , <a class="article-category-link" href="/categories/%E6%97%A5%E5%B8%B8%E8%AE%B0%E5%BD%95/">日常记录</a> , <a class="article-category-link" href="/categories/%E8%BF%81%E7%A7%BB%E6%96%87%E7%AB%A0/">迁移文章</a>
+  </span>
+
+
+                
+    <span class="article-tags">
+    <i class="iconfont icon-tag"></i>
+    <a class="article-tag-none-link" href="/tags/Linux/" rel="tag">Linux</a>, <a class="article-tag-none-link" href="/tags/RHCE/" rel="tag">RHCE</a>, <a class="article-tag-none-link" href="/tags/RHEL/" rel="tag">RHEL</a>, <a class="article-tag-none-link" href="/tags/%E8%AE%A4%E8%AF%81%E8%80%83%E8%AF%95/" rel="tag">认证考试</a>
+  </span>
+
+
+                
+                
+    
+        <span class="post-wordcount" itemprop="wordCount">字数统计: 2.1k(字)</span>
+    
+    
+        <span class="post-readcount" itemprop="timeRequired">阅读时长: 9(分)</span>
+    
+
+
+            </p>
+        </header>
+        <div class="marked-body article-body">
+            <blockquote>
+<p>🔴 此文章由之前的 Typora 笔记迁移过来，内容可能已经过时。</p>
+</blockquote>
+<h2 id="概述-3">概述</h2>
+<p>​系统管理员可以基于多种用例工作负载来调整各种设备设置，以此优化系统性能。<em>tuned</em> 守护进程会利用反映特定工作负载要求的调优配置文件，以静态和动态两种方式应用调优调整。</p>
+<h3 id="静态调优">静态调优</h3>
+<p>​<em>tuned</em> 守护进程会在服务启动时或选择新的调优配置文件时应用系统设置。静态调优会对配置文件中由 <em>tuned</em> 在运行时应用的预定义 <em>kernel</em> 参数进行配置。对于静态调优而言，内核参数是针对整体性能预期而设置的，不会随着活跃度的变化而进行调整。</p>
+<h3 id="动态调优">动态调优</h3>
+<p>​对于动态调优而言，<em>tuned</em> 守护进程会监视系统活动，并根据运行时行为的变化来调整设置。从所选调优配置文件中声明的初始设置开始，动态调优会不断进行调优调整以适应当前工作负载。</p>
+<h3 id="配置文件">配置文件</h3>
+<p>​<em>tuned</em> 应用提供的配置文件分为以下几个类别：</p>
+<ul>
+<li>节能型配置文件；</li>
+<li>性能提升型配置文件；</li>
+</ul>
+<p>​性能提升型配置文件中包括侧重于以下方面的配置文件：</p>
+<ul>
+<li>存储和网络的低延迟；</li>
+<li>存储和网络的高吞吐量；</li>
+<li>虚拟机性能；</li>
+<li>虚拟化主机性能。</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>调优配置文件</th>
+<th>用途</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>balanced(均衡)</td>
+<td>适合需要在节能和性能之间进行折衷的系统。</td>
+</tr>
+<tr>
+<td>desktop</td>
+<td>从 balanced 配置文件衍生而来。加快交互式应用响应速度。</td>
+</tr>
+<tr>
+<td>throughput-performance</td>
+<td>调优系统，以获得最大吞吐量。</td>
+</tr>
+<tr>
+<td>latency-performance</td>
+<td>适合需要牺牲能耗来获取低延迟的服务器系统。</td>
+</tr>
+<tr>
+<td>network-latency</td>
+<td>从 latency-performance 配置文件衍生而来。它可以启用额外的网络调优参数以提供低网络延迟。</td>
+</tr>
+<tr>
+<td>network-throughput</td>
+<td>从 throughput-performance 配置文件衍生而来。应用其他网络调优参数，以获得最大网络吞吐量。</td>
+</tr>
+<tr>
+<td>powersave</td>
+<td>调优系统，以最大程度实现节能。</td>
+</tr>
+<tr>
+<td>oracle</td>
+<td>基于 throughput-performance 配置文件，针对 oracle 数据库负载进行优化。</td>
+</tr>
+<tr>
+<td>virtual-guest</td>
+<td>当系统在虚拟机上运行时，调优系统以获得最高性能。</td>
+</tr>
+<tr>
+<td>virtual-host</td>
+<td>当系统充当虚拟机宿主机时，调优系统以获得最高性能。</td>
+</tr>
+</tbody>
+</table>
+<p>​除此之外还有：<em>accelerator-performance</em>、<em>hpc-compute</em>、<em>intel-sst</em>、<em>optimize-serial-console</em> 等配置文件。</p>
+<h2 id="从命令行管理调优配置文件">从命令行管理调优配置文件</h2>
+<p>​使用 <code>tuned-adm</code> 命令来更改 <em>tuned</em> 守护进程的设置。此命令可以查询当前设置、列出可用的配置文件、为系统推荐调优配置文件、直接更改配置文件或关闭调优。</p>
+<p>​系统管理员使用 <em>tuned-adm active</em> 来确定当前活动的调优配置文件。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]\<span class="comment"># tuned-adm active</span></span><br><span class="line">Current active profile: virtual-guest</span><br></pre></td></tr></table></figure>
+<p>​使用 <code>tuned-adm list</code> 命令可以列出所有可用的调优配置文件，包括内置的配置文件和系统管理员创建的自定义调优配置文件。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]\<span class="comment"># tuned-adm list</span></span><br><span class="line">Available profiles:</span><br><span class="line">- accelerator-performance     - Throughput performance based tuning with disabled higher latency STOP states</span><br><span class="line">- balanced                    - General non-specialized tuned profile</span><br><span class="line">- desktop                     - Optimize <span class="keyword">for</span> the desktop use-case</span><br><span class="line">- hpc-compute                 - Optimize <span class="keyword">for</span> HPC compute workloads</span><br><span class="line">- intel-sst                   - Configure <span class="keyword">for</span> Intel Speed Select Base Frequency</span><br><span class="line">- latency-performance         - Optimize <span class="keyword">for</span> deterministic performance at the cost of increased power consumption</span><br><span class="line">- network-latency             - Optimize <span class="keyword">for</span> deterministic performance at the cost of increased power consumption, focused on low latency network performance</span><br><span class="line">- network-throughput          - Optimize <span class="keyword">for</span> streaming network throughput, generally only necessary on older CPUs or 40G+ networks</span><br><span class="line">- optimize-serial-console     - Optimize <span class="keyword">for</span> serial console use.</span><br><span class="line">- powersave                   - Optimize <span class="keyword">for</span> low power consumption</span><br><span class="line">- throughput-performance      - Broadly applicable tuning that provides excellent performance across a variety of common server workloads</span><br><span class="line">- virtual-guest               - Optimize <span class="keyword">for</span> running inside a virtual guest</span><br><span class="line">- virtual-host                - Optimize <span class="keyword">for</span> running KVM guests</span><br><span class="line">Current active profile: virtual-guest</span><br></pre></td></tr></table></figure>
+<p>​使用 <code>tuned-adm profile &lt;profilename&gt;</code> 激活更加符合当前机器调优要求的其它配置文件。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]\<span class="comment"># tuned-adm profile desktop</span></span><br><span class="line">[root@localhost ~]\<span class="comment"># tuned-adm active</span></span><br><span class="line">Current active profile: desktop</span><br></pre></td></tr></table></figure>
+<p>​使用 <code>tuned-adm recommend</code> 命令来获得系统推荐的调优配置文件，该机制用于在安装后确定系统的默认配置文件。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]\<span class="comment"># tuned-adm recommend</span></span><br><span class="line">virtual-guest</span><br></pre></td></tr></table></figure>
+<p>​使用 <code>tuned-adm off</code> 关闭 <em>tuned-adm</em> 调优。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]\<span class="comment"># tuned-adm off</span></span><br><span class="line">[root@localhost ~]\<span class="comment"># tuned-adm active</span></span><br><span class="line">No current active profile.</span><br></pre></td></tr></table></figure>
+<p>​如需开启调优，使用 <code>tuned-adm profile &lt;profilename&gt;</code> 启用调优配置文件即可。</p>
+<h2 id="调优进程调度">调优进程调度</h2>
+<p>​计算机系统上运行的进程线程数超出了 CPU 数量，通过使用多任务技术，Linux 和其他操作系统可运行超出其处理单元数的进程。操作系统进程调度程序在单个核心上的进程之间快速切换，从而给人一种有多个进程在同时运行的印象。</p>
+<p>​不同进程的重要程度不同，进程调度程序可以配置为针对不同的进程采用不同的调度策略。常规系统上运行的大多数进程所使用的调度策略称为 SCHED_OTHER（也称为SCHED_NORMAL），但还有其他一些策略可满足各种各样的工作负载需求。为进程设置静态的 <em>nice</em> 值可以设置进程的静态优先度。Linux 的 nice 值范围为 -20 到 19，<b>数值越大则优先级越低</b>，默认情况下，进程将继承其父进程的 nice 级别，<b>通常为 0</b>，优先级较高的进程更加容易获得 CPU 资源。</p>
+<h3 id="查看进程的-nice-级别">查看进程的 nice 级别</h3>
+<p>​使用 <code>top</code> 命令可通过交互方式查看和管理进程。该命令的输出默认显示 nice 级别（<em>NI</em>列）和优先级（<em>PR</em>列），在 <em>top</em> 界面中，nice 级别映射至内部系统优先级的关系是：NI值 + 20 = PR值。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]\<span class="comment"># top</span></span><br><span class="line">top - 14:55:11 up  6:11,  2 <span class="built_in">users</span>,  load average: 0.05, 0.01, 0.00</span><br><span class="line">Tasks: 333 total,   1 running, 332 sleeping,   0 stopped,   0 zombie</span><br><span class="line">%Cpu(s):  0.5 us,  0.2 sy,  0.0 ni, 99.0 <span class="built_in">id</span>,  0.0 wa,  0.2 hi,  0.2 si,  0.0 st</span><br><span class="line">MiB Mem :   3709.4 total,   1792.8 free,   1289.7 used,    626.9 buff/cache</span><br><span class="line">MiB Swap:   2048.0 total,   2048.0 free,      0.0 used.   2169.3 avail Mem </span><br><span class="line"></span><br><span class="line">    PID USER      PR  NI    VIRT    RES    SHR S  %CPU  %MEM     TIME+ COMMAND        </span><br><span class="line">   2374 student   20   0 2854124 180868  92620 S   0.7   4.8   0:22.67 gnome-shell    </span><br><span class="line">   2010 gdm       20   0 2789052 159172  89064 S   0.3   4.2   0:13.35 gnome-shell    </span><br><span class="line">      1 root      20   0  180464  14660   9212 S   0.0   0.4   0:06.62 systemd        </span><br><span class="line">      2 root      20   0       0      0      0 S   0.0   0.0   0:00.09 kthreadd       </span><br><span class="line">      3 root       0 -20       0      0      0 I   0.0   0.0   0:00.00 rcu_gp         </span><br><span class="line">      4 root       0 -20       0      0      0 I   0.0   0.0   0:00.00 rcu_par_gp</span><br><span class="line">      . ......</span><br></pre></td></tr></table></figure>
+<p>​使用 <code>ps</code> 命令搭配适当的选项也可以查看到进程的 nice 值，该命令结果中值为 <em>-</em> 的 nice 值代表该进程按照其他调度策略运行，并被调度程序解读为具有较高的优先级。进程采用的进程调度方式可在 <em>CLS</em> 列查看，其中 <em>TS</em> 代表采用了 SCHED_NORMAL 调度策略运行。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]\<span class="comment"># ps axo pid,comm,cls,nice --sort=-nice</span></span><br><span class="line">    PID COMMAND         CLS  NI</span><br><span class="line">     34 khugepaged       TS  19</span><br><span class="line">   1017 alsactl         IDL   -</span><br><span class="line">   2763 tracker-miner-a IDL   -</span><br><span class="line">   2764 tracker-miner-f  TS  19</span><br><span class="line">     33 ksmd             TS   5</span><br><span class="line">   1034 rtkit-daemon     TS   1</span><br><span class="line">   .... ......</span><br></pre></td></tr></table></figure>
+<h3 id="以指定-nice-值启动某进程">以指定 nice 值启动某进程</h3>
+<p>​使用 <code>nice</code> 命令来以指定 nice 值（默认为 10）来启动一个程序。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]\<span class="comment"># nice sha1sum /dev/zero &amp;</span></span><br><span class="line">[1] 6788</span><br><span class="line">[root@localhost ~]\<span class="comment"># ps -o pid,comm,nice 6788</span></span><br><span class="line">    PID COMMAND          NI</span><br><span class="line">   6788 <span class="built_in">sha1sum</span>          10</span><br></pre></td></tr></table></figure>
+<p>​可以使用 <em>-n</em> 选项来指定 nice 值。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]\<span class="comment"># nice -n 20 sha1sum /dev/zero &amp;	# 指定 nice 超出边界则会以边界值为准</span></span><br><span class="line">[1] 6808</span><br><span class="line">[root@localhost ~]\<span class="comment"># ps -o pid,comm,nice 6808</span></span><br><span class="line">    PID COMMAND          NI</span><br><span class="line">   6808 <span class="built_in">sha1sum</span>          19</span><br></pre></td></tr></table></figure>
+<h3 id="更改运行中的进程的-nice-值">更改运行中的进程的 nice 值</h3>
+<p>​使用 <code>renice</code> 命令更改运行中的进程的 nice 值。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]\<span class="comment"># renice -n 15 6808</span></span><br><span class="line">6808 （process ID）old priority 19, new priority 15</span><br></pre></td></tr></table></figure>
+<p>​也可以搭配 <code>top</code> 命令，在 <em>top</em> 界面中，按下 <em>r</em> 选项会提示：<em>PID to renice [default pid = ****]</em>，然后输入要更改的进程的 pid 和 nice 级别。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">top - 15:19:05 up  6:35,  2 <span class="built_in">users</span>,  load average: 0.00, 0.02, 0.04</span><br><span class="line">Tasks: 333 total,   1 running, 332 sleeping,   0 stopped,   0 zombie</span><br><span class="line">%Cpu(s):  0.1 us,  0.1 sy,  0.0 ni, 99.6 <span class="built_in">id</span>,  0.0 wa,  0.1 hi,  0.1 si,  0.0 st</span><br><span class="line">MiB Mem :   3709.4 total,   1792.2 free,   1290.1 used,    627.1 buff/cache</span><br><span class="line">MiB Swap:   2048.0 total,   2048.0 free,      0.0 used.   2168.9 avail Mem </span><br><span class="line">PID to renice [default pid = 2522] </span><br><span class="line">    PID USER      PR  NI    VIRT    RES    SHR S  %CPU  %MEM     TIME+ COMMAND        </span><br><span class="line">   2522 root      20   0  205208  32316  10372 S   0.2   0.9   0:49.24 sssd_kcm       </span><br><span class="line">   1039 root      20   0  369624  12628  10504 S   0.1   0.3   0:34.17 vmtoolsd       </span><br><span class="line">   2739 student   20   0  534444  38860  31804 S   0.1   1.0   0:34.34 vmtoolsd       </span><br><span class="line">   6904 root      20   0   65620   5364   4328 R   0.1   0.1   0:00.04 top            </span><br><span class="line">   .... ......</span><br></pre></td></tr></table></figure>
+
+        </div>
+        
+<blockquote class="copyright">
+    <p><strong>本文链接 : </strong><a class="permalink" href="https://skinyi.github.io/2022-08-15-Linux%20|%20%E7%B3%BB%E7%BB%9F%E6%80%A7%E8%83%BD%E8%B0%83%E4%BC%98.html">https://skinyi.github.io/2022-08-15-Linux | 系统性能调优.html</a></p>
+    <p><strong>这篇文章由作者胡编乱造或者由其他文章复制粘贴而来，其中有些内容可能已经过时，请谨慎参考复制文章中的内容。</strong></p>
+</blockquote>
+
+
+    </article>
+    
+    <section id="comments">
+        
+    </section>
+
+
+    
+
+</main>
+
+
+<aside style="" id="sidebar" class="aside aside-fixture">
+    <div class="toc-sidebar">
+        <nav id="toc" class="article-toc">
+            <h3 class="toc-title">文章目录</h3>
+            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A6%82%E8%BF%B0-3"><span class="toc-number">1.</span> <span class="toc-text">概述</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%9D%99%E6%80%81%E8%B0%83%E4%BC%98"><span class="toc-number">1.1.</span> <span class="toc-text">静态调优</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8A%A8%E6%80%81%E8%B0%83%E4%BC%98"><span class="toc-number">1.2.</span> <span class="toc-text">动态调优</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6"><span class="toc-number">1.3.</span> <span class="toc-text">配置文件</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%8E%E5%91%BD%E4%BB%A4%E8%A1%8C%E7%AE%A1%E7%90%86%E8%B0%83%E4%BC%98%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6"><span class="toc-number">2.</span> <span class="toc-text">从命令行管理调优配置文件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%B0%83%E4%BC%98%E8%BF%9B%E7%A8%8B%E8%B0%83%E5%BA%A6"><span class="toc-number">3.</span> <span class="toc-text">调优进程调度</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9F%A5%E7%9C%8B%E8%BF%9B%E7%A8%8B%E7%9A%84-nice-%E7%BA%A7%E5%88%AB"><span class="toc-number">3.1.</span> <span class="toc-text">查看进程的 nice 级别</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%A5%E6%8C%87%E5%AE%9A-nice-%E5%80%BC%E5%90%AF%E5%8A%A8%E6%9F%90%E8%BF%9B%E7%A8%8B"><span class="toc-number">3.2.</span> <span class="toc-text">以指定 nice 值启动某进程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9B%B4%E6%94%B9%E8%BF%90%E8%A1%8C%E4%B8%AD%E7%9A%84%E8%BF%9B%E7%A8%8B%E7%9A%84-nice-%E5%80%BC"><span class="toc-number">3.3.</span> <span class="toc-text">更改运行中的进程的 nice 值</span></a></li></ol></li></ol>
+        </nav>
+    </div>
+</aside>
+
+
+
+
+
+        </section>
+        <footer class="hidden lg:block fixed bottom-0 left-0 sm:w-1/12 bg-gray-100 z-40">
+    
+    
+        <p class="footer-custom">❤ Powered by <a href="https://hexo.io/" target="_blank" rel="noopener noreferrer">Hexo</a> with <a href="https://github.com/fengkx/hexo-theme-purer" target="_blank" rel="noopener noreferrer">Purer theme</a>.</p>
+    
+</footer>
+
+        <div id="mask" class="hidden mask fixed inset-0 bg-gray-900 opacity-75 z-40"></div>
+        <div id="search-view-container" class="hidden shadow-xl"></div>
+        
+<script src="/js/dom-event.min.js"></script>
+
+
+
+<script src="/js/local-search.min.js"></script>
+
+
+
+    <script src="//cdn.jsdelivr.net/npm/lightgallery.js@1.1.3/dist/js/lightgallery.min.js"></script>
+    
+<script src="/js/light-gallery.min.js"></script>
+
+
+
+
+
+
+    </body>
+</html>

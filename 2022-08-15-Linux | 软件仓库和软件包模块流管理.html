@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html  lang="zh-CN,en,default" >
+    <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, maximum-scale=5, viewport-fit=cover">
+    <title>软件仓库和软件包模块流管理 | Avery Ma 的个人网站</title>
+    <meta name="description" content="🔴 此文章由之前的 Typora 笔记迁移过来，内容可能已经过时。  管理 DNF 软件仓库 ​将系统注册到订阅管理服务可根据所附加的订阅自动配置软件存储库的访问。 ​使用 dnf repolist all 查看可用的存储库： 12345678910111213141516171819202122[skinyi@skinyi ~]\$ dnf repolist all	# 不加选项 all 仅">
+<meta property="og:type" content="article">
+<meta property="og:title" content="软件仓库和软件包模块流管理">
+<meta property="og:url" content="https://skinyi.github.io/2022-08-15-Linux%20|%20%E8%BD%AF%E4%BB%B6%E4%BB%93%E5%BA%93%E5%92%8C%E8%BD%AF%E4%BB%B6%E5%8C%85%E6%A8%A1%E5%9D%97%E6%B5%81%E7%AE%A1%E7%90%86.html">
+<meta property="og:site_name" content="Avery Ma 的个人网站">
+<meta property="og:description" content="🔴 此文章由之前的 Typora 笔记迁移过来，内容可能已经过时。  管理 DNF 软件仓库 ​将系统注册到订阅管理服务可根据所附加的订阅自动配置软件存储库的访问。 ​使用 dnf repolist all 查看可用的存储库： 12345678910111213141516171819202122[skinyi@skinyi ~]\$ dnf repolist all	# 不加选项 all 仅">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-08-15T04:05:29.539Z">
+<meta property="article:modified_time" content="2022-08-15T04:08:34.227Z">
+<meta property="article:author" content="skinyi">
+<meta property="article:tag" content="Linux">
+<meta property="article:tag" content="RHEL">
+<meta property="article:tag" content="RHCE">
+<meta property="article:tag" content="认证考试">
+<meta name="twitter:card" content="summary">
+
+    
+    <link rel="icon" href="images/favicon.png" type="image/x-icon">
+
+    
+<link rel="stylesheet" href="/css/common.min.css">
+
+
+
+    
+    
+    
+    
+        <link href="//cdn.jsdelivr.net/npm/lightgallery.js@1.1.3/dist/css/lightgallery.min.css" rel="stylesheet">
+    
+    
+    
+<link rel="stylesheet" href="/css/iconfont.min.css">
+
+    
+<meta name="generator" content="Hexo 6.2.0"></head>
+
+    <body>
+        <header class="header header-fixture">
+    <div class="profile-search-wrap flex sm:block">
+        
+        
+        <div class="profile sm:text-center md:px-1 lg:px-3 sm:pb-4 sm:pt-6">
+            <a id="avatar" role="link" href="https://github.com/skinyi" class="inline-block lg:w-16 lg:h-16 w-8 h-8 m-2" target="_blank" rel="noopener" rel="noreferrer" >
+                <img src="/images/avatar.jpg" class="rounded-full" alt="avatar">
+            </a>
+            <h2 id="name" class="hidden lg:block">Avery Ma</h2>
+            <h3 id="title" class="hidden xl:block">IT 从业者</h3>
+            
+            <small id="location" class="hidden lg:block">
+                <i class="iconfont icon-map-icon"></i>
+                宁夏, 中国
+            </small>
+            
+        </div>
+        
+        
+<div class="search flex-1 flex lg:inline-block sm:hidden lg:px-4 lg:mt-2 lg:w-full">
+    <form id="search-form" class="my-auto flex-1 lg:border lg:border-solid lg:border-gray-200">
+        <div class="input-group table bg-gray-100 lg:bg-white w-full">
+            <input id="search-input" type="text" placeholder="搜索" class="inline-block w-full bg-gray-100 lg:bg-white">
+            <span class="table-cell">
+                <button name="search tigger button" disabled>
+                    <i class="iconfont icon-search m-2"></i>
+                </button>
+            </span>
+        </div>
+    </form>
+        
+<div id="content-json" data-placeholder="搜索" class="invisible hidden">/content.json</div>
+<script id="search-teamplate" type="text/html" data-path="/content.json">
+    <div>
+        <div class="search-header bg-gray-400">
+            <input id="actual-search-input" model="keyword" ref="input" class="inline-block w-full h-10 px-2 py-1" placeholder="搜索" type="text">
+        </div>
+        <div class="search-result bg-gray-200">
+            {{#each searchPosts}}
+            <a href="/{{ path }}" class="result-item block px-2 pb-3 mb-1 pt-1 hover:bg-indigo-100">
+                <i class="iconfont icon-file"></i>
+                <h1 class="result-title inline font-medium text-lg">{{ title }}</h1>
+                <p class="result-content text-gray-600 text-sm">{{{ text }}}</p>
+            </a>
+            {{/each}}
+        </div>
+    </div>
+</script>
+
+</div>
+
+
+        <button name="menu toogle button" id="menu-toggle-btn" class="block sm:hidden p-3" role="button" aria-expanded="false">
+            <i class="iconfont icon-hamburger"></i>
+        </button>
+    </div>
+    <nav id="menu-nav" class="hidden sm:flex flex-col">
+        
+        
+            <div class="menu-item menu-home" role="menuitem">
+                <a href="/.">
+                    <i class="iconfont icon-home" aria-hidden="true"></i>
+                    <span class="menu-title">首页</span>
+                </a>
+            </div>
+        
+        
+            <div class="menu-item menu-archives" role="menuitem">
+                <a href="/archives">
+                    <i class="iconfont icon-archive" aria-hidden="true"></i>
+                    <span class="menu-title">归档</span>
+                </a>
+            </div>
+        
+        
+            <div class="menu-item menu-categories" role="menuitem">
+                <a href="/categories">
+                    <i class="iconfont icon-folder" aria-hidden="true"></i>
+                    <span class="menu-title">分类</span>
+                </a>
+            </div>
+        
+        
+            <div class="menu-item menu-tags" role="menuitem">
+                <a href="/tags">
+                    <i class="iconfont icon-tag" aria-hidden="true"></i>
+                    <span class="menu-title">标签</span>
+                </a>
+            </div>
+        
+        
+            <div class="menu-item menu-repository" role="menuitem">
+                <a href="/repository">
+                    <i class="iconfont icon-project" aria-hidden="true"></i>
+                    <span class="menu-title">项目</span>
+                </a>
+            </div>
+        
+        
+            <div class="menu-item menu-about" role="menuitem">
+                <a href="/about">
+                    <i class="iconfont icon-cup" aria-hidden="true"></i>
+                    <span class="menu-title">关于</span>
+                </a>
+            </div>
+        
+        
+
+    </nav>
+</header>
+
+        <section class="main-section">
+            
+    <main class="flex-1 px-4 py-14 md:px-5 lg:px-8 lg:py-4 relative min-h-screen">
+    
+
+    <article class="content article article-archives article-type-list" itemscope="">
+        <header class="article-header">
+            
+    
+        <h1 class="article-title text-lg" itemprop="name">
+            软件仓库和软件包模块流管理
+        </h1>
+    
+
+
+
+            <p class="article-meta mb-3 text-xs">
+                <span class="article-date">
+    <i class="iconfont icon-calendar-check"></i>
+	<a href="/2022-08-15-Linux%20%7C%20%E8%BD%AF%E4%BB%B6%E4%BB%93%E5%BA%93%E5%92%8C%E8%BD%AF%E4%BB%B6%E5%8C%85%E6%A8%A1%E5%9D%97%E6%B5%81%E7%AE%A1%E7%90%86.html" class="article-date">
+	  <time datetime="2022-08-15T04:05:29.539Z" itemprop="datePublished">8月 15</time>
+	</a>
+</span>
+
+                
+    <span class="article-category">
+    <i class="iconfont icon-folder"></i>
+    <a class="article-category-link" href="/categories/%E5%AD%A6%E4%B9%A0/">学习</a> , <a class="article-category-link" href="/categories/%E5%AD%A6%E4%B9%A0/Linux/">Linux</a> , <a class="article-category-link" href="/categories/%E6%97%A5%E5%B8%B8%E8%AE%B0%E5%BD%95/">日常记录</a> , <a class="article-category-link" href="/categories/%E8%BF%81%E7%A7%BB%E6%96%87%E7%AB%A0/">迁移文章</a>
+  </span>
+
+
+                
+    <span class="article-tags">
+    <i class="iconfont icon-tag"></i>
+    <a class="article-tag-none-link" href="/tags/Linux/" rel="tag">Linux</a>, <a class="article-tag-none-link" href="/tags/RHCE/" rel="tag">RHCE</a>, <a class="article-tag-none-link" href="/tags/RHEL/" rel="tag">RHEL</a>, <a class="article-tag-none-link" href="/tags/%E8%AE%A4%E8%AF%81%E8%80%83%E8%AF%95/" rel="tag">认证考试</a>
+  </span>
+
+
+                
+                
+    
+        <span class="post-wordcount" itemprop="wordCount">字数统计: 2.8k(字)</span>
+    
+    
+        <span class="post-readcount" itemprop="timeRequired">阅读时长: 12(分)</span>
+    
+
+
+            </p>
+        </header>
+        <div class="marked-body article-body">
+            <blockquote>
+<p>🔴 此文章由之前的 Typora 笔记迁移过来，内容可能已经过时。</p>
+</blockquote>
+<h2 id="管理-DNF-软件仓库">管理 DNF 软件仓库</h2>
+<p>​将系统注册到订阅管理服务可根据所附加的订阅自动配置软件存储库的访问。</p>
+<p>​使用 <code>dnf repolist all</code> 查看可用的存储库：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">[skinyi@skinyi ~]\$ dnf repolist all	<span class="comment"># 不加选项 all 仅列出已启用的仓库</span></span><br><span class="line">仓库 <span class="built_in">id</span>                           仓库名称                                  状态</span><br><span class="line">fedora                            Fedora 33 - x86_64                        启用</span><br><span class="line">fedora-cisco-openh264             Fedora 33 openh264 (From Cisco) - x86_64  启用</span><br><span class="line">fedora-cisco-openh264-debuginfo   Fedora 33 openh264 (From Cisco) - x86_64  禁用</span><br><span class="line">fedora-debuginfo                  Fedora 33 - x86_64 - Debug                禁用</span><br><span class="line">fedora-modular                    Fedora Modular 33 - x86_64                启用</span><br><span class="line">fedora-modular-debuginfo          Fedora Modular 33 - x86_64 - Debug        禁用</span><br><span class="line">fedora-modular-source             Fedora Modular 33 - Source                禁用</span><br><span class="line">fedora-source                     Fedora 33 - Source                        禁用</span><br><span class="line">updates                           Fedora 33 - x86_64 - Updates              启用</span><br><span class="line">updates-debuginfo                 Fedora 33 - x86_64 - Updates - Debug      禁用</span><br><span class="line">updates-modular                   Fedora Modular 33 - x86_64 - Updates      启用</span><br><span class="line">updates-modular-debuginfo         Fedora Modular 33 - x86_64 - Updates - De 禁用</span><br><span class="line">updates-modular-source            Fedora Modular 33 - Updates Source        禁用</span><br><span class="line">updates-source                    Fedora 33 - Updates Source                禁用</span><br><span class="line">updates-testing                   Fedora 33 - x86_64 - Test Updates         禁用</span><br><span class="line">updates-testing-debuginfo         Fedora 33 - x86_64 - Test Updates Debug   禁用</span><br><span class="line">updates-testing-modular           Fedora Modular 33 - x86_64 - Test Updates 禁用</span><br><span class="line">updates-testing-modular-debuginfo Fedora Modular 33 - x86_64 - Test Updates 禁用</span><br><span class="line">updates-testing-modular-source    Fedora Modular 33 - Test Updates Source   禁用</span><br><span class="line">updates-testing-source            Fedora 33 - Test Updates Source     </span><br></pre></td></tr></table></figure>
+<p>​使用 <code>dnf config-manager</code> 来启用或禁用存储库。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[root@skinyi ~]\<span class="comment"># dnf config-manager --enable fedora-cisco-openh264-debuginfo</span></span><br><span class="line">[root@skinyi ~]\<span class="comment"># dnf repolist all | grep fedora-cisco</span></span><br><span class="line">fedora-cisco-openh264             Fedora 33 openh264 (From Cisco) - x86_64  启用</span><br><span class="line">fedora-cisco-openh264-debuginfo   Fedora 33 openh264 (From Cisco) - x86_64  启用</span><br><span class="line">[root@skinyi ~]\<span class="comment"># dnf config-manager --disable fedora-cisco-openh264-debuginfo</span></span><br><span class="line">[root@skinyi ~]\<span class="comment"># dnf repolist all | grep fedora-cisco</span></span><br><span class="line">fedora-cisco-openh264             Fedora 33 openh264 (From Cisco) - x86_64  启用</span><br><span class="line">fedora-cisco-openh264-debuginfo   Fedora 33 openh264 (From Cisco) - x86_64  禁用</span><br></pre></td></tr></table></figure>
+<h3 id="添加自定义存储库配置">添加自定义存储库配置</h3>
+<p>​要启用对新的第三方存储库的支持，可在 <em>/etc/yum.repos.d/</em> 目录中创建一个文件。存储库配置文件必须以 <em>.repo</em> 扩展名结尾。存储库定义包含存储库的 URL 和名称，也定义是否使用 GPG 检查软件包签名，如果是，则还检查 URL 是否指向受信任的 GPG 密钥。</p>
+<blockquote>
+<p>DNF 的软件仓库配置目录仍是 <em>/etc/yum.repos.d</em>。</p>
+</blockquote>
+<p>​使用 <code>dnf config-manager</code> 来添加一个 dnf 存储库。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">[root@skinyi dnf]\<span class="comment"># dnf config-manager \</span></span><br><span class="line">--add-repo=<span class="string">&quot;http://dl.fedoraproject.org/pub/epel/8/x86_64/&quot;</span></span><br><span class="line">添加仓库自：http://dl.fedoraproject.org/pub/epel/8/x86_64/</span><br><span class="line">[root@skinyi dnf]\<span class="comment"># ls /etc/yum.repos.d/</span></span><br><span class="line">dl.fedoraproject.org_pub_epel_8_x86_64_.repo</span><br><span class="line">fedora-cisco-openh264.repo</span><br><span class="line">......</span><br><span class="line">[root@skinyi dnf]\<span class="comment"># dnf repolist all	# 添加后的仓库默认为启用状态</span></span><br><span class="line">仓库 <span class="built_in">id</span>                                 仓库名称                            状态</span><br><span class="line">dl.fedoraproject.org_pub_epel_8_x86_64_ created by dnf config-manager from  启用</span><br><span class="line">......</span><br></pre></td></tr></table></figure>
+<p>​按需修改仓库文件，并配置 GPG 密钥以增强安全性。密钥存储在远程存储库站点上的不同位置，如 <em><a target="_blank" rel="noopener" href="http://dl.fedoraproject.org/pub/epel/RPM_GPG_KEY_EPEL-8">http://dl.fedoraproject.org/pub/epel/RPM_GPG_KEY_EPEL-8</a></em>。系统管理员应该将此密钥下载到本地并配置 <em>dnf</em> 从本地检索此密钥。例如：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[root@skinyi dnf]\<span class="comment"># vi /etc/yum.repos.d/dl.fedoraproject.org_pub_epel_8_x86_64_.repo </span></span><br><span class="line">[EPEL-8]									<span class="comment"># id 不能存在空格</span></span><br><span class="line">name=EPEL8 repositories</span><br><span class="line">baseurl=http://dl.fedoraproject.org/pub/epel/8/x86_64/</span><br><span class="line">enabled=1</span><br><span class="line">gpgcheck=1</span><br><span class="line">gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-8</span><br><span class="line">:wq</span><br></pre></td></tr></table></figure>
+<p>​要删除某个软件仓库，将其配置文件删除即可：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root@skinyi ~]\<span class="comment"># rm -f /etc/yum.repos.d/dl.fedoraproject.org_pub_epel_8_x86_64_.repo </span></span><br><span class="line">[root@skinyi ~]\<span class="comment"># dnf repolist all | grep EPEL</span></span><br><span class="line">[root@skinyi ~]\<span class="comment"># </span></span><br></pre></td></tr></table></figure>
+<h3 id="安装软件仓库及其配置文件">安装软件仓库及其配置文件</h3>
+<p>​一些存储库将一个配置文件和 GPG 公钥作为 RPM 软件包的一部分提供，该软件包也可以使用 <code>dnf install</code> 命令来下载和安装。</p>
+<p>​以下命令将安装 RHEL8 EPEL 软件存储库软件包。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@skinyi ~]\<span class="comment"># rpm --import http://dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-8</span></span><br><span class="line">[root@skinyi ~]\<span class="comment"># dnf install http://dl.fedoraproject.org/pub/epel/8/x86_64/e/epel-release-8-2.noarch.rpm</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>先安装 RPM GPG 密钥再安装签名的软件包，安装软件包时可以通过 <code>--nogpgcheck</code> 选项忽略检查 GPG key，但此操作并不安全。</p>
+</blockquote>
+<p>​一个软件仓库配置文件可以配置多个存储库的引用，每一存储库的开头为包含在方括号里的存储库的 id。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line">[root@skinyi ~]\<span class="comment"># cat /etc/yum.repos.d/fedora.repo </span></span><br><span class="line">[fedora]</span><br><span class="line">name=Fedora <span class="variable">$releasever</span> - <span class="variable">$basearch</span></span><br><span class="line"><span class="comment">#baseurl=http://download.example/pub/fedora/linux/releases/$releasever/Everything/$basearch/os/</span></span><br><span class="line">metalink=https://mirrors.fedoraproject.org/metalink?repo=fedora-<span class="variable">$releasever</span>&amp;<span class="built_in">arch</span>=<span class="variable">$basearch</span></span><br><span class="line">enabled=1</span><br><span class="line">countme=1</span><br><span class="line">metadata_expire=7d</span><br><span class="line">repo_gpgcheck=0</span><br><span class="line"><span class="built_in">type</span>=rpm</span><br><span class="line">gpgcheck=1</span><br><span class="line">gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-fedora-<span class="variable">$releasever</span>-<span class="variable">$basearch</span></span><br><span class="line">skip_if_unavailable=False</span><br><span class="line"></span><br><span class="line">[fedora-debuginfo]</span><br><span class="line">name=Fedora <span class="variable">$releasever</span> - <span class="variable">$basearch</span> - Debug</span><br><span class="line"><span class="comment">#baseurl=http://download.example/pub/fedora/linux/releases/$releasever/Everything/$basearch/debug/tree/</span></span><br><span class="line">metalink=https://mirrors.fedoraproject.org/metalink?repo=fedora-debug-<span class="variable">$releasever</span>&amp;<span class="built_in">arch</span>=<span class="variable">$basearch</span></span><br><span class="line">enabled=0</span><br><span class="line">metadata_expire=7d</span><br><span class="line">repo_gpgcheck=0</span><br><span class="line"><span class="built_in">type</span>=rpm</span><br><span class="line">gpgcheck=1</span><br><span class="line">gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-fedora-<span class="variable">$releasever</span>-<span class="variable">$basearch</span></span><br><span class="line">skip_if_unavailable=False</span><br><span class="line"></span><br><span class="line">[fedora-source]</span><br><span class="line">name=Fedora <span class="variable">$releasever</span> - Source</span><br><span class="line"><span class="comment">#baseurl=http://download.example/pub/fedora/linux/releases/$releasever/Everything/source/tree/</span></span><br><span class="line">metalink=https://mirrors.fedoraproject.org/metalink?repo=fedora-source-<span class="variable">$releasever</span>&amp;<span class="built_in">arch</span>=<span class="variable">$basearch</span></span><br><span class="line">enabled=0</span><br><span class="line">metadata_expire=7d</span><br><span class="line">repo_gpgcheck=0</span><br><span class="line"><span class="built_in">type</span>=rpm</span><br><span class="line">gpgcheck=1</span><br><span class="line">gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-fedora-<span class="variable">$releasever</span>-<span class="variable">$basearch</span></span><br><span class="line">skip_if_unavailable=False</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h2 id="管理软件包模块流">管理软件包模块流</h2>
+<p>​<em>模块化</em> 是构建、组织、分发软件包的一种新型方式，具有透明构建和交付、积极维护和易于安装的特点。</p>
+<h3 id="模块化的基本概念">模块化的基本概念</h3>
+<ul>
+<li>软件包：普通的 rpm 软件包；</li>
+<li>模块：将软件包进行分组整合成模块 —— 特定的应用程序、语言运行时或任何逻辑组的表示。这使内容更加精细、更容易找到自己所需；</li>
+<li>模块流：模块可以在多个流中可用，通常代表它们包含的软件的主要版本，自动选择所需软件的正确版本。</li>
+<li>配置文件：为了简化安装而引入了安装配置文件 —— 模块特定用例的软件包子集。</li>
+</ul>
+<h3 id="管理软件包模块流-2">管理软件包模块流</h3>
+<h4 id="列出模块">列出模块</h4>
+<p>​使用 <code>dnf module list</code> 命令列出可用的模块的列表：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">[root@skinyi ~]\<span class="comment"># dnf module list	# 列出所有可用的模块流</span></span><br><span class="line">Fedora 33 openh264 (From Cisco) - x86_64        576  B/s | 989  B     00:01    </span><br><span class="line">Fedora Modular 33 - x86_64</span><br><span class="line">Name                Stream           Profiles Summary                           </span><br><span class="line">ant                 1.10             default  Java build tool                   </span><br><span class="line">                                     [d]                                        </span><br><span class="line">avocado             latest           default  Framework with tools and libraries</span><br><span class="line">                                     [d], min  <span class="keyword">for</span> Automated Testing            </span><br><span class="line">                                     imal                                       </span><br><span class="line">avocado-vt          latest           common   Avocado Virt Test Plugin          </span><br><span class="line">cobbler             3                default  Versatile Linux deployment server </span><br><span class="line">cri-o               nightly          default  Kubernetes Container Runtime Inter</span><br><span class="line">                                              face <span class="keyword">for</span> OCI-based containers    </span><br><span class="line">......</span><br><span class="line">[root@skinyi ~]\<span class="comment"># dnf module list perl	# 搜索特定的软件模块</span></span><br><span class="line">上次元数据过期检查：0:34:07 前，执行于 2021年09月07日 星期二 10时56分52秒。</span><br><span class="line">Fedora Modular 33 - x86_64</span><br><span class="line">Name Stream Profiles                    Summary                                 </span><br><span class="line">perl 5.30   common, default [d], minima Practical Extraction and Report Language</span><br><span class="line">            l                                                                   </span><br><span class="line">perl 5.32   common [d], minimal         Practical Extraction and Report Language</span><br><span class="line"></span><br><span class="line">Fedora Modular 33 - x86_64 - Updates</span><br><span class="line">Name Stream Profiles                    Summary                                 </span><br><span class="line">perl 5.30   common, default [d], minima Practical Extraction and Report Language</span><br><span class="line">            l                                                                   </span><br><span class="line">perl 5.32   common [d], minimal         Practical Extraction and Report Language</span><br><span class="line"></span><br><span class="line">提示：[d]默认，[e]已启用，[x]已禁用，[i]已安装</span><br></pre></td></tr></table></figure>
+<p>​使用 <code>dnf module info [MOD_NAME]</code> 查看软件模块的详细信息：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">[root@skinyi ~]\<span class="comment"># dnf module info perl | head -n 10</span></span><br><span class="line">上次元数据过期检查：0:36:27 前，执行于 2021年09月07日 星期二 10时56分52秒。</span><br><span class="line">Name             : perl</span><br><span class="line">Stream           : 5.30</span><br><span class="line">Version          : 3320200819225620</span><br><span class="line">Context          : 394aad6b</span><br><span class="line">Architecture     : x86_64</span><br><span class="line">Profiles         : common, default [d], minimal</span><br><span class="line">Default profiles : default</span><br><span class="line">Repo             : fedora-modular</span><br><span class="line">Summary          : Practical Extraction and Report Language</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>若不指定模块流，<code>dnf module info</code> 将显示使用默认流的模块的配置文件所安装的软件包列表。使用 <em>module-name:stream</em> 的格式来查看特定的模块流。添加 <em>--profile</em> 选项可显示有关各个模块的配置文件所安装的软件包的信息。如：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">[root@skinyi ~]\<span class="comment"># dnf module info --profile perl:5.30</span></span><br><span class="line">上次元数据过期检查：0:43:18 前，执行于 2021年09月07日 星期二 10时56分52秒。</span><br><span class="line">Name    : perl:5.30:3320200819225620:394aad6b:x86_64</span><br><span class="line">common  : perl</span><br><span class="line">default : perl</span><br><span class="line">minimal : perl-interpreter</span><br><span class="line"></span><br><span class="line">Name    : perl:5.30:3320210211084215:394aad6b:x86_64</span><br><span class="line">common  : perl</span><br><span class="line">default : perl</span><br><span class="line">minimal : perl-interpreter</span><br></pre></td></tr></table></figure>
+</blockquote>
+<h4 id="启用模块流和安装模块">启用模块流和安装模块</h4>
+<blockquote>
+<p>必须启用模块流才能安装其模块。可以使用 <code>yum module enable MOD_STRM</code> 来手动启用模块流。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[root@skinyi ~]\<span class="comment"># dnf module install perl</span></span><br><span class="line">上次元数据过期检查：0:50:52 前，执行于 2021年09月07日 星期二 10时56分52秒。</span><br><span class="line">参数 <span class="string">&#x27;perl&#x27;</span> 可以匹配模块 <span class="string">&#x27;perl&#x27;</span> 的 2 个流（<span class="string">&#x27;5.30&#x27;</span>, <span class="string">&#x27;5.32&#x27;</span>），但是这些流都未被启用或非默认</span><br><span class="line">无法解析参数 perl</span><br><span class="line">错误：请求中出现的问题 :</span><br><span class="line">损坏的组或模块： perl</span><br></pre></td></tr></table></figure>
+<p>对于给定的模块，仅可启用一个模块流，启用其他模块流将禁用原始的模块流。</p>
+</blockquote>
+<p>​使用模块流安装模块：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 1. 首先启用要安装的模块</span></span><br><span class="line">[root@skinyi ~]\<span class="comment"># dnf module enable perl:5.32</span></span><br><span class="line">上次元数据过期检查：3:46:24 前，执行于 2021年09月07日 星期二 10时56分52秒。</span><br><span class="line">依赖关系解决。</span><br><span class="line">================================================================================</span><br><span class="line"> 软件包            架构             版本                仓库               大小</span><br><span class="line">================================================================================</span><br><span class="line">启用模块流:</span><br><span class="line"> perl                               5.32                                       </span><br><span class="line"></span><br><span class="line">事务概要</span><br><span class="line">================================================================================</span><br><span class="line"></span><br><span class="line">确定吗？[y/N]： y</span><br><span class="line">完毕！</span><br><span class="line"><span class="comment"># 2. 安装需要的模块</span></span><br><span class="line">[root@skinyi ~]\<span class="comment"># dnf module install perl</span></span><br><span class="line">上次元数据过期检查：3:48:26 前，执行于 2021年09月07日 星期二 10时56分52秒。</span><br><span class="line">依赖关系解决。</span><br><span class="line">================================================================================</span><br><span class="line"> 软件包         架构   版本                               仓库             大小</span><br><span class="line">================================================================================</span><br><span class="line">安装组/模块包:</span><br><span class="line"> perl           x86_64 4:5.32.1-471.module_f33+12592+71aff0e2</span><br><span class="line">                                                          updates-modular  27 k</span><br><span class="line">安装依赖关系:</span><br><span class="line"> annobin        x86_64 9.68-2.fc33                        updates          96 k</span><br><span class="line"> binutils       x86_64 2.35-18.fc33                       updates         5.4 M</span><br><span class="line"> binutils-gold  x86_64 2.35-18.fc33                       updates         774 k</span><br><span class="line"> cpp            x86_64 10.3.1-1.fc33                      updates         9.4 M</span><br><span class="line"> ......</span><br><span class="line">安装模块配置档案:</span><br><span class="line"> perl/common                                                                   </span><br><span class="line"></span><br><span class="line">事务概要</span><br><span class="line">================================================================================</span><br><span class="line">安装  258 软件包</span><br><span class="line"></span><br><span class="line">总下载：92 M</span><br><span class="line">安装大小：301 M</span><br><span class="line">确定吗？[y/N]： y</span><br><span class="line">......</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>安装模块时可以省略选项 <em>module</em> 而用前缀 <em>@</em> 符号代表模块名，如：<code>dnf install @perl</code>。</p>
+</blockquote>
+<p>​验证安装结果（我没有安装）：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">[root@skinyi ~]\<span class="comment"># dnf module list perl</span></span><br><span class="line">上次元数据过期检查：3:52:55 前，执行于 2021年09月07日 星期二 10时56分52秒。</span><br><span class="line">Fedora Modular 33 - x86_64</span><br><span class="line">Name Stream   Profiles                   Summary                                </span><br><span class="line">perl 5.30 [x] common, default [d], minim Practical Extraction and Report Languag</span><br><span class="line">              al                         e                                      </span><br><span class="line">perl 5.32 [x] common [d], minimal        Practical Extraction and Report Languag</span><br><span class="line">                                         e                                      </span><br><span class="line"></span><br><span class="line">Fedora Modular 33 - x86_64 - Updates</span><br><span class="line">Name Stream   Profiles                   Summary                                </span><br><span class="line">perl 5.30 [x] common, default [d], minim Practical Extraction and Report Languag</span><br><span class="line">              al                         e                                      </span><br><span class="line">perl 5.32 [x] common [d], minimal        Practical Extraction and Report Languag</span><br><span class="line">                                         e                                      </span><br><span class="line"></span><br><span class="line">提示：[d]默认，[e]已启用，[x]已禁用，[i]已安装</span><br></pre></td></tr></table></figure>
+<h4 id="删除模块和禁用模块流">删除模块和禁用模块流</h4>
+<p>​删除模块会删除当前启用的模块流的配置集所安装的所有软件包，以及依赖于这些软件包的任何其他软件包和模块。</p>
+<blockquote>
+<p>删除模块和切换模块流有些棘手。切换流会重置当前流并启用新流，但本地已安装的软件包并不会被更改。切记删除旧有模块流后再安装新流以保证数据不会丢失或配置错误。</p>
+</blockquote>
+<p>​使用 <code>dnf module remove MOD_NAME</code> 或 <code>dnf remove @MOD_NAME</code> 删除模块流：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[root@skinyi ~]\<span class="comment"># dnf remove @perl:5.30</span></span><br><span class="line">上次元数据过期检查：4:04:46 前，执行于 2021年09月07日 星期二 10时56分52秒。</span><br><span class="line">无法匹配参数 perl:5.30 中的配置档案</span><br><span class="line">依赖关系解决。</span><br><span class="line">无需任何处理。</span><br><span class="line">完毕！</span><br></pre></td></tr></table></figure>
+<p>​使用 <code>dnf module disable MOD_NAME</code> 禁用模块流：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[root@skinyi ~]\<span class="comment"># dnf module disable perl:5.30</span></span><br><span class="line">上次元数据过期检查：4:06:34 前，执行于 2021年09月07日 星期二 10时56分52秒。</span><br><span class="line">依赖关系解决。</span><br><span class="line">无需任何处理。</span><br><span class="line">完毕！</span><br></pre></td></tr></table></figure>
+<h4 id="切换模块流">切换模块流</h4>
+<p>​切换模块流需要先删除就有安装的模块，删除模块内容及配置文件后，使用命令 <code>dnf module reset</code> 重置模块流：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">[root@skinyi ~]\<span class="comment"># dnf module reset perl</span></span><br><span class="line">上次元数据过期检查：4:12:14 前，执行于 2021年09月07日 星期二 10时56分52秒。</span><br><span class="line">依赖关系解决。</span><br><span class="line">================================================================================</span><br><span class="line"> 软件包            架构             版本                仓库               大小</span><br><span class="line">================================================================================</span><br><span class="line">重置模块:</span><br><span class="line"> perl                                                                          </span><br><span class="line"></span><br><span class="line">事务概要</span><br><span class="line">================================================================================</span><br><span class="line"></span><br><span class="line">确定吗？[y/N]： y</span><br><span class="line">完毕！</span><br></pre></td></tr></table></figure>
+<p>​然后启用并安装要使用的模块流。</p>
+
+        </div>
+        
+<blockquote class="copyright">
+    <p><strong>本文链接 : </strong><a class="permalink" href="https://skinyi.github.io/2022-08-15-Linux%20|%20%E8%BD%AF%E4%BB%B6%E4%BB%93%E5%BA%93%E5%92%8C%E8%BD%AF%E4%BB%B6%E5%8C%85%E6%A8%A1%E5%9D%97%E6%B5%81%E7%AE%A1%E7%90%86.html">https://skinyi.github.io/2022-08-15-Linux | 软件仓库和软件包模块流管理.html</a></p>
+    <p><strong>这篇文章由作者胡编乱造或者由其他文章复制粘贴而来，其中有些内容可能已经过时，请谨慎参考复制文章中的内容。</strong></p>
+</blockquote>
+
+
+    </article>
+    
+    <section id="comments">
+        
+    </section>
+
+
+    
+
+</main>
+
+
+<aside style="" id="sidebar" class="aside aside-fixture">
+    <div class="toc-sidebar">
+        <nav id="toc" class="article-toc">
+            <h3 class="toc-title">文章目录</h3>
+            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AE%A1%E7%90%86-DNF-%E8%BD%AF%E4%BB%B6%E4%BB%93%E5%BA%93"><span class="toc-number">1.</span> <span class="toc-text">管理 DNF 软件仓库</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B7%BB%E5%8A%A0%E8%87%AA%E5%AE%9A%E4%B9%89%E5%AD%98%E5%82%A8%E5%BA%93%E9%85%8D%E7%BD%AE"><span class="toc-number">1.1.</span> <span class="toc-text">添加自定义存储库配置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%89%E8%A3%85%E8%BD%AF%E4%BB%B6%E4%BB%93%E5%BA%93%E5%8F%8A%E5%85%B6%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6"><span class="toc-number">1.2.</span> <span class="toc-text">安装软件仓库及其配置文件</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AE%A1%E7%90%86%E8%BD%AF%E4%BB%B6%E5%8C%85%E6%A8%A1%E5%9D%97%E6%B5%81"><span class="toc-number">2.</span> <span class="toc-text">管理软件包模块流</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A8%A1%E5%9D%97%E5%8C%96%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5"><span class="toc-number">2.1.</span> <span class="toc-text">模块化的基本概念</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AE%A1%E7%90%86%E8%BD%AF%E4%BB%B6%E5%8C%85%E6%A8%A1%E5%9D%97%E6%B5%81-2"><span class="toc-number">2.2.</span> <span class="toc-text">管理软件包模块流</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%88%97%E5%87%BA%E6%A8%A1%E5%9D%97"><span class="toc-number">2.2.1.</span> <span class="toc-text">列出模块</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%90%AF%E7%94%A8%E6%A8%A1%E5%9D%97%E6%B5%81%E5%92%8C%E5%AE%89%E8%A3%85%E6%A8%A1%E5%9D%97"><span class="toc-number">2.2.2.</span> <span class="toc-text">启用模块流和安装模块</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%88%A0%E9%99%A4%E6%A8%A1%E5%9D%97%E5%92%8C%E7%A6%81%E7%94%A8%E6%A8%A1%E5%9D%97%E6%B5%81"><span class="toc-number">2.2.3.</span> <span class="toc-text">删除模块和禁用模块流</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%88%87%E6%8D%A2%E6%A8%A1%E5%9D%97%E6%B5%81"><span class="toc-number">2.2.4.</span> <span class="toc-text">切换模块流</span></a></li></ol></li></ol></li></ol>
+        </nav>
+    </div>
+</aside>
+
+
+
+
+
+        </section>
+        <footer class="hidden lg:block fixed bottom-0 left-0 sm:w-1/12 bg-gray-100 z-40">
+    
+    
+        <p class="footer-custom">❤ Powered by <a href="https://hexo.io/" target="_blank" rel="noopener noreferrer">Hexo</a> with <a href="https://github.com/fengkx/hexo-theme-purer" target="_blank" rel="noopener noreferrer">Purer theme</a>.</p>
+    
+</footer>
+
+        <div id="mask" class="hidden mask fixed inset-0 bg-gray-900 opacity-75 z-40"></div>
+        <div id="search-view-container" class="hidden shadow-xl"></div>
+        
+<script src="/js/dom-event.min.js"></script>
+
+
+
+<script src="/js/local-search.min.js"></script>
+
+
+
+    <script src="//cdn.jsdelivr.net/npm/lightgallery.js@1.1.3/dist/js/lightgallery.min.js"></script>
+    
+<script src="/js/light-gallery.min.js"></script>
+
+
+
+
+
+
+    </body>
+</html>

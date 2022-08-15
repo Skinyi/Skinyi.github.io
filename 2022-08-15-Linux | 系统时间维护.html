@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html  lang="zh-CN,en,default" >
+    <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, maximum-scale=5, viewport-fit=cover">
+    <title>系统时间维护 | Avery Ma 的个人网站</title>
+    <meta name="description" content="🔴 此文章由之前的 Typora 笔记迁移过来，内容可能已经过时。  ​为了确保系统日志和日志记录的事件有正确的时间戳以及计算机的正常使用，我们需要通过 NTP 服务确保系统时间与互联网时间同步。 设置本地时钟和时区 ​通过网络时间协议（NTP）从互联网上的公共 NTP 服务器上获取正确的时间信息是确保本地系统时间正确的一种标准方法。 ​使用 timedatectl 命令可以简要的显示出当前的">
+<meta property="og:type" content="article">
+<meta property="og:title" content="系统时间维护">
+<meta property="og:url" content="https://skinyi.github.io/2022-08-15-Linux%20|%20%E7%B3%BB%E7%BB%9F%E6%97%B6%E9%97%B4%E7%BB%B4%E6%8A%A4.html">
+<meta property="og:site_name" content="Avery Ma 的个人网站">
+<meta property="og:description" content="🔴 此文章由之前的 Typora 笔记迁移过来，内容可能已经过时。  ​为了确保系统日志和日志记录的事件有正确的时间戳以及计算机的正常使用，我们需要通过 NTP 服务确保系统时间与互联网时间同步。 设置本地时钟和时区 ​通过网络时间协议（NTP）从互联网上的公共 NTP 服务器上获取正确的时间信息是确保本地系统时间正确的一种标准方法。 ​使用 timedatectl 命令可以简要的显示出当前的">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-08-15T03:38:56.736Z">
+<meta property="article:modified_time" content="2022-08-15T03:42:21.132Z">
+<meta property="article:author" content="skinyi">
+<meta property="article:tag" content="Linux">
+<meta property="article:tag" content="RHEL">
+<meta property="article:tag" content="RHCE">
+<meta property="article:tag" content="认证考试">
+<meta name="twitter:card" content="summary">
+
+    
+    <link rel="icon" href="images/favicon.png" type="image/x-icon">
+
+    
+<link rel="stylesheet" href="/css/common.min.css">
+
+
+
+    
+    
+    
+    
+        <link href="//cdn.jsdelivr.net/npm/lightgallery.js@1.1.3/dist/css/lightgallery.min.css" rel="stylesheet">
+    
+    
+    
+<link rel="stylesheet" href="/css/iconfont.min.css">
+
+    
+<meta name="generator" content="Hexo 6.2.0"></head>
+
+    <body>
+        <header class="header header-fixture">
+    <div class="profile-search-wrap flex sm:block">
+        
+        
+        <div class="profile sm:text-center md:px-1 lg:px-3 sm:pb-4 sm:pt-6">
+            <a id="avatar" role="link" href="https://github.com/skinyi" class="inline-block lg:w-16 lg:h-16 w-8 h-8 m-2" target="_blank" rel="noopener" rel="noreferrer" >
+                <img src="/images/avatar.jpg" class="rounded-full" alt="avatar">
+            </a>
+            <h2 id="name" class="hidden lg:block">Avery Ma</h2>
+            <h3 id="title" class="hidden xl:block">IT 从业者</h3>
+            
+            <small id="location" class="hidden lg:block">
+                <i class="iconfont icon-map-icon"></i>
+                宁夏, 中国
+            </small>
+            
+        </div>
+        
+        
+<div class="search flex-1 flex lg:inline-block sm:hidden lg:px-4 lg:mt-2 lg:w-full">
+    <form id="search-form" class="my-auto flex-1 lg:border lg:border-solid lg:border-gray-200">
+        <div class="input-group table bg-gray-100 lg:bg-white w-full">
+            <input id="search-input" type="text" placeholder="搜索" class="inline-block w-full bg-gray-100 lg:bg-white">
+            <span class="table-cell">
+                <button name="search tigger button" disabled>
+                    <i class="iconfont icon-search m-2"></i>
+                </button>
+            </span>
+        </div>
+    </form>
+        
+<div id="content-json" data-placeholder="搜索" class="invisible hidden">/content.json</div>
+<script id="search-teamplate" type="text/html" data-path="/content.json">
+    <div>
+        <div class="search-header bg-gray-400">
+            <input id="actual-search-input" model="keyword" ref="input" class="inline-block w-full h-10 px-2 py-1" placeholder="搜索" type="text">
+        </div>
+        <div class="search-result bg-gray-200">
+            {{#each searchPosts}}
+            <a href="/{{ path }}" class="result-item block px-2 pb-3 mb-1 pt-1 hover:bg-indigo-100">
+                <i class="iconfont icon-file"></i>
+                <h1 class="result-title inline font-medium text-lg">{{ title }}</h1>
+                <p class="result-content text-gray-600 text-sm">{{{ text }}}</p>
+            </a>
+            {{/each}}
+        </div>
+    </div>
+</script>
+
+</div>
+
+
+        <button name="menu toogle button" id="menu-toggle-btn" class="block sm:hidden p-3" role="button" aria-expanded="false">
+            <i class="iconfont icon-hamburger"></i>
+        </button>
+    </div>
+    <nav id="menu-nav" class="hidden sm:flex flex-col">
+        
+        
+            <div class="menu-item menu-home" role="menuitem">
+                <a href="/.">
+                    <i class="iconfont icon-home" aria-hidden="true"></i>
+                    <span class="menu-title">首页</span>
+                </a>
+            </div>
+        
+        
+            <div class="menu-item menu-archives" role="menuitem">
+                <a href="/archives">
+                    <i class="iconfont icon-archive" aria-hidden="true"></i>
+                    <span class="menu-title">归档</span>
+                </a>
+            </div>
+        
+        
+            <div class="menu-item menu-categories" role="menuitem">
+                <a href="/categories">
+                    <i class="iconfont icon-folder" aria-hidden="true"></i>
+                    <span class="menu-title">分类</span>
+                </a>
+            </div>
+        
+        
+            <div class="menu-item menu-tags" role="menuitem">
+                <a href="/tags">
+                    <i class="iconfont icon-tag" aria-hidden="true"></i>
+                    <span class="menu-title">标签</span>
+                </a>
+            </div>
+        
+        
+            <div class="menu-item menu-repository" role="menuitem">
+                <a href="/repository">
+                    <i class="iconfont icon-project" aria-hidden="true"></i>
+                    <span class="menu-title">项目</span>
+                </a>
+            </div>
+        
+        
+            <div class="menu-item menu-about" role="menuitem">
+                <a href="/about">
+                    <i class="iconfont icon-cup" aria-hidden="true"></i>
+                    <span class="menu-title">关于</span>
+                </a>
+            </div>
+        
+        
+
+    </nav>
+</header>
+
+        <section class="main-section">
+            
+    <main class="flex-1 px-4 py-14 md:px-5 lg:px-8 lg:py-4 relative min-h-screen">
+    
+
+    <article class="content article article-archives article-type-list" itemscope="">
+        <header class="article-header">
+            
+    
+        <h1 class="article-title text-lg" itemprop="name">
+            系统时间维护
+        </h1>
+    
+
+
+
+            <p class="article-meta mb-3 text-xs">
+                <span class="article-date">
+    <i class="iconfont icon-calendar-check"></i>
+	<a href="/2022-08-15-Linux%20%7C%20%E7%B3%BB%E7%BB%9F%E6%97%B6%E9%97%B4%E7%BB%B4%E6%8A%A4.html" class="article-date">
+	  <time datetime="2022-08-15T03:38:56.736Z" itemprop="datePublished">8月 15</time>
+	</a>
+</span>
+
+                
+    <span class="article-category">
+    <i class="iconfont icon-folder"></i>
+    <a class="article-category-link" href="/categories/%E5%AD%A6%E4%B9%A0/">学习</a> , <a class="article-category-link" href="/categories/%E5%AD%A6%E4%B9%A0/Linux/">Linux</a> , <a class="article-category-link" href="/categories/%E6%97%A5%E5%B8%B8%E8%AE%B0%E5%BD%95/">日常记录</a> , <a class="article-category-link" href="/categories/%E8%BF%81%E7%A7%BB%E6%96%87%E7%AB%A0/">迁移文章</a>
+  </span>
+
+
+                
+    <span class="article-tags">
+    <i class="iconfont icon-tag"></i>
+    <a class="article-tag-none-link" href="/tags/Linux/" rel="tag">Linux</a>, <a class="article-tag-none-link" href="/tags/RHCE/" rel="tag">RHCE</a>, <a class="article-tag-none-link" href="/tags/RHEL/" rel="tag">RHEL</a>, <a class="article-tag-none-link" href="/tags/%E8%AE%A4%E8%AF%81%E8%80%83%E8%AF%95/" rel="tag">认证考试</a>
+  </span>
+
+
+                
+                
+    
+        <span class="post-wordcount" itemprop="wordCount">字数统计: 973(字)</span>
+    
+    
+        <span class="post-readcount" itemprop="timeRequired">阅读时长: 4(分)</span>
+    
+
+
+            </p>
+        </header>
+        <div class="marked-body article-body">
+            <blockquote>
+<p>🔴 此文章由之前的 Typora 笔记迁移过来，内容可能已经过时。</p>
+</blockquote>
+<p>​为了确保系统日志和日志记录的事件有正确的时间戳以及计算机的正常使用，我们需要通过 NTP 服务确保系统时间与互联网时间同步。</p>
+<h2 id="设置本地时钟和时区">设置本地时钟和时区</h2>
+<p>​通过网络时间协议（NTP）从互联网上的公共 NTP 服务器上获取正确的时间信息是确保本地系统时间正确的一种标准方法。</p>
+<p>​使用 <code>timedatectl</code> 命令可以简要的显示出当前的时间相关的系统设置，如系统的当前时间、时区和 NTP 同步设置。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]\<span class="comment"># timedatectl</span></span><br><span class="line">               Local time: Tue 2021-08-24 18:30:15 PDT</span><br><span class="line">           Universal time: Wed 2021-08-25 01:30:15 UTC</span><br><span class="line">                 RTC time: Wed 2021-08-25 01:30:15</span><br><span class="line">                Time zone: America/Los_Angeles (PDT, -0700)</span><br><span class="line">System clock synchronized: <span class="built_in">yes</span></span><br><span class="line">              NTP service: active</span><br><span class="line">          RTC <span class="keyword">in</span> <span class="built_in">local</span> TZ: no</span><br></pre></td></tr></table></figure>
+<p>​查看系统时区数据库的内容：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]\<span class="comment"># timedatectl list-timezones</span></span><br><span class="line">Africa/Abidjan</span><br><span class="line">Africa/Accra</span><br><span class="line">Africa/Addis_Ababa</span><br><span class="line">......</span><br></pre></td></tr></table></figure>
+<p>​若不知道自己该使用的时区配置信息，则可以通过 <code>tzselect</code> 命令来交互式的推断出适合自己的时区配置信息。该命令并不会对系统的时区设置进行任何更改。</p>
+<p>​更改当前时区需要 root 权限，可以使用 <code>timedatectl set-timezone</code> 命令更改系统设置更新当前时区。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]\<span class="comment"># timedatectl set-timezone Asia/Shanghai</span></span><br><span class="line">[root@localhost ~]\<span class="comment"># timedatectl</span></span><br><span class="line">               Local time: Wed 2021-08-25 09:47:26 CST</span><br><span class="line">           Universal time: Wed 2021-08-25 01:47:26 UTC</span><br><span class="line">                 RTC time: Wed 2021-08-25 01:47:25</span><br><span class="line">                Time zone: Asia/Shanghai (CST, +0800)</span><br><span class="line">System clock synchronized: <span class="built_in">yes</span></span><br><span class="line">              NTP service: active</span><br><span class="line">          RTC <span class="keyword">in</span> <span class="built_in">local</span> TZ: no</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>🟢 若要使用 UTC 可以使用 <code>timedatectl set-timezone UTC</code> 命令将系统当前时区设置为 UTC。</p>
+</blockquote>
+<p>​开启或禁用 NTP 服务：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]\<span class="comment"># timedatectl set-ntp false # 关闭 NTP，true 为开启</span></span><br></pre></td></tr></table></figure>
+<h2 id="配置和监控-CHRONYD">配置和监控 CHRONYD</h2>
+<p>本地 linux 系统通过 chronyd 服务与配置的 NTP 服务器同步来保证不准确的本地硬件时钟（RTC）保持正确运行。若没有可用的网络连接，chronyd 将计算 RTC 时钟漂移，记录在 /etc/chrony.conf 配置文件指定的 <em>driftfile</em> 变量中。</p>
+<p>​默认情况下不需要配置 chronyd 服务使用的授时服务器配置，但当本地系统处于孤立网络中时，就可能需要更改 NTP 服务器。</p>
+<p>​NTP 时间源的 <em>stratum</em> 决定其质量。stratum 确定计算机与高性能参考时钟偏离的跃点数。参考时钟是 stratum 0 的时间源。与之直接关联的 NTP 服务器是 stratum 1，而与该 NTP 服务器同步时间的计算机则是 stratum 2 时间源。</p>
+<p>​在 /etc/chrony.conf 配置文件中我们可以配置从两种时间源类别进行同步，它们分别是 server 和 peer。Server 比本地 NTP 服务器高一个级别，而 peer 则属于同一级别。可以指定多个 server 和多个 peer，每行指定一个。</p>
+<p>​添加一个授时服务器的具体格式如下：</p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Use public servers from the pool.ntp.org project.</span></span><br><span class="line"><span class="comment"># Please consider joining the pool (http://www.pool.ntp.org/join.html).</span></span><br><span class="line"><span class="comment"># ......</span></span><br><span class="line">server ip或者域名 选项<span class="section">[常用 iburst]</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>🟢 修改 <em>chronyd</em> 配置文件后应该重新启动该服务，该服务不支持 reload。</p>
+</blockquote>
+<p>​<code>chronyc</code> 命令充当 chronyd 服务的客户端。设置好 NTP 同步后，应该使用 <code>chronyc sources</code> 命令来验证本地系统是否使用 NTP 服务器无缝同步系统时钟，使用 <em>-v</em> 选项可以获得更加详细的输出。</p>
+<pre><code class="language-bash">[root@localhost ~]\# chronyc sources -v
+210 Number of sources = 4
+
+  .-- Source mode  '^' = server, '=' = peer, '#' = local clock.
+ / .- Source state '*' = current synced, '+' = combined , '-' = not combined,
+| /   '?' = unreachable, 'x' = time may be in error, '~' = time too variable.
+||                                                 .- xxxx [ yyyy ] +/- zzzz
+||      Reachability register (octal) -.           |  xxxx = adjusted offset,
+||      Log2(Polling interval) --.      |          |  yyyy = measured offset,
+||                                \     |          |  zzzz = estimated error.
+||                                 |    |           \
+MS Name/IP address         Stratum Poll Reach LastRx Last sample               
+===============================================================================
+^+ time.cloudflare.com           3   6   377    35  -8470us[  -12ms] +/-  139ms
+^- time.cloudflare.com           3   6    37    34  -6035us[-9624us] +/-  128ms
+^* 139.199.215.251               2   6   173    32    -16ms[  -20ms] +/-   78ms
+^- ntp7.flashdance.cx            2   6   162   162  -7138us[  -13ms] +/-  163ms
+``
+</code></pre>
+
+        </div>
+        
+<blockquote class="copyright">
+    <p><strong>本文链接 : </strong><a class="permalink" href="https://skinyi.github.io/2022-08-15-Linux%20|%20%E7%B3%BB%E7%BB%9F%E6%97%B6%E9%97%B4%E7%BB%B4%E6%8A%A4.html">https://skinyi.github.io/2022-08-15-Linux | 系统时间维护.html</a></p>
+    <p><strong>这篇文章由作者胡编乱造或者由其他文章复制粘贴而来，其中有些内容可能已经过时，请谨慎参考复制文章中的内容。</strong></p>
+</blockquote>
+
+
+    </article>
+    
+    <section id="comments">
+        
+    </section>
+
+
+    
+
+</main>
+
+
+<aside style="" id="sidebar" class="aside aside-fixture">
+    <div class="toc-sidebar">
+        <nav id="toc" class="article-toc">
+            <h3 class="toc-title">文章目录</h3>
+            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AE%BE%E7%BD%AE%E6%9C%AC%E5%9C%B0%E6%97%B6%E9%92%9F%E5%92%8C%E6%97%B6%E5%8C%BA"><span class="toc-number">1.</span> <span class="toc-text">设置本地时钟和时区</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%85%8D%E7%BD%AE%E5%92%8C%E7%9B%91%E6%8E%A7-CHRONYD"><span class="toc-number">2.</span> <span class="toc-text">配置和监控 CHRONYD</span></a></li></ol>
+        </nav>
+    </div>
+</aside>
+
+
+
+
+
+        </section>
+        <footer class="hidden lg:block fixed bottom-0 left-0 sm:w-1/12 bg-gray-100 z-40">
+    
+    
+        <p class="footer-custom">❤ Powered by <a href="https://hexo.io/" target="_blank" rel="noopener noreferrer">Hexo</a> with <a href="https://github.com/fengkx/hexo-theme-purer" target="_blank" rel="noopener noreferrer">Purer theme</a>.</p>
+    
+</footer>
+
+        <div id="mask" class="hidden mask fixed inset-0 bg-gray-900 opacity-75 z-40"></div>
+        <div id="search-view-container" class="hidden shadow-xl"></div>
+        
+<script src="/js/dom-event.min.js"></script>
+
+
+
+<script src="/js/local-search.min.js"></script>
+
+
+
+    <script src="//cdn.jsdelivr.net/npm/lightgallery.js@1.1.3/dist/js/lightgallery.min.js"></script>
+    
+<script src="/js/light-gallery.min.js"></script>
+
+
+
+
+
+
+    </body>
+</html>

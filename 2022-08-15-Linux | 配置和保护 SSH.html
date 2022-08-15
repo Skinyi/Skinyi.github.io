@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html  lang="zh-CN,en,default" >
+    <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, maximum-scale=5, viewport-fit=cover">
+    <title>配置和保护 SSH | Avery Ma 的个人网站</title>
+    <meta name="description" content="🔴 此文章由之前的 Typora 笔记迁移过来，内容可能已经过时。  识别远程用户 ​通过 w 命令查看当前登陆的用户 12345[root@localhost ~]\# w 20:39:40 up 30 min,  2 users,  load average: 0.03, 0.02, 0.04USER     TTY      FROM             LOGIN@   IDLE">
+<meta property="og:type" content="article">
+<meta property="og:title" content="配置和保护 SSH">
+<meta property="og:url" content="https://skinyi.github.io/2022-08-15-Linux%20|%20%E9%85%8D%E7%BD%AE%E5%92%8C%E4%BF%9D%E6%8A%A4%20SSH.html">
+<meta property="og:site_name" content="Avery Ma 的个人网站">
+<meta property="og:description" content="🔴 此文章由之前的 Typora 笔记迁移过来，内容可能已经过时。  识别远程用户 ​通过 w 命令查看当前登陆的用户 12345[root@localhost ~]\# w 20:39:40 up 30 min,  2 users,  load average: 0.03, 0.02, 0.04USER     TTY      FROM             LOGIN@   IDLE">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-08-15T03:23:44.407Z">
+<meta property="article:modified_time" content="2022-08-15T03:27:26.903Z">
+<meta property="article:author" content="skinyi">
+<meta property="article:tag" content="Linux">
+<meta property="article:tag" content="RHEL">
+<meta property="article:tag" content="RHCE">
+<meta property="article:tag" content="认证考试">
+<meta name="twitter:card" content="summary">
+
+    
+    <link rel="icon" href="images/favicon.png" type="image/x-icon">
+
+    
+<link rel="stylesheet" href="/css/common.min.css">
+
+
+
+    
+    
+    
+    
+        <link href="//cdn.jsdelivr.net/npm/lightgallery.js@1.1.3/dist/css/lightgallery.min.css" rel="stylesheet">
+    
+    
+    
+<link rel="stylesheet" href="/css/iconfont.min.css">
+
+    
+<meta name="generator" content="Hexo 6.2.0"></head>
+
+    <body>
+        <header class="header header-fixture">
+    <div class="profile-search-wrap flex sm:block">
+        
+        
+        <div class="profile sm:text-center md:px-1 lg:px-3 sm:pb-4 sm:pt-6">
+            <a id="avatar" role="link" href="https://github.com/skinyi" class="inline-block lg:w-16 lg:h-16 w-8 h-8 m-2" target="_blank" rel="noopener" rel="noreferrer" >
+                <img src="/images/avatar.jpg" class="rounded-full" alt="avatar">
+            </a>
+            <h2 id="name" class="hidden lg:block">Avery Ma</h2>
+            <h3 id="title" class="hidden xl:block">IT 从业者</h3>
+            
+            <small id="location" class="hidden lg:block">
+                <i class="iconfont icon-map-icon"></i>
+                宁夏, 中国
+            </small>
+            
+        </div>
+        
+        
+<div class="search flex-1 flex lg:inline-block sm:hidden lg:px-4 lg:mt-2 lg:w-full">
+    <form id="search-form" class="my-auto flex-1 lg:border lg:border-solid lg:border-gray-200">
+        <div class="input-group table bg-gray-100 lg:bg-white w-full">
+            <input id="search-input" type="text" placeholder="搜索" class="inline-block w-full bg-gray-100 lg:bg-white">
+            <span class="table-cell">
+                <button name="search tigger button" disabled>
+                    <i class="iconfont icon-search m-2"></i>
+                </button>
+            </span>
+        </div>
+    </form>
+        
+<div id="content-json" data-placeholder="搜索" class="invisible hidden">/content.json</div>
+<script id="search-teamplate" type="text/html" data-path="/content.json">
+    <div>
+        <div class="search-header bg-gray-400">
+            <input id="actual-search-input" model="keyword" ref="input" class="inline-block w-full h-10 px-2 py-1" placeholder="搜索" type="text">
+        </div>
+        <div class="search-result bg-gray-200">
+            {{#each searchPosts}}
+            <a href="/{{ path }}" class="result-item block px-2 pb-3 mb-1 pt-1 hover:bg-indigo-100">
+                <i class="iconfont icon-file"></i>
+                <h1 class="result-title inline font-medium text-lg">{{ title }}</h1>
+                <p class="result-content text-gray-600 text-sm">{{{ text }}}</p>
+            </a>
+            {{/each}}
+        </div>
+    </div>
+</script>
+
+</div>
+
+
+        <button name="menu toogle button" id="menu-toggle-btn" class="block sm:hidden p-3" role="button" aria-expanded="false">
+            <i class="iconfont icon-hamburger"></i>
+        </button>
+    </div>
+    <nav id="menu-nav" class="hidden sm:flex flex-col">
+        
+        
+            <div class="menu-item menu-home" role="menuitem">
+                <a href="/.">
+                    <i class="iconfont icon-home" aria-hidden="true"></i>
+                    <span class="menu-title">首页</span>
+                </a>
+            </div>
+        
+        
+            <div class="menu-item menu-archives" role="menuitem">
+                <a href="/archives">
+                    <i class="iconfont icon-archive" aria-hidden="true"></i>
+                    <span class="menu-title">归档</span>
+                </a>
+            </div>
+        
+        
+            <div class="menu-item menu-categories" role="menuitem">
+                <a href="/categories">
+                    <i class="iconfont icon-folder" aria-hidden="true"></i>
+                    <span class="menu-title">分类</span>
+                </a>
+            </div>
+        
+        
+            <div class="menu-item menu-tags" role="menuitem">
+                <a href="/tags">
+                    <i class="iconfont icon-tag" aria-hidden="true"></i>
+                    <span class="menu-title">标签</span>
+                </a>
+            </div>
+        
+        
+            <div class="menu-item menu-repository" role="menuitem">
+                <a href="/repository">
+                    <i class="iconfont icon-project" aria-hidden="true"></i>
+                    <span class="menu-title">项目</span>
+                </a>
+            </div>
+        
+        
+            <div class="menu-item menu-about" role="menuitem">
+                <a href="/about">
+                    <i class="iconfont icon-cup" aria-hidden="true"></i>
+                    <span class="menu-title">关于</span>
+                </a>
+            </div>
+        
+        
+
+    </nav>
+</header>
+
+        <section class="main-section">
+            
+    <main class="flex-1 px-4 py-14 md:px-5 lg:px-8 lg:py-4 relative min-h-screen">
+    
+
+    <article class="content article article-archives article-type-list" itemscope="">
+        <header class="article-header">
+            
+    
+        <h1 class="article-title text-lg" itemprop="name">
+            配置和保护 SSH
+        </h1>
+    
+
+
+
+            <p class="article-meta mb-3 text-xs">
+                <span class="article-date">
+    <i class="iconfont icon-calendar-check"></i>
+	<a href="/2022-08-15-Linux%20%7C%20%E9%85%8D%E7%BD%AE%E5%92%8C%E4%BF%9D%E6%8A%A4%20SSH.html" class="article-date">
+	  <time datetime="2022-08-15T03:23:44.407Z" itemprop="datePublished">8月 15</time>
+	</a>
+</span>
+
+                
+    <span class="article-category">
+    <i class="iconfont icon-folder"></i>
+    <a class="article-category-link" href="/categories/%E5%AD%A6%E4%B9%A0/">学习</a> , <a class="article-category-link" href="/categories/%E5%AD%A6%E4%B9%A0/Linux/">Linux</a> , <a class="article-category-link" href="/categories/%E6%97%A5%E5%B8%B8%E8%AE%B0%E5%BD%95/">日常记录</a> , <a class="article-category-link" href="/categories/%E8%BF%81%E7%A7%BB%E6%96%87%E7%AB%A0/">迁移文章</a>
+  </span>
+
+
+                
+    <span class="article-tags">
+    <i class="iconfont icon-tag"></i>
+    <a class="article-tag-none-link" href="/tags/Linux/" rel="tag">Linux</a>, <a class="article-tag-none-link" href="/tags/RHCE/" rel="tag">RHCE</a>, <a class="article-tag-none-link" href="/tags/RHEL/" rel="tag">RHEL</a>, <a class="article-tag-none-link" href="/tags/%E8%AE%A4%E8%AF%81%E8%80%83%E8%AF%95/" rel="tag">认证考试</a>
+  </span>
+
+
+                
+                
+    
+        <span class="post-wordcount" itemprop="wordCount">字数统计: 1k(字)</span>
+    
+    
+        <span class="post-readcount" itemprop="timeRequired">阅读时长: 4(分)</span>
+    
+
+
+            </p>
+        </header>
+        <div class="marked-body article-body">
+            <blockquote>
+<p>🔴 此文章由之前的 Typora 笔记迁移过来，内容可能已经过时。</p>
+</blockquote>
+<h2 id="识别远程用户">识别远程用户</h2>
+<p>​通过 <em>w</em> 命令查看当前登陆的用户</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]\<span class="comment"># w</span></span><br><span class="line"> 20:39:40 up 30 min,  2 <span class="built_in">users</span>,  load average: 0.03, 0.02, 0.04</span><br><span class="line">USER     TTY      FROM             LOGIN@   IDLE   JCPU   PCPU WHAT</span><br><span class="line">student  tty2     tty2             20:10   30:20  27.28s  0.29s /usr/li</span><br><span class="line">root     pts/1    172.16.1.195     20:37    0.00s  0.09s  0.02s w</span><br></pre></td></tr></table></figure>
+<h2 id="使用免密登陆（公私钥对）">使用免密登陆（公私钥对）</h2>
+<p>​SSH 可通过公钥加密的方式保持通信安全。当某一 SSH 客户端连接到 SSH 服务器时，在该客户端登陆之前，服务器会向其发送公钥副本。这颗用于设置通信渠道的安全加密，并可验证客户端的服务器。</p>
+<blockquote>
+<p>🟢 设置位于 ~/.ssh/config 文件或 /etc/ssh/ssh_config 中的 <em>StrictHostKeyChecking</em> 参数为 yes 可使 ssh 命令在公钥不匹配时始终中断 SSH 连接。</p>
+</blockquote>
+<h3 id="配置步骤">配置步骤</h3>
+<ol>
+<li>本地主机执行 <em>ssh-keygen -t rsa</em> 命令生成公私钥对；</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]\<span class="comment"># ssh-keygen -t rsa</span></span><br><span class="line">Generating public/private rsa key pair.</span><br><span class="line">Enter file <span class="keyword">in</span> <span class="built_in">which</span> to save the key (/root/.ssh/id_rsa): 	<span class="comment"># 保存 key 的文件绝对路径</span></span><br><span class="line">Created directory <span class="string">&#x27;/root/.ssh&#x27;</span>.</span><br><span class="line">Enter passphrase (empty <span class="keyword">for</span> no passphrase): 				<span class="comment"># 口令</span></span><br><span class="line">Enter same passphrase again: </span><br><span class="line">Your identification has been saved <span class="keyword">in</span> /root/.ssh/id_rsa.	<span class="comment"># 私钥文件绝对路径</span></span><br><span class="line">Your public key has been saved <span class="keyword">in</span> /root/.ssh/id_rsa.pub.	<span class="comment"># 公钥文件绝对路径</span></span><br><span class="line">The key fingerprint is:</span><br><span class="line">SHA256:+wQfHxm3T7+yJSobz6QXWeh2JU3WqQgfpYuxjWzlX90 root@localhost.localdomain</span><br><span class="line">The key\<span class="string">&#x27;s randomart image is:</span></span><br><span class="line"><span class="string">+---[RSA 3072]----+</span></span><br><span class="line"><span class="string">|            ..  o|</span></span><br><span class="line"><span class="string">|         . ..  +.|</span></span><br><span class="line"><span class="string">|         .oo= *  |</span></span><br><span class="line"><span class="string">|        . O+.B +o|</span></span><br><span class="line"><span class="string">|        S*o+= +.E|</span></span><br><span class="line"><span class="string">|        .+ B.o.o.|</span></span><br><span class="line"><span class="string">|        ..+.+o .o|</span></span><br><span class="line"><span class="string">|         +*...o .|</span></span><br><span class="line"><span class="string">|         o=+ .o. |</span></span><br><span class="line"><span class="string">+----[SHA256]-----+</span></span><br><span class="line"><span class="string">[root@localhost ~]\# ll /root/.ssh</span></span><br><span class="line"><span class="string">total 8</span></span><br><span class="line"><span class="string">-rw-------. 1 root root 2610 Aug 19 22:42 id_rsa		# 密钥文件</span></span><br><span class="line"><span class="string">-rw-r--r--. 1 root root  580 Aug 19 22:42 id_rsa.pub	# 公钥文件</span></span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li>本地主机执行 <em>ssh-copy-id -i ~/.ssh/id_rsa.pub user@host_name_or_ip</em> 命令将公钥文件发送到需要免密登陆的服务器；</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]\<span class="comment"># ssh-copy-id -i ~/.ssh/id_rsa.pub skinyi@127.0.0.1</span></span><br><span class="line">/usr/bin/ssh-copy-id: INFO: Source of key(s) to be installed: <span class="string">&quot;/root/.ssh/id_rsa.pub&quot;</span></span><br><span class="line">The authenticity of host <span class="string">&#x27;127.0.0.1 (127.0.0.1)&#x27;</span> can\<span class="string">&#x27;t be established.</span></span><br><span class="line"><span class="string">ECDSA key fingerprint is SHA256:CYiNIK6WgrScHzOuI/rnxIdZN68Fm0LVvFKbCzx721w.</span></span><br><span class="line"><span class="string">Are you sure you want to continue connecting (yes/no/[fingerprint])? yes</span></span><br><span class="line"><span class="string">/usr/bin/ssh-copy-id: INFO: attempting to log in with the new key(s), to filter out any that are already installed</span></span><br><span class="line"><span class="string">/usr/bin/ssh-copy-id: INFO: 1 key(s) remain to be installed -- if you are prompted now it is to install the new keys</span></span><br><span class="line"><span class="string">skinyi@127.0.0.1\&#x27;</span>s password: </span><br><span class="line"></span><br><span class="line">Number of key(s) added: 1</span><br><span class="line"></span><br><span class="line">Now try logging into the machine, with: <span class="string">&quot;ssh &#x27;skinyi@127.0.0.1&#x27;&quot;</span> and check to make sure that only the key(s) you wanted were added.</span><br></pre></td></tr></table></figure>
+<ol start="3">
+<li>（与第二步二选一）在远程机器上手动导入公钥：将 id_rsa.pub 文件中的内容复制追加到远程主机的 ~/.ssh/authorized_keys 文件中去；</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost .ssh]\<span class="comment"># cat ~/.ssh/authorized_keys</span></span><br><span class="line">ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAzIU/3G5LbJEs763JRhvfTzdWAUdfmbRBTzVUo3r0IPnGDUIF135wR7FoI6KVc6jFesgJKfkGos06GdphPgF04z5tFG5VaJS+xQZepveGza2QH6eMssBNwzpZ517FQkRs1l3pLbHweI47gByhRx1xMKWjWX5dhkI0aiNaf2GAZlevb4YNRznx6MEj39LdNEqFKHdfU0iybFDm1p0ql+jPGV7T7N/Xz4GRvnuZQGUrBK39tzAdLHDlf8lU5Muhs8zJ0pMzv7tRdJCMNZ6gW+4dK6GTaOGAR6tc4HwGgIYTOPLGbYpdyJpdNd8hvBp5b17jAs5xLZHib4PVlZJJ6gw== rsa2048-082021</span><br></pre></td></tr></table></figure>
+<ol start="4">
+<li>验证。</li>
+</ol>
+<blockquote>
+<p>🔴 注意：远程机器的 .ssh 目录需要 700 权限，authorized_keys 文件需要 600 权限。否则将会被拒绝连接。</p>
+</blockquote>
+<h3 id="已知主机密钥管理">已知主机密钥管理</h3>
+<p>​若远程主机公钥被替换，则需要在本地主机上编辑已知主机文件以确保将旧公钥条目替换为新公钥条目。</p>
+<p>​远程主机共享的公钥会在本地 <em>/etc/ssh/ssh_known_hosts</em> 或 <em>~/.ssh/known_hosts</em> 文件中记录。例如：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost .ssh]\<span class="comment"># cat known_hosts</span></span><br><span class="line">127.0.0.1 ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBBnrDFHMD5vaRSn1P9CN5FTpHTGEnAR9n0PN15bMdmD/dNcUQUYGsrKva+StL4y1CXGK4FurJ9gDLliRvjere+U=</span><br></pre></td></tr></table></figure>
+<p>​其中，每个公钥各占一行。每条记录的第一个字段是共享该公钥的主机名和 IP 地址的列表；第二个字段是公钥的加密算法；最后一个字段是公钥本身。</p>
+<p>​远程主机将公钥文件存放在 <em>/etc/ssh/</em> 目录下，其拓展名为 .pub。</p>
+<h2 id="SSH-配置优化">SSH 配置优化</h2>
+<p>​OpenSSH 服务端由一个名为 sshd 的守护进程提供。它的主配置文件为 <em>/etc/ssh/sshd_config</em>。</p>
+<h3 id="禁止远程使用-root-账户登陆">禁止远程使用 root 账户登陆</h3>
+<p>​完全禁止可以将 <em>/etc/ssh/sshd_config</em> 配置文件中的 <em>PermitRootLogin</em> 配置设置为 no，仅允许通过密钥登陆可以将其值设置为 without-password。</p>
+<h3 id="仅允许使用公私钥对的方式进行登陆">仅允许使用公私钥对的方式进行登陆</h3>
+<p>​此场景下可以将 <em>/etc/ssh/sshd_config</em> 配置文件中的 <em>PasswordAuthentication</em> 配置为 no。</p>
+<blockquote>
+<p>🟢 修改 sshd 服务的配置文件后，请使用 <code>systemctl reload sshd</code> 命令确保更改立即生效。</p>
+</blockquote>
+
+        </div>
+        
+<blockquote class="copyright">
+    <p><strong>本文链接 : </strong><a class="permalink" href="https://skinyi.github.io/2022-08-15-Linux%20|%20%E9%85%8D%E7%BD%AE%E5%92%8C%E4%BF%9D%E6%8A%A4%20SSH.html">https://skinyi.github.io/2022-08-15-Linux | 配置和保护 SSH.html</a></p>
+    <p><strong>这篇文章由作者胡编乱造或者由其他文章复制粘贴而来，其中有些内容可能已经过时，请谨慎参考复制文章中的内容。</strong></p>
+</blockquote>
+
+
+    </article>
+    
+    <section id="comments">
+        
+    </section>
+
+
+    
+
+</main>
+
+
+<aside style="" id="sidebar" class="aside aside-fixture">
+    <div class="toc-sidebar">
+        <nav id="toc" class="article-toc">
+            <h3 class="toc-title">文章目录</h3>
+            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AF%86%E5%88%AB%E8%BF%9C%E7%A8%8B%E7%94%A8%E6%88%B7"><span class="toc-number">1.</span> <span class="toc-text">识别远程用户</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8%E5%85%8D%E5%AF%86%E7%99%BB%E9%99%86%EF%BC%88%E5%85%AC%E7%A7%81%E9%92%A5%E5%AF%B9%EF%BC%89"><span class="toc-number">2.</span> <span class="toc-text">使用免密登陆（公私钥对）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%85%8D%E7%BD%AE%E6%AD%A5%E9%AA%A4"><span class="toc-number">2.1.</span> <span class="toc-text">配置步骤</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B7%B2%E7%9F%A5%E4%B8%BB%E6%9C%BA%E5%AF%86%E9%92%A5%E7%AE%A1%E7%90%86"><span class="toc-number">2.2.</span> <span class="toc-text">已知主机密钥管理</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#SSH-%E9%85%8D%E7%BD%AE%E4%BC%98%E5%8C%96"><span class="toc-number">3.</span> <span class="toc-text">SSH 配置优化</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%A6%81%E6%AD%A2%E8%BF%9C%E7%A8%8B%E4%BD%BF%E7%94%A8-root-%E8%B4%A6%E6%88%B7%E7%99%BB%E9%99%86"><span class="toc-number">3.1.</span> <span class="toc-text">禁止远程使用 root 账户登陆</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%85%E5%85%81%E8%AE%B8%E4%BD%BF%E7%94%A8%E5%85%AC%E7%A7%81%E9%92%A5%E5%AF%B9%E7%9A%84%E6%96%B9%E5%BC%8F%E8%BF%9B%E8%A1%8C%E7%99%BB%E9%99%86"><span class="toc-number">3.2.</span> <span class="toc-text">仅允许使用公私钥对的方式进行登陆</span></a></li></ol></li></ol>
+        </nav>
+    </div>
+</aside>
+
+
+
+
+
+        </section>
+        <footer class="hidden lg:block fixed bottom-0 left-0 sm:w-1/12 bg-gray-100 z-40">
+    
+    
+        <p class="footer-custom">❤ Powered by <a href="https://hexo.io/" target="_blank" rel="noopener noreferrer">Hexo</a> with <a href="https://github.com/fengkx/hexo-theme-purer" target="_blank" rel="noopener noreferrer">Purer theme</a>.</p>
+    
+</footer>
+
+        <div id="mask" class="hidden mask fixed inset-0 bg-gray-900 opacity-75 z-40"></div>
+        <div id="search-view-container" class="hidden shadow-xl"></div>
+        
+<script src="/js/dom-event.min.js"></script>
+
+
+
+<script src="/js/local-search.min.js"></script>
+
+
+
+    <script src="//cdn.jsdelivr.net/npm/lightgallery.js@1.1.3/dist/js/lightgallery.min.js"></script>
+    
+<script src="/js/light-gallery.min.js"></script>
+
+
+
+
+
+
+    </body>
+</html>

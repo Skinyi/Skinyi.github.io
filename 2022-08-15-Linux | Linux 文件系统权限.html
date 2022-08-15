@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html  lang="zh-CN,en,default" >
+    <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, maximum-scale=5, viewport-fit=cover">
+    <title>Linux 文件系统权限 | Avery Ma 的个人网站</title>
+    <meta name="description" content="🔴 此文章由之前的 Typora 笔记迁移过来，内容可能已经过时。  Linux 文件权限类别 ​对于一个 linux 系统上的一般文件，其访问权限的具体内容如下：               例子         用户类别         具体权限                   sample.sh         u: 该文件的属主，通常是创建者         r: 读取权限，可以读">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Linux 文件系统权限">
+<meta property="og:url" content="https://skinyi.github.io/2022-08-15-Linux%20|%20Linux%20%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F%E6%9D%83%E9%99%90.html">
+<meta property="og:site_name" content="Avery Ma 的个人网站">
+<meta property="og:description" content="🔴 此文章由之前的 Typora 笔记迁移过来，内容可能已经过时。  Linux 文件权限类别 ​对于一个 linux 系统上的一般文件，其访问权限的具体内容如下：               例子         用户类别         具体权限                   sample.sh         u: 该文件的属主，通常是创建者         r: 读取权限，可以读">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-08-15T02:17:38.330Z">
+<meta property="article:modified_time" content="2022-08-15T02:19:32.512Z">
+<meta property="article:author" content="skinyi">
+<meta property="article:tag" content="Linux">
+<meta property="article:tag" content="RHEL">
+<meta property="article:tag" content="RHCE">
+<meta property="article:tag" content="认证考试">
+<meta name="twitter:card" content="summary">
+
+    
+    <link rel="icon" href="images/favicon.png" type="image/x-icon">
+
+    
+<link rel="stylesheet" href="/css/common.min.css">
+
+
+
+    
+    
+    
+    
+        <link href="//cdn.jsdelivr.net/npm/lightgallery.js@1.1.3/dist/css/lightgallery.min.css" rel="stylesheet">
+    
+    
+    
+<link rel="stylesheet" href="/css/iconfont.min.css">
+
+    
+<meta name="generator" content="Hexo 6.2.0"></head>
+
+    <body>
+        <header class="header header-fixture">
+    <div class="profile-search-wrap flex sm:block">
+        
+        
+        <div class="profile sm:text-center md:px-1 lg:px-3 sm:pb-4 sm:pt-6">
+            <a id="avatar" role="link" href="https://github.com/skinyi" class="inline-block lg:w-16 lg:h-16 w-8 h-8 m-2" target="_blank" rel="noopener" rel="noreferrer" >
+                <img src="/images/avatar.jpg" class="rounded-full" alt="avatar">
+            </a>
+            <h2 id="name" class="hidden lg:block">Avery Ma</h2>
+            <h3 id="title" class="hidden xl:block">IT 从业者</h3>
+            
+            <small id="location" class="hidden lg:block">
+                <i class="iconfont icon-map-icon"></i>
+                宁夏, 中国
+            </small>
+            
+        </div>
+        
+        
+<div class="search flex-1 flex lg:inline-block sm:hidden lg:px-4 lg:mt-2 lg:w-full">
+    <form id="search-form" class="my-auto flex-1 lg:border lg:border-solid lg:border-gray-200">
+        <div class="input-group table bg-gray-100 lg:bg-white w-full">
+            <input id="search-input" type="text" placeholder="搜索" class="inline-block w-full bg-gray-100 lg:bg-white">
+            <span class="table-cell">
+                <button name="search tigger button" disabled>
+                    <i class="iconfont icon-search m-2"></i>
+                </button>
+            </span>
+        </div>
+    </form>
+        
+<div id="content-json" data-placeholder="搜索" class="invisible hidden">/content.json</div>
+<script id="search-teamplate" type="text/html" data-path="/content.json">
+    <div>
+        <div class="search-header bg-gray-400">
+            <input id="actual-search-input" model="keyword" ref="input" class="inline-block w-full h-10 px-2 py-1" placeholder="搜索" type="text">
+        </div>
+        <div class="search-result bg-gray-200">
+            {{#each searchPosts}}
+            <a href="/{{ path }}" class="result-item block px-2 pb-3 mb-1 pt-1 hover:bg-indigo-100">
+                <i class="iconfont icon-file"></i>
+                <h1 class="result-title inline font-medium text-lg">{{ title }}</h1>
+                <p class="result-content text-gray-600 text-sm">{{{ text }}}</p>
+            </a>
+            {{/each}}
+        </div>
+    </div>
+</script>
+
+</div>
+
+
+        <button name="menu toogle button" id="menu-toggle-btn" class="block sm:hidden p-3" role="button" aria-expanded="false">
+            <i class="iconfont icon-hamburger"></i>
+        </button>
+    </div>
+    <nav id="menu-nav" class="hidden sm:flex flex-col">
+        
+        
+            <div class="menu-item menu-home" role="menuitem">
+                <a href="/.">
+                    <i class="iconfont icon-home" aria-hidden="true"></i>
+                    <span class="menu-title">首页</span>
+                </a>
+            </div>
+        
+        
+            <div class="menu-item menu-archives" role="menuitem">
+                <a href="/archives">
+                    <i class="iconfont icon-archive" aria-hidden="true"></i>
+                    <span class="menu-title">归档</span>
+                </a>
+            </div>
+        
+        
+            <div class="menu-item menu-categories" role="menuitem">
+                <a href="/categories">
+                    <i class="iconfont icon-folder" aria-hidden="true"></i>
+                    <span class="menu-title">分类</span>
+                </a>
+            </div>
+        
+        
+            <div class="menu-item menu-tags" role="menuitem">
+                <a href="/tags">
+                    <i class="iconfont icon-tag" aria-hidden="true"></i>
+                    <span class="menu-title">标签</span>
+                </a>
+            </div>
+        
+        
+            <div class="menu-item menu-repository" role="menuitem">
+                <a href="/repository">
+                    <i class="iconfont icon-project" aria-hidden="true"></i>
+                    <span class="menu-title">项目</span>
+                </a>
+            </div>
+        
+        
+            <div class="menu-item menu-about" role="menuitem">
+                <a href="/about">
+                    <i class="iconfont icon-cup" aria-hidden="true"></i>
+                    <span class="menu-title">关于</span>
+                </a>
+            </div>
+        
+        
+
+    </nav>
+</header>
+
+        <section class="main-section">
+            
+    <main class="flex-1 px-4 py-14 md:px-5 lg:px-8 lg:py-4 relative min-h-screen">
+    
+
+    <article class="content article article-archives article-type-list" itemscope="">
+        <header class="article-header">
+            
+    
+        <h1 class="article-title text-lg" itemprop="name">
+            Linux 文件系统权限
+        </h1>
+    
+
+
+
+            <p class="article-meta mb-3 text-xs">
+                <span class="article-date">
+    <i class="iconfont icon-calendar-check"></i>
+	<a href="/2022-08-15-Linux%20%7C%20Linux%20%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F%E6%9D%83%E9%99%90.html" class="article-date">
+	  <time datetime="2022-08-15T02:17:38.330Z" itemprop="datePublished">8月 15</time>
+	</a>
+</span>
+
+                
+    <span class="article-category">
+    <i class="iconfont icon-folder"></i>
+    <a class="article-category-link" href="/categories/%E5%AD%A6%E4%B9%A0/">学习</a> , <a class="article-category-link" href="/categories/%E5%AD%A6%E4%B9%A0/Linux/">Linux</a> , <a class="article-category-link" href="/categories/%E6%97%A5%E5%B8%B8%E8%AE%B0%E5%BD%95/">日常记录</a> , <a class="article-category-link" href="/categories/%E8%BF%81%E7%A7%BB%E6%96%87%E7%AB%A0/">迁移文章</a>
+  </span>
+
+
+                
+    <span class="article-tags">
+    <i class="iconfont icon-tag"></i>
+    <a class="article-tag-none-link" href="/tags/Linux/" rel="tag">Linux</a>, <a class="article-tag-none-link" href="/tags/RHCE/" rel="tag">RHCE</a>, <a class="article-tag-none-link" href="/tags/RHEL/" rel="tag">RHEL</a>, <a class="article-tag-none-link" href="/tags/%E8%AE%A4%E8%AF%81%E8%80%83%E8%AF%95/" rel="tag">认证考试</a>
+  </span>
+
+
+                
+                
+    
+        <span class="post-wordcount" itemprop="wordCount">字数统计: 1.5k(字)</span>
+    
+    
+        <span class="post-readcount" itemprop="timeRequired">阅读时长: 5(分)</span>
+    
+
+
+            </p>
+        </header>
+        <div class="marked-body article-body">
+            <blockquote>
+<p>🔴 此文章由之前的 Typora 笔记迁移过来，内容可能已经过时。</p>
+</blockquote>
+<h2 id="Linux-文件权限类别">Linux 文件权限类别</h2>
+<p>​对于一个 linux 系统上的一般文件，其访问权限的具体内容如下：</p>
+<table>
+    <tr>
+        <th>例子</th>
+        <th>用户类别</th>
+        <th>具体权限</th>
+    </tr>
+    <tr>
+        <td rowspan="9">sample.sh</td>
+        <td rowspan="3">u: 该文件的属主，通常是创建者</td>
+        <td>r: 读取权限，可以读取文件内容</td>
+    </tr>
+    <tr>
+        <td>w: 修改权限，可以更改文件内容</td>
+    </tr>
+    <tr>
+        <td>x: 执行权限，可以做为可执行文件执行</td>
+    </tr>
+    <tr>
+        <td rowspan="3">g: 该文件属主所处的主要组</td>
+        <td>r: 读取权限，可以读取文件内容</td>
+    </tr>
+    <tr>
+        <td>w: 修改权限，可以更改文件内容</td>
+    </tr>
+    <tr>
+        <td>x: 执行权限，可以做为可执行文件执行</td>
+    </tr>
+    <tr>
+        <td rowspan="3">o: 其他用户以及他们的用户组</td>
+        <td>r: 读取权限，可以读取文件内容</td>
+    </tr>
+    <tr>
+        <td>w: 修改权限，可以更改文件内容</td>
+    </tr>
+    <tr>
+        <td>x: 执行权限，可以做为可执行文件执行</td>
+    </tr>
+</table>
+<p>​对于目录文件，其权限标识的具体内容如下：</p>
+<table>
+<thead>
+<tr>
+<th>权限</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>r: 读取权限</td>
+<td>可以列出目录的内容</td>
+</tr>
+<tr>
+<td>w: 写入权限</td>
+<td>可以创建或删除目录中的任一文件</td>
+</tr>
+<tr>
+<td>x: 执行权限</td>
+<td>该目录可以成为当前工作目录（可以 ch 到），但要读取权限才能查看该目录下的文件</td>
+</tr>
+</tbody>
+</table>
+<h2 id="修改-Linux-文件权限">修改 Linux 文件权限</h2>
+<h3 id="使用-chmod-命令修改文件权限">使用 <code>chmod</code> 命令修改文件权限</h3>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">chmod</span> [OPTION]... MODE[,MODE]... FILE... <span class="comment"># 以符号形式修改权限</span></span><br><span class="line"><span class="built_in">chmod</span> [OPTION]... OCTAL-MODE FILE... <span class="comment"># 以数字形式修改权限</span></span><br><span class="line"><span class="built_in">chmod</span> [OPTION]... --reference=RFILE FILE... <span class="comment"># 将文件的权限修改的和 RFILE 一样</span></span><br><span class="line"><span class="comment"># 常见选项：</span></span><br><span class="line">-R, --recursive <span class="comment"># 递归修改目录和文件</span></span><br><span class="line">-v, --verbose <span class="comment"># 为每个处理的文件输出诊断信息</span></span><br><span class="line">-c, --changes <span class="comment"># 类似 -v 选项，但是仅在文件更改成功时报告</span></span><br><span class="line">-f, --silent, --quiet <span class="comment"># 忽略大多数错误信息</span></span><br></pre></td></tr></table></figure>
+<h4 id="符号法">符号法</h4>
+<p>​可以使用 u、g、o、a 字母分别代表文件属主、属主所在组、其他用户及组、所有用户及组，对应的动作 +、-、=</p>
+<p>分别代表添加、删除、精确设置，r、w、x 代表所要设置的权限，设置多个用户类别时用逗号隔开，即如下面的例子所示：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">chmod</span> u+wx,o-rx executable.sh <span class="comment"># 属主增加写入和执行权限，其他用户删除读和执行权限</span></span><br></pre></td></tr></table></figure>
+<h4 id="数字法">数字法</h4>
+<p>​让 r、w、x 权限分别对应数字 4、2、1，由这三个数字任意组合相加得到一个 0-7 的结果，将这个结果从左到右三位分别代表 u、g、o 对应的权限再组合为一个三位数（最高位可以为零），此方法适用于精确设置文件的权限，即如下面的例子所示：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">chmod</span> 777 executable.sh <span class="comment"># 将此文件设置为所有用户可读写、执行。</span></span><br></pre></td></tr></table></figure>
+<p>​第三种形式较易理解，不再赘述。</p>
+<h3 id="使用-chown-修改文件所属用户或组">使用 <code>chown</code> 修改文件所属用户或组</h3>
+<p>​只有 root 用户可以更改文件的所属用户，文件所有者和 root 可以更改文件的所属用户（前者只能改到自己在的组里，后者任意）。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">chown</span> [OPTION]... [OWNER][:[GROUP] FILE... <span class="comment"># 修改文件所属用户和组</span></span><br><span class="line"><span class="built_in">chown</span> [OPTION]... --reference=RFILE FILE... <span class="comment"># 参照 RFILE 修改文件所属用户和组</span></span><br><span class="line"><span class="comment"># 常见选项：</span></span><br><span class="line">-R, --recursive <span class="comment"># 递归修改目录和文件</span></span><br><span class="line">-v, --verbose <span class="comment"># 为每个处理的文件输出诊断信息</span></span><br><span class="line">-c, --changes <span class="comment"># 类似 -v 选项，但是仅在文件更改成功时报告</span></span><br><span class="line">-f, --silent, --quiet <span class="comment"># 忽略大多数错误信息</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">chown</span> -R student:student /opt/dir/ <span class="comment"># 将 /opt/dir 目录的所有者和组改为 student 和 student 组</span></span><br><span class="line"><span class="built_in">chown</span> :wheel /opt/file <span class="comment"># 作用等同于下条命令</span></span><br><span class="line"><span class="built_in">chgrp</span> wheel /opt/file <span class="comment"># 将 /opt/file 文件的所有组改为 wheel 组</span></span><br></pre></td></tr></table></figure>
+<h3 id="特殊权限">特殊权限</h3>
+<table>
+<thead>
+<tr>
+<th>特殊权限</th>
+<th>对文件的影响</th>
+<th>对目录的影响</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>u+s(suid)</td>
+<td>以拥有文件的用户身份，而不是以运行文件的身份执行文件</td>
+<td>无影响</td>
+</tr>
+<tr>
+<td>g+s(sgid)</td>
+<td>以拥有该文件的组身份执行文件</td>
+<td>在目录中最新创建的文件将其组所有者设置为与目录的组所有者相匹配</td>
+</tr>
+<tr>
+<td>o+t(stiky)</td>
+<td>无影响</td>
+<td>对目录具有写入访问权限的用户仅可以删除其所拥有的文件，而无法删除或强制保存到其他用户所拥有的文件</td>
+</tr>
+</tbody>
+</table>
+<p>​示例：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]\<span class="comment"># ll /usr/bin/passwd</span></span><br><span class="line">-rwsr-xr-x. 1 root root 33544 Dec 14  2019 /usr/bin/passwd <span class="comment"># u.x-&gt;s</span></span><br><span class="line">[root@localhost ~]\<span class="comment"># ll -d /run/log/journal</span></span><br><span class="line">drwxr-sr-x. 3 root systemd-journal 60 Apr 15 16:47 /run/log/journal <span class="comment"># g.x-&gt;s</span></span><br><span class="line">[root@localhost ~]\<span class="comment"># ll /usr/bin/locate</span></span><br><span class="line">-rwx--s--x. 1 root slocate 47128 Aug 12  2018 /usr/bin/locate <span class="comment"># g.x-&gt;s</span></span><br><span class="line">[root@localhost ~]\<span class="comment"># ll -d /tmp </span></span><br><span class="line">drwxrwxrwt. 22 root root 4096 Apr 23 20:10 /tmp <span class="comment"># o.x-&gt;t</span></span><br></pre></td></tr></table></figure>
+<h4 id="设置特殊权限的方法">设置特殊权限的方法</h4>
+<ul>
+<li>符号法：u+s、g+s、o+t；</li>
+<li>数值法：在原来三位的基础上在左边增加一位：setuid=4、setgid=2、sticky=1；</li>
+</ul>
+<h3 id="创建的新文件的默认权限">创建的新文件的默认权限</h3>
+<p>​两个因素影响创建的新文件（含目录）的初始权限：一是文件的类型（常规文件还是目录），二是当前的 umask。对于因素一，若是创建的新目录，操作系统默认首先为其分配八进制权限 0777（drwxrwxrwx）；如果是常规文件，操作系统默认首先为其分配八进制权限 0666（-rw-rw-rw-），因此可执行文件创建后需手动赋予执行权限才能够被执行。对于因素二，shell 内置了 umask 机制来进一步限制创建的新文件的权限，使用不带参数的 <code>umask</code> 可以查看当前 shell 设置的 umask 值，其内容为一个八进制位掩码，每位的数字代表从当前用户的默认设置中删掉某种权限：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]\<span class="comment"># umask</span></span><br><span class="line">0022 <span class="comment"># 代表 go-w，即在默认的基础上去掉同组用户和其它用户的写入权限</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">umask</span> [-p] [-S] [MODE] <span class="comment"># 显示或设置文件模式掩码</span></span><br><span class="line"><span class="comment"># 常见选项：</span></span><br><span class="line">-p, <span class="comment"># 输出的具体掩码前面加上 umask，即可以作为命令输入复用</span></span><br><span class="line">-S, <span class="comment"># 使用符号模式</span></span><br></pre></td></tr></table></figure>
+<p>​使用 <code>umask</code> 可以临时更改当前 shell 创建文件时的掩码，想永久更改需在 bashrc 和 profile 文件中覆盖。</p>
+
+        </div>
+        
+<blockquote class="copyright">
+    <p><strong>本文链接 : </strong><a class="permalink" href="https://skinyi.github.io/2022-08-15-Linux%20|%20Linux%20%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F%E6%9D%83%E9%99%90.html">https://skinyi.github.io/2022-08-15-Linux | Linux 文件系统权限.html</a></p>
+    <p><strong>这篇文章由作者胡编乱造或者由其他文章复制粘贴而来，其中有些内容可能已经过时，请谨慎参考复制文章中的内容。</strong></p>
+</blockquote>
+
+
+    </article>
+    
+    <section id="comments">
+        
+    </section>
+
+
+    
+
+</main>
+
+
+<aside style="" id="sidebar" class="aside aside-fixture">
+    <div class="toc-sidebar">
+        <nav id="toc" class="article-toc">
+            <h3 class="toc-title">文章目录</h3>
+            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Linux-%E6%96%87%E4%BB%B6%E6%9D%83%E9%99%90%E7%B1%BB%E5%88%AB"><span class="toc-number">1.</span> <span class="toc-text">Linux 文件权限类别</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BF%AE%E6%94%B9-Linux-%E6%96%87%E4%BB%B6%E6%9D%83%E9%99%90"><span class="toc-number">2.</span> <span class="toc-text">修改 Linux 文件权限</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8-chmod-%E5%91%BD%E4%BB%A4%E4%BF%AE%E6%94%B9%E6%96%87%E4%BB%B6%E6%9D%83%E9%99%90"><span class="toc-number">2.1.</span> <span class="toc-text">使用 chmod 命令修改文件权限</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%AC%A6%E5%8F%B7%E6%B3%95"><span class="toc-number">2.1.1.</span> <span class="toc-text">符号法</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%95%B0%E5%AD%97%E6%B3%95"><span class="toc-number">2.1.2.</span> <span class="toc-text">数字法</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8-chown-%E4%BF%AE%E6%94%B9%E6%96%87%E4%BB%B6%E6%89%80%E5%B1%9E%E7%94%A8%E6%88%B7%E6%88%96%E7%BB%84"><span class="toc-number">2.2.</span> <span class="toc-text">使用 chown 修改文件所属用户或组</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%89%B9%E6%AE%8A%E6%9D%83%E9%99%90"><span class="toc-number">2.3.</span> <span class="toc-text">特殊权限</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%AE%BE%E7%BD%AE%E7%89%B9%E6%AE%8A%E6%9D%83%E9%99%90%E7%9A%84%E6%96%B9%E6%B3%95"><span class="toc-number">2.3.1.</span> <span class="toc-text">设置特殊权限的方法</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%9B%E5%BB%BA%E7%9A%84%E6%96%B0%E6%96%87%E4%BB%B6%E7%9A%84%E9%BB%98%E8%AE%A4%E6%9D%83%E9%99%90"><span class="toc-number">2.4.</span> <span class="toc-text">创建的新文件的默认权限</span></a></li></ol></li></ol>
+        </nav>
+    </div>
+</aside>
+
+
+
+
+
+        </section>
+        <footer class="hidden lg:block fixed bottom-0 left-0 sm:w-1/12 bg-gray-100 z-40">
+    
+    
+        <p class="footer-custom">❤ Powered by <a href="https://hexo.io/" target="_blank" rel="noopener noreferrer">Hexo</a> with <a href="https://github.com/fengkx/hexo-theme-purer" target="_blank" rel="noopener noreferrer">Purer theme</a>.</p>
+    
+</footer>
+
+        <div id="mask" class="hidden mask fixed inset-0 bg-gray-900 opacity-75 z-40"></div>
+        <div id="search-view-container" class="hidden shadow-xl"></div>
+        
+<script src="/js/dom-event.min.js"></script>
+
+
+
+<script src="/js/local-search.min.js"></script>
+
+
+
+    <script src="//cdn.jsdelivr.net/npm/lightgallery.js@1.1.3/dist/js/lightgallery.min.js"></script>
+    
+<script src="/js/light-gallery.min.js"></script>
+
+
+
+
+
+
+    </body>
+</html>

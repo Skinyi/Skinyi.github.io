@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html  lang="zh-CN,en,default" >
+    <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, maximum-scale=5, viewport-fit=cover">
+    <title>初识 Ansible 自动化工具 | Avery Ma 的个人网站</title>
+    <meta name="description" content="🔴 此文章由之前的 Typora 笔记迁移过来，内容可能已经过时。  自动化与 Linux 系统管理 为何需要自动化管理 ​多年来，大多数系统管理和基础架构管理都依赖于通过图形或命令行用户界面执行的手动任务。系统管理员通常使用检查清单、其他文档或记忆的例程来执行标准任务。 ​这样的做法容易出错。系统管理员很容易跳过某个步骤或错误地执行某个步骤。对步骤执行是否正确或产生预期的结果的验证通常有限。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="初识 Ansible 自动化工具">
+<meta property="og:url" content="https://skinyi.github.io/2022-08-15-Linux%20|%20%E5%88%9D%E8%AF%86%20Ansible%20%E8%87%AA%E5%8A%A8%E5%8C%96%E5%B7%A5%E5%85%B7.html">
+<meta property="og:site_name" content="Avery Ma 的个人网站">
+<meta property="og:description" content="🔴 此文章由之前的 Typora 笔记迁移过来，内容可能已经过时。  自动化与 Linux 系统管理 为何需要自动化管理 ​多年来，大多数系统管理和基础架构管理都依赖于通过图形或命令行用户界面执行的手动任务。系统管理员通常使用检查清单、其他文档或记忆的例程来执行标准任务。 ​这样的做法容易出错。系统管理员很容易跳过某个步骤或错误地执行某个步骤。对步骤执行是否正确或产生预期的结果的验证通常有限。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://skinyi.github.io/images/linux/Ansible-%E6%9E%B6%E6%9E%84.png">
+<meta property="og:image" content="https://skinyi.github.io/images/linux/Ansible-%E5%A3%B0%E6%98%8E%E5%BC%8F%E6%80%9D%E7%BB%B4.md">
+<meta property="article:published_time" content="2022-08-15T07:15:16.560Z">
+<meta property="article:modified_time" content="2022-08-15T07:20:50.687Z">
+<meta property="article:author" content="skinyi">
+<meta property="article:tag" content="Linux">
+<meta property="article:tag" content="RHEL">
+<meta property="article:tag" content="RHCE">
+<meta property="article:tag" content="认证考试">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://skinyi.github.io/images/linux/Ansible-%E6%9E%B6%E6%9E%84.png">
+
+    
+    <link rel="icon" href="images/favicon.png" type="image/x-icon">
+
+    
+<link rel="stylesheet" href="/css/common.min.css">
+
+
+
+    
+    
+    
+    
+        <link href="//cdn.jsdelivr.net/npm/lightgallery.js@1.1.3/dist/css/lightgallery.min.css" rel="stylesheet">
+    
+    
+    
+<link rel="stylesheet" href="/css/iconfont.min.css">
+
+    
+<meta name="generator" content="Hexo 6.2.0"></head>
+
+    <body>
+        <header class="header header-fixture">
+    <div class="profile-search-wrap flex sm:block">
+        
+        
+        <div class="profile sm:text-center md:px-1 lg:px-3 sm:pb-4 sm:pt-6">
+            <a id="avatar" role="link" href="https://github.com/skinyi" class="inline-block lg:w-16 lg:h-16 w-8 h-8 m-2" target="_blank" rel="noopener" rel="noreferrer" >
+                <img src="/images/avatar.jpg" class="rounded-full" alt="avatar">
+            </a>
+            <h2 id="name" class="hidden lg:block">Avery Ma</h2>
+            <h3 id="title" class="hidden xl:block">IT 从业者</h3>
+            
+            <small id="location" class="hidden lg:block">
+                <i class="iconfont icon-map-icon"></i>
+                宁夏, 中国
+            </small>
+            
+        </div>
+        
+        
+<div class="search flex-1 flex lg:inline-block sm:hidden lg:px-4 lg:mt-2 lg:w-full">
+    <form id="search-form" class="my-auto flex-1 lg:border lg:border-solid lg:border-gray-200">
+        <div class="input-group table bg-gray-100 lg:bg-white w-full">
+            <input id="search-input" type="text" placeholder="搜索" class="inline-block w-full bg-gray-100 lg:bg-white">
+            <span class="table-cell">
+                <button name="search tigger button" disabled>
+                    <i class="iconfont icon-search m-2"></i>
+                </button>
+            </span>
+        </div>
+    </form>
+        
+<div id="content-json" data-placeholder="搜索" class="invisible hidden">/content.json</div>
+<script id="search-teamplate" type="text/html" data-path="/content.json">
+    <div>
+        <div class="search-header bg-gray-400">
+            <input id="actual-search-input" model="keyword" ref="input" class="inline-block w-full h-10 px-2 py-1" placeholder="搜索" type="text">
+        </div>
+        <div class="search-result bg-gray-200">
+            {{#each searchPosts}}
+            <a href="/{{ path }}" class="result-item block px-2 pb-3 mb-1 pt-1 hover:bg-indigo-100">
+                <i class="iconfont icon-file"></i>
+                <h1 class="result-title inline font-medium text-lg">{{ title }}</h1>
+                <p class="result-content text-gray-600 text-sm">{{{ text }}}</p>
+            </a>
+            {{/each}}
+        </div>
+    </div>
+</script>
+
+</div>
+
+
+        <button name="menu toogle button" id="menu-toggle-btn" class="block sm:hidden p-3" role="button" aria-expanded="false">
+            <i class="iconfont icon-hamburger"></i>
+        </button>
+    </div>
+    <nav id="menu-nav" class="hidden sm:flex flex-col">
+        
+        
+            <div class="menu-item menu-home" role="menuitem">
+                <a href="/.">
+                    <i class="iconfont icon-home" aria-hidden="true"></i>
+                    <span class="menu-title">首页</span>
+                </a>
+            </div>
+        
+        
+            <div class="menu-item menu-archives" role="menuitem">
+                <a href="/archives">
+                    <i class="iconfont icon-archive" aria-hidden="true"></i>
+                    <span class="menu-title">归档</span>
+                </a>
+            </div>
+        
+        
+            <div class="menu-item menu-categories" role="menuitem">
+                <a href="/categories">
+                    <i class="iconfont icon-folder" aria-hidden="true"></i>
+                    <span class="menu-title">分类</span>
+                </a>
+            </div>
+        
+        
+            <div class="menu-item menu-tags" role="menuitem">
+                <a href="/tags">
+                    <i class="iconfont icon-tag" aria-hidden="true"></i>
+                    <span class="menu-title">标签</span>
+                </a>
+            </div>
+        
+        
+            <div class="menu-item menu-repository" role="menuitem">
+                <a href="/repository">
+                    <i class="iconfont icon-project" aria-hidden="true"></i>
+                    <span class="menu-title">项目</span>
+                </a>
+            </div>
+        
+        
+            <div class="menu-item menu-about" role="menuitem">
+                <a href="/about">
+                    <i class="iconfont icon-cup" aria-hidden="true"></i>
+                    <span class="menu-title">关于</span>
+                </a>
+            </div>
+        
+        
+
+    </nav>
+</header>
+
+        <section class="main-section">
+            
+    <main class="flex-1 px-4 py-14 md:px-5 lg:px-8 lg:py-4 relative min-h-screen">
+    
+
+    <article class="content article article-archives article-type-list" itemscope="">
+        <header class="article-header">
+            
+    
+        <h1 class="article-title text-lg" itemprop="name">
+            初识 Ansible 自动化工具
+        </h1>
+    
+
+
+
+            <p class="article-meta mb-3 text-xs">
+                <span class="article-date">
+    <i class="iconfont icon-calendar-check"></i>
+	<a href="/2022-08-15-Linux%20%7C%20%E5%88%9D%E8%AF%86%20Ansible%20%E8%87%AA%E5%8A%A8%E5%8C%96%E5%B7%A5%E5%85%B7.html" class="article-date">
+	  <time datetime="2022-08-15T07:15:16.560Z" itemprop="datePublished">8月 15</time>
+	</a>
+</span>
+
+                
+    <span class="article-category">
+    <i class="iconfont icon-folder"></i>
+    <a class="article-category-link" href="/categories/%E5%AD%A6%E4%B9%A0/">学习</a> , <a class="article-category-link" href="/categories/%E5%AD%A6%E4%B9%A0/Linux/">Linux</a> , <a class="article-category-link" href="/categories/%E6%97%A5%E5%B8%B8%E8%AE%B0%E5%BD%95/">日常记录</a> , <a class="article-category-link" href="/categories/%E8%BF%81%E7%A7%BB%E6%96%87%E7%AB%A0/">迁移文章</a>
+  </span>
+
+
+                
+    <span class="article-tags">
+    <i class="iconfont icon-tag"></i>
+    <a class="article-tag-none-link" href="/tags/Linux/" rel="tag">Linux</a>, <a class="article-tag-none-link" href="/tags/RHCE/" rel="tag">RHCE</a>, <a class="article-tag-none-link" href="/tags/RHEL/" rel="tag">RHEL</a>, <a class="article-tag-none-link" href="/tags/%E8%AE%A4%E8%AF%81%E8%80%83%E8%AF%95/" rel="tag">认证考试</a>
+  </span>
+
+
+                
+                
+    
+        <span class="post-wordcount" itemprop="wordCount">字数统计: 3.2k(字)</span>
+    
+    
+        <span class="post-readcount" itemprop="timeRequired">阅读时长: 10(分)</span>
+    
+
+
+            </p>
+        </header>
+        <div class="marked-body article-body">
+            <blockquote>
+<p>🔴 此文章由之前的 Typora 笔记迁移过来，内容可能已经过时。</p>
+</blockquote>
+<h2 id="自动化与-Linux-系统管理">自动化与 Linux 系统管理</h2>
+<h3 id="为何需要自动化管理">为何需要自动化管理</h3>
+<p>​多年来，大多数系统管理和基础架构管理都依赖于通过图形或命令行用户界面执行的手动任务。系统管理员通常使用检查清单、其他文档或记忆的例程来执行标准任务。</p>
+<p>​这样的做法容易出错。系统管理员很容易跳过某个步骤或错误地执行某个步骤。对步骤执行是否正确或产生预期的结果的验证通常有限。</p>
+<p>​另外，如果以手动方式单独管理每一服务器，对于应该要在配置上完全一致的许多服务器而言，它们很容易会出现微小（或重大）的差异。这可能会加大维护的难度，并给 IT 环境带来错误或不稳定性。</p>
+<p>​自动化可以帮助您避免手动管理系统和基础架构造成的问题。作为系统管理员，您可以使用它来确保快速、正确地部署和配置所有系统。这样，您可以自动执行日常计划中的重复性任务，从而空出时间并专注于更重要的事情。对组织而言，这意味着您可以更快地推出下一版本的应用或服务更新。</p>
+<h4 id="基础架构即代码">基础架构即代码</h4>
+<p>​良好的自动化系统允许您实施基础架构即代码方法。基础架构即代码意味着您可以使用机器可读的自动化语言来定义和描述您希望IT基础架构所处的状态。理想情况下，这种自动化语言也应该非常便于人类阅读，因为这样您就可以轻松了解所处的状态并对其进行更改。然后，此代码可应用于您的基础架构，确保它真正处于该状态。</p>
+<p>​如果自动化语言表示为简单文本文件，则可以在软件代码等版本控制系统中轻松管理。这样做的好处是每个更改都可以签入到版本控制系统中，因此您可以获得随时间所做更改的历史记录。如果您要恢复到更早的已知良好配置，只需签出这一版本的代码并将其应用到您的基础架构。</p>
+<p>​这样就奠定了一个基础，帮助您遵循 DevOps 中的最佳实践。开发人员可以在自动化语言中定义所需的配置。操作员可以更轻松地查看这些更改以提供反馈，并使用该自动化可重复地确保系统处于开发人员期望的状态。</p>
+<h4 id="减少人为错误">减少人为错误</h4>
+<p>​通过使用任务自动化和基础架构即代码方法来减少在服务器上手动执行的任务，您的服务器将更频繁地处于一致的配置中。这意味着您需要习惯于通过更新自动化代码进行更改，而不是手动将其应用到服务器。否则，在下次通过自动化应用更改时您将面临丢失之前手动应用的更改的风险。</p>
+<p>​自动化允许您使用代码审查、多个主题专家的同行评审，以及自动化本身的程序文档，以降低您的操作风险。</p>
+<p>​最终，您可以强制必须通过自动化对 IT 基础架构进行更改，以减少人为错误。</p>
+<h2 id="什么是-Ansible">什么是 Ansible</h2>
+<p>​Ansible 是一款开源自动化平台。它是一种简单的自动化语言，能够在 Ansible Playbook 中完美地描述 IT 应用基础架构。它也是一个自动化引擎，可运行 Ansible Playbook。</p>
+<p>​Ansible 可以管理强大的自动化任务，而且能够适应许多不同的工作流和环境。同时，Ansible 新用户可以非常快速地利用它来提高工作效率。</p>
+<h3 id="Ansible-简单明了">Ansible 简单明了</h3>
+<p>​Ansible Playbook 提供人类可读的自动化。这表示，Playbook 不仅是自动化工具，而且易于阅读、理解和更改。不需要掌握特别的编码技能就能编写它们。Playbook 按顺序执行任务。Playbook 设计的简易性使其可供每个团队使用，让 Ansible 入门者也能够快速获得成效。</p>
+<h3 id="Ansible-功能强大">Ansible 功能强大</h3>
+<p>​可以利用 Ansible 部署应用，也可将它用于配置管理、工作流自动化和网络自动化。Ansible可用于编排整个应用生命周期。</p>
+<h3 id="Ansible-无需代理">Ansible 无需代理</h3>
+<p>​Ansible 围绕无代理架构构建。通常而言，Ansible 通过 OpenSSH 或 WinRM 连接它所管理的主机并且运行任务，方法通常是（但不总是）将称为 Ansible 模块的小程序推送至这些主机。这些程序用于将系统置于需要的特定状态。在 Ansible 运行完其任务后，推送的所有模块都会被删除。您几乎可以立即开始使用 Ansible，因为不需要批准使用任何特殊代理，然后再部署到受管主机上。由于没有代理，也不需要额外的自定义安全基础架构，Ansible 要比其他备选方案更加高效和安全。</p>
+<p>​同时 Ansible 也具有以下多个重要的优点：</p>
+<ul>
+<li>跨平台支持：Ansible 提供 Linux、Windows、UNIX 和网络设备的无代理支持，适用于物理、虚拟、云和容器环境。</li>
+<li>人类可读的自动化：Ansible Playbook 采用 <em>YAML</em> 文本文件编写，易于阅读，有助于确保所有人都能理解它们的用途。</li>
+<li>完美描述应用：可以通过 Ansible Playbook 进行每一种更改，并描述和记录应用环境的每一个方面。</li>
+<li>轻松管理版本控制：Ansible Playbook 和项目是纯文本。它们可以视作源代码，放在您的现有版本控制系统中。</li>
+<li>支持动态清单：可以从外部来源动态更新 Ansible 管理的计算机的列表，随时获取所有受管服务器的当前正确列表，不受基础架构或位置的影响。</li>
+<li>编排可与其他系统轻松集成：能够利用环境中现有的 HPSA、Puppet、Jenkins、红帽卫星和其他系统，并且集成到 Ansible 工作流中。</li>
+</ul>
+<h2 id="Ansible-的概念和架构">Ansible 的概念和架构</h2>
+<p>​Ansible架构中有两种计算机类型，即控制节点和受管主机。Ansible 在控制节点上安装和运行，该计算机上也含有 Ansible 项目文件的副本。控制节点可以是管理员的笔记本电脑、多个管理员共享的系统，或者运行红帽 Ansible Tower 的服务器。</p>
+<p>​受管主机列在清单中，清单还可以将这些系统组织到组中，以便于集中管理。清单可以在静态文本文件中定义，或者通过从外部来源获取信息的脚本来动态确定。</p>
+<p>​Ansible 用户无需编写复杂的脚本，而只要创建高级别 play 即可确保主机或主机组处于特定状态。Play 按该 play 指定的顺序对主机执行一系列任务。这些 play 通过采用 YAML 格式的文本文件来表达。包含一个或多个 play 的文件称为 playbook。</p>
+<p>​每个任务运行一个模块，即（使用 Python、PowerShell 或某种其他语言编写的）一小段代码。各个模块基本上是您的工具包中的一个工具。Ansible 随附了数百个实用模块，它们能够执行许多不同的自动化任务。它们可以作用于系统文件，安装软件或者进行 API 调用。</p>
+<p>​在任务中使用时，模块通常确保计算机的某一特定方面处于特定的状态。例如，使用某一模块的任务可以确保某一文件存在且具有特定的权限和内容，而使用另一不同模块的任务可确保已挂载特定的文件系统。如果系统不处于指定的状态，任务应将它置于该状态。如果系统已处于该状态，则不执行任何操作。如果任务失败，Ansible 的默认行为是对发生了错误的主机中止 playbook 的其余部分任务。</p>
+<p>​play 和 playbook 设计为具有幂等性。这意味着，您可以在相同主机上多次安全地运行一个 playbook。当您的系统处于正确状态时，playbook 在运行时不会进行任何更改。这意味着，您应该能够在相同主机上多次安全地运行一个 playbook。当您的系统处于正确状态时，playbook 在运行时不应进行任何更改。您可以使用多个模块来运行任意命令。但是，您必须小心使用这些模块，以确保它们以幂等方式运行。</p>
+<p>​Ansible 也使用插件。插件是您可以添加到 Ansible 中的代码，以对它进行扩展并使它适合新的用途和平台。</p>
+<p>​Ansible 架构是无代理的。通常，当管理员运行 Ansible Playbook 或临时命令时，控制节点使用 SSH（默认）或 WinRM 连接受管主机。这意味着客户端无需在受管主机上安装特定于 Ansible 的代理，也不需要允许将特殊的网络流量传输到某一非标准端口。</p>
+<p>​红帽 AnsibleTower 是一种企业框架，可帮助您规模化控制、保护和管理 Ansible 自动化。您可以用它控制谁有权在哪些主机上运行 playbook，共享使用 SSH 凭据而不必允许用户传输或查看其内容，记录您的所有 Ansible 作业，以及管理清单，等等。它提供基于Web的用户界面（Web UI）和 RESTful API。它不是 Ansible 的核心部分，而是单独的产品，能够帮助您更加有效地以团队或更大规模使用 Ansible。</p>
+<p><img src="images/linux/Ansible-%E6%9E%B6%E6%9E%84.png" alt="Ansible 架构" /></p>
+<h3 id="Ansible-架构的优势">Ansible 架构的优势</h3>
+<h4 id="不会因为复杂性而破坏效率">不会因为复杂性而破坏效率</h4>
+<p>​越简单越好。Ansilble的设计宗旨是工具易用，自动化易写易读。您应利用这一特点在创建自动化时追求简单化。</p>
+<h4 id="专为易读性优化">专为易读性优化</h4>
+<p>​Ansible自动化语言围绕简单易读的声明性文本文件来构建。正确编写的AnsiblePlaybook可以清楚地记录您的工作流自动化。</p>
+<h4 id="声明式思维">声明式思维</h4>
+<p>​Ansible 是一种要求状态引擎。它通过表达您希望系统处于何种状态来解决如何自动化 IT 部署的问题。Ansible 的目标是通过仅执行必要的更改，使您的系统处于所需的状态。试图将 Ansible 视为脚本语言并非正确的做法。</p>
+<p><img src="images/linux/Ansible-%E5%A3%B0%E6%98%8E%E5%BC%8F%E6%80%9D%E7%BB%B4.md" alt="Ansible 声明式思维" /></p>
+<h2 id="Ansible-用例">Ansible 用例</h2>
+<p>​与某些其他工具不同，Ansible 在一个易用的平台中，将编排与配置管理、调配和应用部署相结合。</p>
+<p>​Ansible的一些用例包括：</p>
+<h3 id="配置管理">配置管理</h3>
+<p>​集中化配置文件管理和部署是 Ansible 的常见用例，很多超级用户也是通过这种方式了解 Ansible 自动化平台。</p>
+<h3 id="应用部署">应用部署</h3>
+<p>​通过Ansible定义应用，以及使用红帽 Ansible Tower 管理部署时，各团队可以更加有效地管理从开发到生产的整个应用生命周期。</p>
+<h3 id="调配">调配</h3>
+<p>​应用必须要部署或安装到系统上。Ansible 和红帽 Ansible Tower 有助于简化调配系统的流程，不论您是要 PXE 引导和kickstart 安装裸机恢复服务器或虚拟机，还是从模板创建虚拟机或云实例。应用必须要部署或安装到系统上。</p>
+<h3 id="持续交付">持续交付</h3>
+<p>​创建 CI/CD 管道需要多个团队的协调和参与。如果没有组织内人人可用的简单自动化平台，就无法实现这个目标。Ansible Playbook 让您的应用可以在整个生命周期内得到正确部署（和管理）。</p>
+<h3 id="安全和合规性">安全和合规性</h3>
+<p>​当您在 Ansible Playbook 中定义安全策略时，也可以将扫描和修复整站安全策略集成到其他自动化流程中。确保安全应该是您所有部署中不可或缺的组成部分，而不是事后才去考虑的部分。</p>
+<h3 id="编排">编排</h3>
+<p>​仅配置本身不足以定义您的环境。您还需要定义多个配置间应如何交互，并且确保以整体的方式管理各类分散的资源。</p>
+
+        </div>
+        
+<blockquote class="copyright">
+    <p><strong>本文链接 : </strong><a class="permalink" href="https://skinyi.github.io/2022-08-15-Linux%20|%20%E5%88%9D%E8%AF%86%20Ansible%20%E8%87%AA%E5%8A%A8%E5%8C%96%E5%B7%A5%E5%85%B7.html">https://skinyi.github.io/2022-08-15-Linux | 初识 Ansible 自动化工具.html</a></p>
+    <p><strong>这篇文章由作者胡编乱造或者由其他文章复制粘贴而来，其中有些内容可能已经过时，请谨慎参考复制文章中的内容。</strong></p>
+</blockquote>
+
+
+    </article>
+    
+    <section id="comments">
+        
+    </section>
+
+
+    
+
+</main>
+
+
+<aside style="" id="sidebar" class="aside aside-fixture">
+    <div class="toc-sidebar">
+        <nav id="toc" class="article-toc">
+            <h3 class="toc-title">文章目录</h3>
+            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%87%AA%E5%8A%A8%E5%8C%96%E4%B8%8E-Linux-%E7%B3%BB%E7%BB%9F%E7%AE%A1%E7%90%86"><span class="toc-number">1.</span> <span class="toc-text">自动化与 Linux 系统管理</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%BA%E4%BD%95%E9%9C%80%E8%A6%81%E8%87%AA%E5%8A%A8%E5%8C%96%E7%AE%A1%E7%90%86"><span class="toc-number">1.1.</span> <span class="toc-text">为何需要自动化管理</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%9F%BA%E7%A1%80%E6%9E%B6%E6%9E%84%E5%8D%B3%E4%BB%A3%E7%A0%81"><span class="toc-number">1.1.1.</span> <span class="toc-text">基础架构即代码</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%87%8F%E5%B0%91%E4%BA%BA%E4%B8%BA%E9%94%99%E8%AF%AF"><span class="toc-number">1.1.2.</span> <span class="toc-text">减少人为错误</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF-Ansible"><span class="toc-number">2.</span> <span class="toc-text">什么是 Ansible</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Ansible-%E7%AE%80%E5%8D%95%E6%98%8E%E4%BA%86"><span class="toc-number">2.1.</span> <span class="toc-text">Ansible 简单明了</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Ansible-%E5%8A%9F%E8%83%BD%E5%BC%BA%E5%A4%A7"><span class="toc-number">2.2.</span> <span class="toc-text">Ansible 功能强大</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Ansible-%E6%97%A0%E9%9C%80%E4%BB%A3%E7%90%86"><span class="toc-number">2.3.</span> <span class="toc-text">Ansible 无需代理</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Ansible-%E7%9A%84%E6%A6%82%E5%BF%B5%E5%92%8C%E6%9E%B6%E6%9E%84"><span class="toc-number">3.</span> <span class="toc-text">Ansible 的概念和架构</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Ansible-%E6%9E%B6%E6%9E%84%E7%9A%84%E4%BC%98%E5%8A%BF"><span class="toc-number">3.1.</span> <span class="toc-text">Ansible 架构的优势</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%8D%E4%BC%9A%E5%9B%A0%E4%B8%BA%E5%A4%8D%E6%9D%82%E6%80%A7%E8%80%8C%E7%A0%B4%E5%9D%8F%E6%95%88%E7%8E%87"><span class="toc-number">3.1.1.</span> <span class="toc-text">不会因为复杂性而破坏效率</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%93%E4%B8%BA%E6%98%93%E8%AF%BB%E6%80%A7%E4%BC%98%E5%8C%96"><span class="toc-number">3.1.2.</span> <span class="toc-text">专为易读性优化</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%A3%B0%E6%98%8E%E5%BC%8F%E6%80%9D%E7%BB%B4"><span class="toc-number">3.1.3.</span> <span class="toc-text">声明式思维</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Ansible-%E7%94%A8%E4%BE%8B"><span class="toc-number">4.</span> <span class="toc-text">Ansible 用例</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%85%8D%E7%BD%AE%E7%AE%A1%E7%90%86"><span class="toc-number">4.1.</span> <span class="toc-text">配置管理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BA%94%E7%94%A8%E9%83%A8%E7%BD%B2"><span class="toc-number">4.2.</span> <span class="toc-text">应用部署</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%B0%83%E9%85%8D"><span class="toc-number">4.3.</span> <span class="toc-text">调配</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8C%81%E7%BB%AD%E4%BA%A4%E4%BB%98"><span class="toc-number">4.4.</span> <span class="toc-text">持续交付</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%89%E5%85%A8%E5%92%8C%E5%90%88%E8%A7%84%E6%80%A7"><span class="toc-number">4.5.</span> <span class="toc-text">安全和合规性</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BC%96%E6%8E%92"><span class="toc-number">4.6.</span> <span class="toc-text">编排</span></a></li></ol></li></ol>
+        </nav>
+    </div>
+</aside>
+
+
+
+
+
+        </section>
+        <footer class="hidden lg:block fixed bottom-0 left-0 sm:w-1/12 bg-gray-100 z-40">
+    
+    
+        <p class="footer-custom">❤ Powered by <a href="https://hexo.io/" target="_blank" rel="noopener noreferrer">Hexo</a> with <a href="https://github.com/fengkx/hexo-theme-purer" target="_blank" rel="noopener noreferrer">Purer theme</a>.</p>
+    
+</footer>
+
+        <div id="mask" class="hidden mask fixed inset-0 bg-gray-900 opacity-75 z-40"></div>
+        <div id="search-view-container" class="hidden shadow-xl"></div>
+        
+<script src="/js/dom-event.min.js"></script>
+
+
+
+<script src="/js/local-search.min.js"></script>
+
+
+
+    <script src="//cdn.jsdelivr.net/npm/lightgallery.js@1.1.3/dist/js/lightgallery.min.js"></script>
+    
+<script src="/js/light-gallery.min.js"></script>
+
+
+
+
+
+
+    </body>
+</html>

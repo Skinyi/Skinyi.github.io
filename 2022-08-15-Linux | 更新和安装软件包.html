@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html  lang="zh-CN,en,default" >
+    <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, maximum-scale=5, viewport-fit=cover">
+    <title>更新和安装软件包 | Avery Ma 的个人网站</title>
+    <meta name="description" content="🔴 此文章由之前的 Typora 笔记迁移过来，内容可能已经过时。  ​这一章的所有关于软件操作的测试环境为：Fedora33。 有关命令摘要 RPM 命令摘要    命令 任务     rpm -qa 列出当前安装的所有 RPM 软件包   rpm -q NAME 显示系统上安装的 NAME 的版本   rpm -qi NAME 显示有关软件包的详细信息   rpm -ql NAME 列出软">
+<meta property="og:type" content="article">
+<meta property="og:title" content="更新和安装软件包">
+<meta property="og:url" content="https://skinyi.github.io/2022-08-15-Linux%20|%20%E6%9B%B4%E6%96%B0%E5%92%8C%E5%AE%89%E8%A3%85%E8%BD%AF%E4%BB%B6%E5%8C%85.html">
+<meta property="og:site_name" content="Avery Ma 的个人网站">
+<meta property="og:description" content="🔴 此文章由之前的 Typora 笔记迁移过来，内容可能已经过时。  ​这一章的所有关于软件操作的测试环境为：Fedora33。 有关命令摘要 RPM 命令摘要    命令 任务     rpm -qa 列出当前安装的所有 RPM 软件包   rpm -q NAME 显示系统上安装的 NAME 的版本   rpm -qi NAME 显示有关软件包的详细信息   rpm -ql NAME 列出软">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-08-15T03:59:45.671Z">
+<meta property="article:modified_time" content="2022-08-15T04:04:28.813Z">
+<meta property="article:author" content="skinyi">
+<meta property="article:tag" content="Linux">
+<meta property="article:tag" content="RHEL">
+<meta property="article:tag" content="RHCE">
+<meta property="article:tag" content="认证考试">
+<meta name="twitter:card" content="summary">
+
+    
+    <link rel="icon" href="images/favicon.png" type="image/x-icon">
+
+    
+<link rel="stylesheet" href="/css/common.min.css">
+
+
+
+    
+    
+    
+    
+        <link href="//cdn.jsdelivr.net/npm/lightgallery.js@1.1.3/dist/css/lightgallery.min.css" rel="stylesheet">
+    
+    
+    
+<link rel="stylesheet" href="/css/iconfont.min.css">
+
+    
+<meta name="generator" content="Hexo 6.2.0"></head>
+
+    <body>
+        <header class="header header-fixture">
+    <div class="profile-search-wrap flex sm:block">
+        
+        
+        <div class="profile sm:text-center md:px-1 lg:px-3 sm:pb-4 sm:pt-6">
+            <a id="avatar" role="link" href="https://github.com/skinyi" class="inline-block lg:w-16 lg:h-16 w-8 h-8 m-2" target="_blank" rel="noopener" rel="noreferrer" >
+                <img src="/images/avatar.jpg" class="rounded-full" alt="avatar">
+            </a>
+            <h2 id="name" class="hidden lg:block">Avery Ma</h2>
+            <h3 id="title" class="hidden xl:block">IT 从业者</h3>
+            
+            <small id="location" class="hidden lg:block">
+                <i class="iconfont icon-map-icon"></i>
+                宁夏, 中国
+            </small>
+            
+        </div>
+        
+        
+<div class="search flex-1 flex lg:inline-block sm:hidden lg:px-4 lg:mt-2 lg:w-full">
+    <form id="search-form" class="my-auto flex-1 lg:border lg:border-solid lg:border-gray-200">
+        <div class="input-group table bg-gray-100 lg:bg-white w-full">
+            <input id="search-input" type="text" placeholder="搜索" class="inline-block w-full bg-gray-100 lg:bg-white">
+            <span class="table-cell">
+                <button name="search tigger button" disabled>
+                    <i class="iconfont icon-search m-2"></i>
+                </button>
+            </span>
+        </div>
+    </form>
+        
+<div id="content-json" data-placeholder="搜索" class="invisible hidden">/content.json</div>
+<script id="search-teamplate" type="text/html" data-path="/content.json">
+    <div>
+        <div class="search-header bg-gray-400">
+            <input id="actual-search-input" model="keyword" ref="input" class="inline-block w-full h-10 px-2 py-1" placeholder="搜索" type="text">
+        </div>
+        <div class="search-result bg-gray-200">
+            {{#each searchPosts}}
+            <a href="/{{ path }}" class="result-item block px-2 pb-3 mb-1 pt-1 hover:bg-indigo-100">
+                <i class="iconfont icon-file"></i>
+                <h1 class="result-title inline font-medium text-lg">{{ title }}</h1>
+                <p class="result-content text-gray-600 text-sm">{{{ text }}}</p>
+            </a>
+            {{/each}}
+        </div>
+    </div>
+</script>
+
+</div>
+
+
+        <button name="menu toogle button" id="menu-toggle-btn" class="block sm:hidden p-3" role="button" aria-expanded="false">
+            <i class="iconfont icon-hamburger"></i>
+        </button>
+    </div>
+    <nav id="menu-nav" class="hidden sm:flex flex-col">
+        
+        
+            <div class="menu-item menu-home" role="menuitem">
+                <a href="/.">
+                    <i class="iconfont icon-home" aria-hidden="true"></i>
+                    <span class="menu-title">首页</span>
+                </a>
+            </div>
+        
+        
+            <div class="menu-item menu-archives" role="menuitem">
+                <a href="/archives">
+                    <i class="iconfont icon-archive" aria-hidden="true"></i>
+                    <span class="menu-title">归档</span>
+                </a>
+            </div>
+        
+        
+            <div class="menu-item menu-categories" role="menuitem">
+                <a href="/categories">
+                    <i class="iconfont icon-folder" aria-hidden="true"></i>
+                    <span class="menu-title">分类</span>
+                </a>
+            </div>
+        
+        
+            <div class="menu-item menu-tags" role="menuitem">
+                <a href="/tags">
+                    <i class="iconfont icon-tag" aria-hidden="true"></i>
+                    <span class="menu-title">标签</span>
+                </a>
+            </div>
+        
+        
+            <div class="menu-item menu-repository" role="menuitem">
+                <a href="/repository">
+                    <i class="iconfont icon-project" aria-hidden="true"></i>
+                    <span class="menu-title">项目</span>
+                </a>
+            </div>
+        
+        
+            <div class="menu-item menu-about" role="menuitem">
+                <a href="/about">
+                    <i class="iconfont icon-cup" aria-hidden="true"></i>
+                    <span class="menu-title">关于</span>
+                </a>
+            </div>
+        
+        
+
+    </nav>
+</header>
+
+        <section class="main-section">
+            
+    <main class="flex-1 px-4 py-14 md:px-5 lg:px-8 lg:py-4 relative min-h-screen">
+    
+
+    <article class="content article article-archives article-type-list" itemscope="">
+        <header class="article-header">
+            
+    
+        <h1 class="article-title text-lg" itemprop="name">
+            更新和安装软件包
+        </h1>
+    
+
+
+
+            <p class="article-meta mb-3 text-xs">
+                <span class="article-date">
+    <i class="iconfont icon-calendar-check"></i>
+	<a href="/2022-08-15-Linux%20%7C%20%E6%9B%B4%E6%96%B0%E5%92%8C%E5%AE%89%E8%A3%85%E8%BD%AF%E4%BB%B6%E5%8C%85.html" class="article-date">
+	  <time datetime="2022-08-15T03:59:45.671Z" itemprop="datePublished">8月 15</time>
+	</a>
+</span>
+
+                
+    <span class="article-category">
+    <i class="iconfont icon-folder"></i>
+    <a class="article-category-link" href="/categories/%E5%AD%A6%E4%B9%A0/">学习</a> , <a class="article-category-link" href="/categories/%E5%AD%A6%E4%B9%A0/Linux/">Linux</a> , <a class="article-category-link" href="/categories/%E6%97%A5%E5%B8%B8%E8%AE%B0%E5%BD%95/">日常记录</a> , <a class="article-category-link" href="/categories/%E8%BF%81%E7%A7%BB%E6%96%87%E7%AB%A0/">迁移文章</a>
+  </span>
+
+
+                
+    <span class="article-tags">
+    <i class="iconfont icon-tag"></i>
+    <a class="article-tag-none-link" href="/tags/Linux/" rel="tag">Linux</a>, <a class="article-tag-none-link" href="/tags/RHCE/" rel="tag">RHCE</a>, <a class="article-tag-none-link" href="/tags/RHEL/" rel="tag">RHEL</a>, <a class="article-tag-none-link" href="/tags/%E8%AE%A4%E8%AF%81%E8%80%83%E8%AF%95/" rel="tag">认证考试</a>
+  </span>
+
+
+                
+                
+    
+        <span class="post-wordcount" itemprop="wordCount">字数统计: 4k(字)</span>
+    
+    
+        <span class="post-readcount" itemprop="timeRequired">阅读时长: 16(分)</span>
+    
+
+
+            </p>
+        </header>
+        <div class="marked-body article-body">
+            <blockquote>
+<p>🔴 此文章由之前的 Typora 笔记迁移过来，内容可能已经过时。</p>
+</blockquote>
+<p>​这一章的所有关于软件操作的测试环境为：Fedora33。</p>
+<h2 id="有关命令摘要">有关命令摘要</h2>
+<h3 id="RPM-命令摘要">RPM 命令摘要</h3>
+<table>
+<thead>
+<tr>
+<th>命令</th>
+<th>任务</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>rpm -qa</td>
+<td>列出当前安装的所有 RPM 软件包</td>
+</tr>
+<tr>
+<td>rpm -q NAME</td>
+<td>显示系统上安装的 NAME 的版本</td>
+</tr>
+<tr>
+<td>rpm -qi NAME</td>
+<td>显示有关软件包的详细信息</td>
+</tr>
+<tr>
+<td>rpm -ql NAME</td>
+<td>列出软件包中含有的所有文件</td>
+</tr>
+<tr>
+<td>rpm -qc NAME</td>
+<td>列出软件包中含有的配置文件</td>
+</tr>
+<tr>
+<td>rpm -qd NAME</td>
+<td>列出软件包中含有的文档文件</td>
+</tr>
+<tr>
+<td>rpm -q --changelog NAME</td>
+<td>显示软件包的简短更新日志摘要</td>
+</tr>
+<tr>
+<td>rpm -q --scripts NAME</td>
+<td>显示软件包在安装、升级或删除时运行的 shell 脚本</td>
+</tr>
+</tbody>
+</table>
+<h3 id="DNF-命令摘要">DNF 命令摘要</h3>
+<table>
+<thead>
+<tr>
+<th>命令</th>
+<th>任务</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>dnf list [NAME-PATTERN]</td>
+<td>按名称列出已安装和可用的软件包</td>
+</tr>
+<tr>
+<td>dnf group list</td>
+<td>列出已安装和可用的软件组</td>
+</tr>
+<tr>
+<td>dnf search KEYWORD</td>
+<td>按关键字搜索软件包</td>
+</tr>
+<tr>
+<td>dnf info PKGNAME</td>
+<td>显示软件包的详细信息</td>
+</tr>
+<tr>
+<td>dnf install PKGNAME</td>
+<td>安装软件包</td>
+</tr>
+<tr>
+<td>dnf group install GRPNAME</td>
+<td>安装软件组</td>
+</tr>
+<tr>
+<td>dnf update [PKGNAME]</td>
+<td>更新所有（或指定的）软件包</td>
+</tr>
+<tr>
+<td>dnf remove PKGNAME</td>
+<td>卸载软件包</td>
+</tr>
+<tr>
+<td>dnf history</td>
+<td>查看 DNF 历史事务</td>
+</tr>
+</tbody>
+</table>
+<h2 id="注册系统获得红帽支持">注册系统获得红帽支持</h2>
+<h3 id="使用图形界面工具进行注册">使用图形界面工具进行注册</h3>
+<p>​通过 Gnome 图形界面打开 <em>Red Hat Subscription Manager</em>（红帽订阅管理器），进行用户身份验证后进入订阅窗口点击 <em>Register</em> 按钮，填写并提交相关信息之后即可订阅成功。关于具体操作不再赘述。</p>
+<h3 id="从命令行注册">从命令行注册</h3>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 1. 注册系统到红帽账户</span></span><br><span class="line">[user@host ~]\$ subscrption-manager register --username=USERNAME --password=PASSWORD</span><br><span class="line"><span class="comment"># 2. 查看可用的订阅</span></span><br><span class="line">[user@host ~]\$ subscription-manager list --available | less</span><br><span class="line"><span class="comment"># 3. 自动附加订阅</span></span><br><span class="line">[user@host ~]\$ subscription-manager attach --auto</span><br><span class="line"><span class="comment"># 或者从可用订阅列表中的特定池中附加订阅</span></span><br><span class="line">[user@host ~]\$ subscription-manager attach --pool=poolID</span><br><span class="line"><span class="comment"># 4. 查看已用的订阅</span></span><br><span class="line">[user@host ~]\$ subscription-manager list --consumed</span><br><span class="line"><span class="comment"># 5. 取消注册系统</span></span><br><span class="line">[user@host ~]\$ subscription-manager unregister</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p><em>subscription-manager</em> 也可搭配激活密钥使用而不必使用用户名或密码以为实现自动化安装和部署提供便利。</p>
+</blockquote>
+<h3 id="红帽授权证书">红帽授权证书</h3>
+<p>​注册红帽后，系统的授权证书存储在 /etc/pki 和其子目录中。</p>
+<ul>
+<li><em>/etc/pki/product</em> 中的证书知名系统上安装了哪些红帽产品；</li>
+<li><em>/etc/pki/consumer</em> 中的证书指明系统所注册到的红帽账户；</li>
+<li><em>/etc/pki/entitlement</em> 中的证书指明该系统附加有哪些订阅。</li>
+</ul>
+<h2 id="RPM-软件包">RPM 软件包</h2>
+<p>​<em>RPM 软件包管理器</em>最初是由红帽开发的，该程序提供了一种标准的方式来打包软件进行分发。与使用从存档提取到文件系统的软件相比，采用 RPM 软件包形式管理软件要简单得多。管理员可以通过它跟踪软件包所安裝的文件，需要删除哪些软件（如果卸载）并检查确保显示支持软件包（如果安装）。有关已安裝软件包的信息存储在各个系统的本地RPM数据库中。</p>
+<p>​红帽为红帽企业 Linux 提供的所有软件都以 RPM 软件包的形式提供。</p>
+<h3 id="RPM-软件包的文件名约定">RPM 软件包的文件名约定</h3>
+<p>​RPM 软件包的文件名一般的格式为：name-version-release.architecture.rpm，如：coreutils-8.30-4.el8.x86_64.rpm。</p>
+<ul>
+<li>name 是描述软件内容的一个或多个词语；</li>
+<li>version 是原始软件的版本号；</li>
+<li>release 是基于该版本的软件包的发行版号，由软件打包商设置，后者不一定是原始软件开发商；</li>
+<li>architecture 是编译的软件包运行的处理器架构。<em>noarch</em> 表示该软件包的内容不限定架构。</li>
+</ul>
+<p>​从软件存储库搜索、下载和安装软件包时只需要软件包的名称。如果存在多个版本，则会安装最高版本。</p>
+<p>​每个 RPM 软件包是包含以下三个组成部分的特殊存档：</p>
+<ul>
+<li>软件包安装的文件；</li>
+<li>元数据-与软件包有关的信息，如名称、版本、发行版和架构；软件包的摘要和描述；是否要求安装其他软件包；授权许可信息；软件包更改日志以及其他详细信息；</li>
+<li>在安装、更新或删除此软件包时可能运行的脚本，或者在安装、更新或删除其他软件包时触发的脚本。</li>
+</ul>
+<p>​通常，软件提供商使用 GPG 密钥对 RPM 软件包进行数字签名，RPM 会通过 GPG 密钥签名来验证软件包的完整性。若 GPG 签名不匹配，则 RPM 会拒绝安装软件包。</p>
+<p>​RPM 更新软件会先删除旧有的软件包（通常会保留配置文件）然后安装新版，除了内核。</p>
+<h3 id="2-使用-RPM-实用程序处理本地软件包">2. 使用 RPM 实用程序处理本地软件包</h3>
+<p>​<em>rpm</em> 实用程序可获取软件包文件和已安装软件包的内容的相关信息。默认情况下，它从已安装软件包的本地数据库中获取信息。但是可以使用 <em>-p</em> 选项来指定想获取有关已下载软件包文件的信息以实现在安装前的检查。</p>
+<p>​使用 <code>rpm</code> 命令查询本地软件包数据库信息的一般格式为：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rpm -q [select-options] [query-options]	<span class="comment"># 查询本地软件包数据库信息</span></span><br></pre></td></tr></table></figure>
+<p>​关于已安装的软件包的一般信息的查询：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">[skinyi@skinyi ~]\$ rpm -qa		<span class="comment"># 列出已安装的所有软件包</span></span><br><span class="line">libgcc-10.2.1-9.fc33.x86_64</span><br><span class="line">linux-firmware-whence-20210208-118.fc33.noarch</span><br><span class="line">tzdata-2021a-1.fc33.noarch</span><br><span class="line">libreport-filesystem-2.14.0-15.fc33.noarch</span><br><span class="line">hwdata-0.345-1.fc33.noarch</span><br><span class="line">......</span><br><span class="line"><span class="comment"># rpm -qf FILENAME	查询哪个软件包提供安装的文件</span></span><br><span class="line">[skinyi@skinyi ~]\$ rpm -qf /etc/yum.repos.d</span><br><span class="line">fedora-repos-33-3.noarch</span><br><span class="line">fedora-repos-33-5.noarch</span><br></pre></td></tr></table></figure>
+<p>​关于特定软件包的信息查询：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 1. rpm -q PKG_NAME		列出当前安装的软件包的版本</span></span><br><span class="line">[skinyi@skinyi ~]\$ rpm -q dnf</span><br><span class="line">dnf-4.8.0-1.fc33.noarch</span><br><span class="line"><span class="comment"># 2. rpm -qi PKG_NAME	获取有关软件包的详细信息</span></span><br><span class="line">[skinyi@skinyi ~]\$ rpm -qi kernel</span><br><span class="line">Name        : kernel</span><br><span class="line">Version     : 5.10.23</span><br><span class="line">Release     : 200.fc33</span><br><span class="line">Architecture: x86_64</span><br><span class="line">Install Date: 2021年03月19日 星期五 10时09分52秒</span><br><span class="line">Group       : Unspecified</span><br><span class="line">Size        : 0</span><br><span class="line">License     : GPLv2 and Redistributable, no modification permitted</span><br><span class="line">......</span><br><span class="line"><span class="comment"># 3. rpm -ql PKG_NAME	列出软件包安装的文件</span></span><br><span class="line">[skinyi@skinyi ~]\$ rpm -ql openssh</span><br><span class="line">/etc/ssh</span><br><span class="line">/etc/ssh/moduli</span><br><span class="line">/usr/bin/ssh-keygen</span><br><span class="line">/usr/lib/.build-id</span><br><span class="line">/usr/lib/.build-id/4b</span><br><span class="line">......</span><br><span class="line"><span class="comment"># 4. rpm -qc PKG_NAME	仅列出软件包安装的配置文件</span></span><br><span class="line">[skinyi@skinyi ~]\$ rpm -qc openssh-clients</span><br><span class="line">/etc/ssh/ssh_config</span><br><span class="line">/etc/ssh/ssh_config.d/50-redhat.conf</span><br><span class="line"><span class="comment"># 5. rpm -qd PKG_NAME	仅列出软件包安装的文档文件</span></span><br><span class="line">[skinyi@skinyi ~]\$ rpm -qd net-tools</span><br><span class="line">/usr/share/man/de/man5/ethers.5.gz</span><br><span class="line">/usr/share/man/de/man8/arp.8.gz</span><br><span class="line">/usr/share/man/de/man8/ifconfig.8.gz</span><br><span class="line">......</span><br><span class="line"><span class="comment"># 6. rpm -q --scripts PKG_NAME	列出在安装或删除软件包之前或之后运行的 shell 脚本</span></span><br><span class="line">[skinyi@skinyi ~]$ rpm -q --scripts openssh-server</span><br><span class="line">preinstall scriptlet (using /bin/sh):</span><br><span class="line">getent group sshd &gt;/dev/null || groupadd -g 74 -r sshd || :</span><br><span class="line">getent passwd sshd &gt;/dev/null || \</span><br><span class="line">  useradd -c <span class="string">&quot;Privilege-separated SSH&quot;</span> -u 74 -g sshd \</span><br><span class="line">  -s /sbin/nologin -r -d /var/empty/sshd sshd 2&gt; /dev/null || :</span><br><span class="line">postinstall scriptlet (using /bin/sh):</span><br><span class="line"></span><br><span class="line"> </span><br><span class="line"><span class="keyword">if</span> [ <span class="variable">$1</span> -eq 1 ] &amp;&amp; [ -x /usr/bin/systemctl ]; <span class="keyword">then</span> </span><br><span class="line">        <span class="comment"># Initial installation </span></span><br><span class="line">        /usr/bin/systemctl --no-reload preset sshd.service sshd.socket || : </span><br><span class="line"><span class="keyword">fi</span> </span><br><span class="line"></span><br><span class="line">......</span><br><span class="line"><span class="comment"># 7. rpm -q --changelog PKG_NAME	列出软件包的更改信息</span></span><br><span class="line">[skinyi@skinyi ~]\$ rpm -q --changelog audit</span><br><span class="line">* 三 8月 11 2021 Steve Grubb &lt;sgrubb@redhat.com&gt; 3.0.5-1</span><br><span class="line">- New upstream bugfix release</span><br><span class="line"></span><br><span class="line">* 日 8月 08 2021 Steve Grubb &lt;sgrubb@redhat.com&gt; 3.0.4-1</span><br><span class="line">- New upstream feature release</span><br><span class="line">......</span><br><span class="line"><span class="comment"># 8. rpm -pq[ilcd...]	PKG_NAME	查询本地软件包（已下载未安装）的上述信息。</span></span><br></pre></td></tr></table></figure>
+<p>​安装离线下载的软件包：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># rpm -ivh name-version-release.arch.rpm	# 安装软件包</span></span><br><span class="line"><span class="comment"># 选项意义：</span></span><br><span class="line">-i, --install	<span class="comment"># 安装软件包</span></span><br><span class="line">-v, --verbose	<span class="comment"># 显示详细信息</span></span><br><span class="line">-h, --<span class="built_in">hash</span>	<span class="comment"># 安装的时候列出哈希标记</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>安装第三方软件时要确保可信，因为在安装过程中允许以 root 用户执行任意脚本。</p>
+</blockquote>
+<h3 id="提取-rpm-软件包中的文件">提取 rpm 软件包中的文件</h3>
+<p>​使用 <code>rpm2cpio</code> 命令可以将 rpm 软件包转成格式为 cpio 的特殊归档文件，使用 <code>cpio</code> 命令则可以提取 cpio 归档文件的内容。因此，要实现一条命令提取一个软件包中的内容，可以通过管道来实现：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[user@host ~]\$ rpm2cpio name-version-release.arch.rpm | cpio -<span class="built_in">id</span> [PATTERN]	<span class="comment"># 按照 PATTERN 指定的模式提取 rpm 包中的文件</span></span><br><span class="line"><span class="comment"># cpio 的命令选项</span></span><br><span class="line">-i, --extract	<span class="comment"># 从包中提取文件</span></span><br><span class="line">-d, --make-directories	<span class="comment"># 需要时自动创建目录</span></span><br></pre></td></tr></table></figure>
+<p>​提取的文件会存放在当前目录，且会自动创建子目录。</p>
+<h2 id="使用-DNF-管理软件包">使用 DNF 管理软件包</h2>
+<p>​<em>DNF</em> 为 <em>RPM</em> 的前端软件，除了可以安装软件包，它也可以实现从软件仓库搜索、下载、解决安装依赖的比 <em>RPM</em> 更完善的功能。</p>
+<p>​<em>YUM</em> 作为软件包管理器的老前辈将要被 <em>DNF</em>所取代（由于其性能差、内存占用过多、依赖解析速度变慢等长期存在的问题），故将原教科书中的关于 YUM 介绍的一章换成对 DNF 的介绍。DNF 使用 c、c++、python 语言编写，将依赖管理模块抽象为 libsolv 库来管理软件包的依赖，相比 YUM 提高了性能。DNF 和 YUM 的用法大体上是相同的。</p>
+<h3 id="使用-DNF-查找软件">使用 DNF 查找软件</h3>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 1. dnf help	显示用法信息</span></span><br><span class="line">[skinyi@skinyi ~]\$ dnf <span class="built_in">help</span></span><br><span class="line">usage: dnf [options] COMMAND</span><br><span class="line"></span><br><span class="line">主要命令列表：</span><br><span class="line"></span><br><span class="line"><span class="built_in">alias</span>                     列出或创建命令别名</span><br><span class="line">autoremove                删除所有原先因为依赖关系安装的不需要的软件包</span><br><span class="line">check                     在包数据库中寻找问题</span><br><span class="line">check-update              检查是否有软件包升级</span><br><span class="line">clean                     删除已缓存的数据</span><br><span class="line">deplist                   [已弃用，请使用 repoquery --deplist] 列出软件包的依赖关系和提供这些软件包的源</span><br><span class="line">distro-sync               同步已经安装的软件包到最新可用版本</span><br><span class="line">downgrade                 降级包</span><br><span class="line">......</span><br><span class="line"><span class="comment"># 2. dnf list [KEYWORD]	显示已安装和可用的软件包</span></span><br><span class="line">[root@skinyi ~]\<span class="comment"># dnf list kernel</span></span><br><span class="line">上次元数据过期检查：2:07:19 前，执行于 2021年09月01日 星期三 14时52分31秒。</span><br><span class="line">已安装的软件包</span><br><span class="line">kernel.x86_64             5.10.23-200.fc33              @updates</span><br><span class="line">kernel.x86_64             5.13.12-100.fc33              @updates</span><br><span class="line"><span class="comment"># 3. dnf search KEYWORD	使用关键字搜索软件包</span></span><br><span class="line">[skinyi@skinyi ~]\$ dnf search remote</span><br><span class="line">上次元数据过期检查：0:02:41 前，执行于 2021年09月01日 星期三 16时43分32秒。</span><br><span class="line">============================ 名称 和 概况 匹配：remote ==============================</span><br><span class="line">R-remotes.noarch : R Package Installation from Remote Repositories</span><br><span class="line">RemoteBox.noarch : Open Source VirtualBox Client with Remote Management</span><br><span class="line">anyremote.x86_64 : Remote control through Wi-Fi or bluetooth connection</span><br><span class="line">anyremote-data.x86_64 : Configuration files <span class="keyword">for</span> anyRemote</span><br><span class="line">anyremote-doc.x86_64 : Documentation <span class="keyword">for</span> anyRemote</span><br><span class="line">chrome-remote-desktop.x86_64 : Remote desktop support <span class="keyword">for</span> google-chrome &amp; chromium</span><br><span class="line">......</span><br><span class="line"><span class="comment"># 4. dnf info PKG_NAME	查看软件包的详细信息，包括安装所需磁盘空间</span></span><br><span class="line">[skinyi@skinyi ~]\$ dnf info httpd</span><br><span class="line">上次元数据过期检查：0:05:28 前，执行于 2021年09月01日 星期三 16时43分32秒。</span><br><span class="line">可安装的软件包</span><br><span class="line">名称         : httpd</span><br><span class="line">版本         : 2.4.48</span><br><span class="line">发布         : 1.fc33</span><br><span class="line">架构         : x86_64</span><br><span class="line">大小         : 1.4 M</span><br><span class="line">源           : httpd-2.4.48-1.fc33.src.rpm</span><br><span class="line">仓库         : updates</span><br><span class="line">概况         : Apache HTTP Server</span><br><span class="line">URL          : https://httpd.apache.org/</span><br><span class="line">协议         : ASL 2.0</span><br><span class="line">描述         : The Apache HTTP Server is a powerful, efficient,</span><br><span class="line">             : and extensible web server.</span><br><span class="line"><span class="comment"># 5. dnf provides PATHNAME	显示提供与指定路径名文件或目录相匹配的软件包</span></span><br><span class="line">[skinyi@skinyi ~]\$ dnf provides /var/www/html</span><br><span class="line">上次元数据过期检查：0:07:46 前，执行于 2021年09月01日 星期三 16时43分32秒。</span><br><span class="line">httpd-filesystem-2.4.46-1.fc33.noarch : The basic directory</span><br><span class="line">     ...: layout <span class="keyword">for</span> the Apache HTTP Server</span><br><span class="line">仓库        ：fedora</span><br><span class="line">匹配来源：</span><br><span class="line">文件名    ：/var/www/html</span><br><span class="line"></span><br><span class="line">httpd-filesystem-2.4.48-1.fc33.noarch : The basic directory</span><br><span class="line">     ...: layout <span class="keyword">for</span> the Apache HTTP Server</span><br><span class="line">仓库        ：updates</span><br><span class="line">匹配来源：</span><br><span class="line">文件名    ：/var/www/html</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h3 id="使用-DNF-安装和删除软件">使用 DNF 安装和删除软件</h3>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 1. dnf install PKG_NAME	# 获取并安装软件包，包括所有依赖项</span></span><br><span class="line">[root@skinyi ~]\<span class="comment"># dnf install git</span></span><br><span class="line">上次元数据过期检查：2:04:10 前，执行于 2021年09月01日 星期三 14时52分31秒。</span><br><span class="line">依赖关系解决。</span><br><span class="line">================================================================</span><br><span class="line"> 软件包                 架构   版本               仓库     大小</span><br><span class="line">================================================================</span><br><span class="line">安装:</span><br><span class="line"> git                    x86_64 2.31.1-3.fc33      updates 122 k</span><br><span class="line">安装依赖关系:</span><br><span class="line"> git-core               x86_64 2.31.1-3.fc33      updates 3.6 M</span><br><span class="line"> git-core-doc           noarch 2.31.1-3.fc33      updates 2.3 M</span><br><span class="line"> perl-AutoLoader        noarch 5.74-471.fc33      updates  31 k</span><br><span class="line"> perl-B                 x86_64 1.80-471.fc33      updates 189 k</span><br><span class="line"> perl-Carp              noarch 1.50-457.fc33      fedora   29 k</span><br><span class="line"> perl-Class-Struct      noarch 0.66-471.fc33      updates  32 k</span><br><span class="line"> perl-Data-Dumper       x86_64 2.174-459.fc33     fedora   56 k</span><br><span class="line">......</span><br><span class="line"><span class="comment"># 2. dnf update [PKG_NAME]	# 更新指定软件或所有已安装软件</span></span><br><span class="line">[root@skinyi ~]\<span class="comment"># dnf update kernel</span></span><br><span class="line">上次元数据过期检查：2:06:19 前，执行于 2021年09月01日 星期三 14时52分31秒。</span><br><span class="line">依赖关系解决。</span><br><span class="line">无需任何处理。</span><br><span class="line">完毕！</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>若需查看当前系统运行中的内核，可以使用 <code>uname</code> 命令。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[root@skinyi ~]\<span class="comment"># uname -r</span></span><br><span class="line">5.10.23-200.fc33.x86_64</span><br><span class="line">[root@skinyi ~]\<span class="comment"># uname -a</span></span><br><span class="line">Linux skinyi.fedora 5.10.23-200.fc33.x86_64 \<span class="comment">#1 SMP Thu Mar 11 22:18:30 UTC 2021 x86_64 x86_64 x86_64 GNU/Linux</span></span><br></pre></td></tr></table></figure>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 3. dnf remove PKG_NAME	# 删除安装的软件包及其依赖包</span></span><br><span class="line">[root@skinyi ~]\<span class="comment"># dnf remove openssh</span></span><br><span class="line">依赖关系解决。</span><br><span class="line">================================================================</span><br><span class="line"> 软件包             架构      版本            仓库         大小</span><br><span class="line">================================================================</span><br><span class="line">移除:</span><br><span class="line"> openssh            x86_64    8.4p1-7.fc33    @updates    1.8 M</span><br><span class="line">移除依赖的软件包:</span><br><span class="line"> openssh-clients    x86_64    8.4p1-7.fc33    @updates    1.8 M</span><br><span class="line"> openssh-server     x86_64    8.4p1-7.fc33    @updates    924 k</span><br><span class="line"></span><br><span class="line">事务概要</span><br><span class="line">================================================================</span><br><span class="line">移除  3 软件包</span><br><span class="line">......</span><br></pre></td></tr></table></figure>
+<h3 id="使用-DNF-安装或删除软件组">使用 DNF 安装或删除软件组</h3>
+<p><em>DNF</em> 也有软件组的概念，软件组是出于特定目的归类到一起安装的相关软件的集合。</p>
+<p>​在 RHEL8 中，有两种类型的组：常规组和环境组，其中常规组是软件包的集合，环境组是常规组的集合。一个组提供的软件包或组可能为 <em>mandatory</em>（安装该软件组时必须安装）、<em>default</em>（安装该组时通常会安装）或 <em>optional</em>（安装该组时不予以安装，除非特别要求）。</p>
+<h4 id="查看已安装和可用的软件组名称">查看已安装和可用的软件组名称</h4>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">[root@skinyi ~]\<span class="comment"># dnf group list</span></span><br><span class="line">上次元数据过期检查：2:17:43 前，执行于 2021年09月01日 星期三 14时52分31秒。</span><br><span class="line">可用环境组：</span><br><span class="line">   Fedora 定制操作系统</span><br><span class="line">   最小化安装</span><br><span class="line">   Fedora Workstation</span><br><span class="line">   Fedora Cloud Server</span><br><span class="line">   ......</span><br><span class="line">已安装的环境组：</span><br><span class="line">   Fedora Server 版本</span><br><span class="line">已安装组：</span><br><span class="line">   无头设备（Headless）管理</span><br><span class="line">可用组：</span><br><span class="line">   3D 打印</span><br><span class="line">   管理工具</span><br><span class="line">   音频制作</span><br><span class="line">   写作和出版</span><br><span class="line">   ......</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>有些组一般通过环境组安装，默认为隐藏。可以通过 <code>dnf group list hidden</code> 命令列出这些隐藏组。</p>
+</blockquote>
+<h4 id="显示软件组的相关信息">显示软件组的相关信息</h4>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">[root@skinyi ~]\<span class="comment"># dnf group info &quot;RPM Development Tools&quot;</span></span><br><span class="line">上次元数据过期检查：2:31:05 前，执行于 2021年09月01日 星期三 14时52分31秒。</span><br><span class="line">组：RPM 开发工具</span><br><span class="line"> 描述：这些工具中包括了核心开发工具，如 rpmbuild。</span><br><span class="line"> 必要的软件包：</span><br><span class="line">   redhat-rpm-config</span><br><span class="line">   rpm-build</span><br><span class="line"> 默认的软件包：</span><br><span class="line">   koji</span><br><span class="line">   mock</span><br><span class="line">   rpmdevtools</span><br><span class="line"> 可选的软件包：</span><br><span class="line">   pungi</span><br><span class="line">   rpmlint</span><br></pre></td></tr></table></figure>
+<h4 id="安装一个软件组">安装一个软件组</h4>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">[root@skinyi ~]\<span class="comment"># dnf group install &quot;Deepin Desktop Environment&quot; --with-optional</span></span><br><span class="line">上次元数据过期检查：2:35:01 前，执行于 2021年09月01日 星期三 14时52分31秒。</span><br><span class="line">依赖关系解决。</span><br><span class="line">================================================================</span><br><span class="line"> 软件包                  架构   版本              仓库     大小</span><br><span class="line">================================================================</span><br><span class="line">安装组/模块包:</span><br><span class="line"> chromium                x86_64 91.0.4472.164-1.fc33</span><br><span class="line">                                                  updates  99 M</span><br><span class="line"> deepin-calculator       x86_64 5.0.1-3.fc33      fedora  286 k</span><br><span class="line"> deepin-calendar         x86_64 5.0.1-4.fc33      fedora  111 k</span><br><span class="line"> deepin-desktop          x86_64 5.0.0-9.fc33.2    updates 1.9 M</span><br><span class="line"> deepin-editor           x86_64 1.2.9.1-8.fc33.1  updates 1.3 M</span><br><span class="line"> deepin-icon-theme       noarch 15.12.71-5.fc33   fedora   11 M</span><br><span class="line"> deepin-image-viewer     x86_64 5.0.0-5.fc33      fedora  3.7 M</span><br><span class="line"> deepin-picker           x86_64 5.0.1-3.fc33      fedora   83 k</span><br><span class="line"> deepin-screenshot       x86_64 5.0.0-4.fc33      fedora  347 k</span><br><span class="line"> ......</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p><em>--with-optional</em> 选项指定安装可选的软件包。</p>
+</blockquote>
+<h3 id="查看软件包管理的历史事务">查看软件包管理的历史事务</h3>
+<p>​所有安装和删除软件包的事务日志记录在 <em>/var/log/dnf.rpm.log</em> 中。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[root@skinyi ~]\<span class="comment"># tail -n 5 /var/log/dnf.rpm.log</span></span><br><span class="line">2021-09-01T17:22:45+0800 INFO --- logging initialized ---</span><br><span class="line">2021-09-01T17:23:00+0800 INFO --- logging initialized ---</span><br><span class="line">2021-09-01T17:23:36+0800 INFO --- logging initialized ---</span><br><span class="line">2021-09-01T17:25:56+0800 INFO --- logging initialized ---</span><br><span class="line">2021-09-01T17:27:31+0800 INFO --- logging initialized ---</span><br></pre></td></tr></table></figure>
+<p>​使用 <code>dnf history</code> 显示安装和删除事务的摘要：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[root@skinyi ~]\<span class="comment"># dnf history</span></span><br><span class="line">ID     | 命令行                    | 日期和时间       	| 操作           | 更改   </span><br><span class="line">--------------------------------------------------------------------------------</span><br><span class="line">     3 | update                   | 2021-09-01 14:54 | I, U           |  283 EE</span><br><span class="line">     2 | install nodejs           | 2021-03-19 11:05 | Install        |    6   </span><br><span class="line">     1 |                          | 2021-03-19 10:07 | Install        |  658 EE</span><br></pre></td></tr></table></figure>
+<p>​使用 <code>dnf history undo ID</code> 选项可以撤销指定 ID 的事务。</p>
+
+        </div>
+        
+<blockquote class="copyright">
+    <p><strong>本文链接 : </strong><a class="permalink" href="https://skinyi.github.io/2022-08-15-Linux%20|%20%E6%9B%B4%E6%96%B0%E5%92%8C%E5%AE%89%E8%A3%85%E8%BD%AF%E4%BB%B6%E5%8C%85.html">https://skinyi.github.io/2022-08-15-Linux | 更新和安装软件包.html</a></p>
+    <p><strong>这篇文章由作者胡编乱造或者由其他文章复制粘贴而来，其中有些内容可能已经过时，请谨慎参考复制文章中的内容。</strong></p>
+</blockquote>
+
+
+    </article>
+    
+    <section id="comments">
+        
+    </section>
+
+
+    
+
+</main>
+
+
+<aside style="" id="sidebar" class="aside aside-fixture">
+    <div class="toc-sidebar">
+        <nav id="toc" class="article-toc">
+            <h3 class="toc-title">文章目录</h3>
+            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9C%89%E5%85%B3%E5%91%BD%E4%BB%A4%E6%91%98%E8%A6%81"><span class="toc-number">1.</span> <span class="toc-text">有关命令摘要</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#RPM-%E5%91%BD%E4%BB%A4%E6%91%98%E8%A6%81"><span class="toc-number">1.1.</span> <span class="toc-text">RPM 命令摘要</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#DNF-%E5%91%BD%E4%BB%A4%E6%91%98%E8%A6%81"><span class="toc-number">1.2.</span> <span class="toc-text">DNF 命令摘要</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B3%A8%E5%86%8C%E7%B3%BB%E7%BB%9F%E8%8E%B7%E5%BE%97%E7%BA%A2%E5%B8%BD%E6%94%AF%E6%8C%81"><span class="toc-number">2.</span> <span class="toc-text">注册系统获得红帽支持</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8%E5%9B%BE%E5%BD%A2%E7%95%8C%E9%9D%A2%E5%B7%A5%E5%85%B7%E8%BF%9B%E8%A1%8C%E6%B3%A8%E5%86%8C"><span class="toc-number">2.1.</span> <span class="toc-text">使用图形界面工具进行注册</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%8E%E5%91%BD%E4%BB%A4%E8%A1%8C%E6%B3%A8%E5%86%8C"><span class="toc-number">2.2.</span> <span class="toc-text">从命令行注册</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BA%A2%E5%B8%BD%E6%8E%88%E6%9D%83%E8%AF%81%E4%B9%A6"><span class="toc-number">2.3.</span> <span class="toc-text">红帽授权证书</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#RPM-%E8%BD%AF%E4%BB%B6%E5%8C%85"><span class="toc-number">3.</span> <span class="toc-text">RPM 软件包</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#RPM-%E8%BD%AF%E4%BB%B6%E5%8C%85%E7%9A%84%E6%96%87%E4%BB%B6%E5%90%8D%E7%BA%A6%E5%AE%9A"><span class="toc-number">3.1.</span> <span class="toc-text">RPM 软件包的文件名约定</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E4%BD%BF%E7%94%A8-RPM-%E5%AE%9E%E7%94%A8%E7%A8%8B%E5%BA%8F%E5%A4%84%E7%90%86%E6%9C%AC%E5%9C%B0%E8%BD%AF%E4%BB%B6%E5%8C%85"><span class="toc-number">3.2.</span> <span class="toc-text">2. 使用 RPM 实用程序处理本地软件包</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8F%90%E5%8F%96-rpm-%E8%BD%AF%E4%BB%B6%E5%8C%85%E4%B8%AD%E7%9A%84%E6%96%87%E4%BB%B6"><span class="toc-number">3.3.</span> <span class="toc-text">提取 rpm 软件包中的文件</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8-DNF-%E7%AE%A1%E7%90%86%E8%BD%AF%E4%BB%B6%E5%8C%85"><span class="toc-number">4.</span> <span class="toc-text">使用 DNF 管理软件包</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8-DNF-%E6%9F%A5%E6%89%BE%E8%BD%AF%E4%BB%B6"><span class="toc-number">4.1.</span> <span class="toc-text">使用 DNF 查找软件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8-DNF-%E5%AE%89%E8%A3%85%E5%92%8C%E5%88%A0%E9%99%A4%E8%BD%AF%E4%BB%B6"><span class="toc-number">4.2.</span> <span class="toc-text">使用 DNF 安装和删除软件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8-DNF-%E5%AE%89%E8%A3%85%E6%88%96%E5%88%A0%E9%99%A4%E8%BD%AF%E4%BB%B6%E7%BB%84"><span class="toc-number">4.3.</span> <span class="toc-text">使用 DNF 安装或删除软件组</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%9F%A5%E7%9C%8B%E5%B7%B2%E5%AE%89%E8%A3%85%E5%92%8C%E5%8F%AF%E7%94%A8%E7%9A%84%E8%BD%AF%E4%BB%B6%E7%BB%84%E5%90%8D%E7%A7%B0"><span class="toc-number">4.3.1.</span> <span class="toc-text">查看已安装和可用的软件组名称</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%98%BE%E7%A4%BA%E8%BD%AF%E4%BB%B6%E7%BB%84%E7%9A%84%E7%9B%B8%E5%85%B3%E4%BF%A1%E6%81%AF"><span class="toc-number">4.3.2.</span> <span class="toc-text">显示软件组的相关信息</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%89%E8%A3%85%E4%B8%80%E4%B8%AA%E8%BD%AF%E4%BB%B6%E7%BB%84"><span class="toc-number">4.3.3.</span> <span class="toc-text">安装一个软件组</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9F%A5%E7%9C%8B%E8%BD%AF%E4%BB%B6%E5%8C%85%E7%AE%A1%E7%90%86%E7%9A%84%E5%8E%86%E5%8F%B2%E4%BA%8B%E5%8A%A1"><span class="toc-number">4.4.</span> <span class="toc-text">查看软件包管理的历史事务</span></a></li></ol></li></ol>
+        </nav>
+    </div>
+</aside>
+
+
+
+
+
+        </section>
+        <footer class="hidden lg:block fixed bottom-0 left-0 sm:w-1/12 bg-gray-100 z-40">
+    
+    
+        <p class="footer-custom">❤ Powered by <a href="https://hexo.io/" target="_blank" rel="noopener noreferrer">Hexo</a> with <a href="https://github.com/fengkx/hexo-theme-purer" target="_blank" rel="noopener noreferrer">Purer theme</a>.</p>
+    
+</footer>
+
+        <div id="mask" class="hidden mask fixed inset-0 bg-gray-900 opacity-75 z-40"></div>
+        <div id="search-view-container" class="hidden shadow-xl"></div>
+        
+<script src="/js/dom-event.min.js"></script>
+
+
+
+<script src="/js/local-search.min.js"></script>
+
+
+
+    <script src="//cdn.jsdelivr.net/npm/lightgallery.js@1.1.3/dist/js/lightgallery.min.js"></script>
+    
+<script src="/js/light-gallery.min.js"></script>
+
+
+
+
+
+
+    </body>
+</html>

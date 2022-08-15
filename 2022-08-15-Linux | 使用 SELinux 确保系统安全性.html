@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html  lang="zh-CN,en,default" >
+    <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, maximum-scale=5, viewport-fit=cover">
+    <title>使用 SELinux 确保系统安全性 | Avery Ma 的个人网站</title>
+    <meta name="description" content="🔴 此文章由之前的 Typora 笔记迁移过来，内容可能已经过时。  SELinux 简述 ​SELinux 是 Security Enhanced Linux 的简称。 ​SELinux 在 Linux 中具有重要的安全用途，它可以允许或拒绝访问文件及其他资源，且精准度相比用户权限要大幅提高。SELinux 相比普通的文件权限控制提供了更多安全细节，不仅可以限制谁能读取、写入、执行某文件，还">
+<meta property="og:type" content="article">
+<meta property="og:title" content="使用 SELinux 确保系统安全性">
+<meta property="og:url" content="https://skinyi.github.io/2022-08-15-Linux%20|%20%E4%BD%BF%E7%94%A8%20SELinux%20%E7%A1%AE%E4%BF%9D%E7%B3%BB%E7%BB%9F%E5%AE%89%E5%85%A8%E6%80%A7.html">
+<meta property="og:site_name" content="Avery Ma 的个人网站">
+<meta property="og:description" content="🔴 此文章由之前的 Typora 笔记迁移过来，内容可能已经过时。  SELinux 简述 ​SELinux 是 Security Enhanced Linux 的简称。 ​SELinux 在 Linux 中具有重要的安全用途，它可以允许或拒绝访问文件及其他资源，且精准度相比用户权限要大幅提高。SELinux 相比普通的文件权限控制提供了更多安全细节，不仅可以限制谁能读取、写入、执行某文件，还">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-08-15T06:25:32.733Z">
+<meta property="article:modified_time" content="2022-08-15T06:29:27.021Z">
+<meta property="article:author" content="skinyi">
+<meta property="article:tag" content="Linux">
+<meta property="article:tag" content="RHEL">
+<meta property="article:tag" content="RHCE">
+<meta property="article:tag" content="认证考试">
+<meta name="twitter:card" content="summary">
+
+    
+    <link rel="icon" href="images/favicon.png" type="image/x-icon">
+
+    
+<link rel="stylesheet" href="/css/common.min.css">
+
+
+
+    
+    
+    
+    
+        <link href="//cdn.jsdelivr.net/npm/lightgallery.js@1.1.3/dist/css/lightgallery.min.css" rel="stylesheet">
+    
+    
+    
+<link rel="stylesheet" href="/css/iconfont.min.css">
+
+    
+<meta name="generator" content="Hexo 6.2.0"></head>
+
+    <body>
+        <header class="header header-fixture">
+    <div class="profile-search-wrap flex sm:block">
+        
+        
+        <div class="profile sm:text-center md:px-1 lg:px-3 sm:pb-4 sm:pt-6">
+            <a id="avatar" role="link" href="https://github.com/skinyi" class="inline-block lg:w-16 lg:h-16 w-8 h-8 m-2" target="_blank" rel="noopener" rel="noreferrer" >
+                <img src="/images/avatar.jpg" class="rounded-full" alt="avatar">
+            </a>
+            <h2 id="name" class="hidden lg:block">Avery Ma</h2>
+            <h3 id="title" class="hidden xl:block">IT 从业者</h3>
+            
+            <small id="location" class="hidden lg:block">
+                <i class="iconfont icon-map-icon"></i>
+                宁夏, 中国
+            </small>
+            
+        </div>
+        
+        
+<div class="search flex-1 flex lg:inline-block sm:hidden lg:px-4 lg:mt-2 lg:w-full">
+    <form id="search-form" class="my-auto flex-1 lg:border lg:border-solid lg:border-gray-200">
+        <div class="input-group table bg-gray-100 lg:bg-white w-full">
+            <input id="search-input" type="text" placeholder="搜索" class="inline-block w-full bg-gray-100 lg:bg-white">
+            <span class="table-cell">
+                <button name="search tigger button" disabled>
+                    <i class="iconfont icon-search m-2"></i>
+                </button>
+            </span>
+        </div>
+    </form>
+        
+<div id="content-json" data-placeholder="搜索" class="invisible hidden">/content.json</div>
+<script id="search-teamplate" type="text/html" data-path="/content.json">
+    <div>
+        <div class="search-header bg-gray-400">
+            <input id="actual-search-input" model="keyword" ref="input" class="inline-block w-full h-10 px-2 py-1" placeholder="搜索" type="text">
+        </div>
+        <div class="search-result bg-gray-200">
+            {{#each searchPosts}}
+            <a href="/{{ path }}" class="result-item block px-2 pb-3 mb-1 pt-1 hover:bg-indigo-100">
+                <i class="iconfont icon-file"></i>
+                <h1 class="result-title inline font-medium text-lg">{{ title }}</h1>
+                <p class="result-content text-gray-600 text-sm">{{{ text }}}</p>
+            </a>
+            {{/each}}
+        </div>
+    </div>
+</script>
+
+</div>
+
+
+        <button name="menu toogle button" id="menu-toggle-btn" class="block sm:hidden p-3" role="button" aria-expanded="false">
+            <i class="iconfont icon-hamburger"></i>
+        </button>
+    </div>
+    <nav id="menu-nav" class="hidden sm:flex flex-col">
+        
+        
+            <div class="menu-item menu-home" role="menuitem">
+                <a href="/.">
+                    <i class="iconfont icon-home" aria-hidden="true"></i>
+                    <span class="menu-title">首页</span>
+                </a>
+            </div>
+        
+        
+            <div class="menu-item menu-archives" role="menuitem">
+                <a href="/archives">
+                    <i class="iconfont icon-archive" aria-hidden="true"></i>
+                    <span class="menu-title">归档</span>
+                </a>
+            </div>
+        
+        
+            <div class="menu-item menu-categories" role="menuitem">
+                <a href="/categories">
+                    <i class="iconfont icon-folder" aria-hidden="true"></i>
+                    <span class="menu-title">分类</span>
+                </a>
+            </div>
+        
+        
+            <div class="menu-item menu-tags" role="menuitem">
+                <a href="/tags">
+                    <i class="iconfont icon-tag" aria-hidden="true"></i>
+                    <span class="menu-title">标签</span>
+                </a>
+            </div>
+        
+        
+            <div class="menu-item menu-repository" role="menuitem">
+                <a href="/repository">
+                    <i class="iconfont icon-project" aria-hidden="true"></i>
+                    <span class="menu-title">项目</span>
+                </a>
+            </div>
+        
+        
+            <div class="menu-item menu-about" role="menuitem">
+                <a href="/about">
+                    <i class="iconfont icon-cup" aria-hidden="true"></i>
+                    <span class="menu-title">关于</span>
+                </a>
+            </div>
+        
+        
+
+    </nav>
+</header>
+
+        <section class="main-section">
+            
+    <main class="flex-1 px-4 py-14 md:px-5 lg:px-8 lg:py-4 relative min-h-screen">
+    
+
+    <article class="content article article-archives article-type-list" itemscope="">
+        <header class="article-header">
+            
+    
+        <h1 class="article-title text-lg" itemprop="name">
+            使用 SELinux 确保系统安全性
+        </h1>
+    
+
+
+
+            <p class="article-meta mb-3 text-xs">
+                <span class="article-date">
+    <i class="iconfont icon-calendar-check"></i>
+	<a href="/2022-08-15-Linux%20%7C%20%E4%BD%BF%E7%94%A8%20SELinux%20%E7%A1%AE%E4%BF%9D%E7%B3%BB%E7%BB%9F%E5%AE%89%E5%85%A8%E6%80%A7.html" class="article-date">
+	  <time datetime="2022-08-15T06:25:32.733Z" itemprop="datePublished">8月 15</time>
+	</a>
+</span>
+
+                
+    <span class="article-category">
+    <i class="iconfont icon-folder"></i>
+    <a class="article-category-link" href="/categories/%E5%AD%A6%E4%B9%A0/">学习</a> , <a class="article-category-link" href="/categories/%E5%AD%A6%E4%B9%A0/Linux/">Linux</a> , <a class="article-category-link" href="/categories/%E6%97%A5%E5%B8%B8%E8%AE%B0%E5%BD%95/">日常记录</a> , <a class="article-category-link" href="/categories/%E8%BF%81%E7%A7%BB%E6%96%87%E7%AB%A0/">迁移文章</a>
+  </span>
+
+
+                
+    <span class="article-tags">
+    <i class="iconfont icon-tag"></i>
+    <a class="article-tag-none-link" href="/tags/Linux/" rel="tag">Linux</a>, <a class="article-tag-none-link" href="/tags/RHCE/" rel="tag">RHCE</a>, <a class="article-tag-none-link" href="/tags/RHEL/" rel="tag">RHEL</a>, <a class="article-tag-none-link" href="/tags/%E8%AE%A4%E8%AF%81%E8%80%83%E8%AF%95/" rel="tag">认证考试</a>
+  </span>
+
+
+                
+                
+    
+        <span class="post-wordcount" itemprop="wordCount">字数统计: 3.7k(字)</span>
+    
+    
+        <span class="post-readcount" itemprop="timeRequired">阅读时长: 15(分)</span>
+    
+
+
+            </p>
+        </header>
+        <div class="marked-body article-body">
+            <blockquote>
+<p>🔴 此文章由之前的 Typora 笔记迁移过来，内容可能已经过时。</p>
+</blockquote>
+<h2 id="SELinux-简述">SELinux 简述</h2>
+<p>​SELinux 是 Security Enhanced Linux 的简称。</p>
+<p>​SELinux 在 Linux 中具有重要的安全用途，它可以允许或拒绝访问文件及其他资源，且精准度相比用户权限要大幅提高。SELinux 相比普通的文件权限控制提供了更多安全细节，不仅可以限制谁能读取、写入、执行某文件，还能控制如何来使用该文件。</p>
+<p>​SELinux 由应用开发人员定义的若干策略组成，这些策略准确声明了对于应用使用的每个二进制可执行文件、配置文件和数据文件，哪些操作和访问权限是恰当且被允许的。这被称为目标政策，因为会编写一个策略以涵盖单个应用的活动。策略声明了各个程序、文件和网络端口上放置的预定义标签。</p>
+<p>​SELinux 实施了一组可以防止一个应用程序的弱点影响其他应用或基础系统的访问规则。SELinux 提供了一个额外的安全层，此外还增加了一层复杂结构，这使得 SELinux 的学习成本增加，但执行政策意味着系统某一部分的弱点不会扩散到其他部分。如果 SELinux 在特定的子系统上运行不佳，则可以关闭该特定服务的执行，直至找到潜在问题的解决方案。</p>
+<p>​SELinux 有三种模式：</p>
+<ul>
+<li>强制（<em>Enforcing</em>）：SELinux 强制执行访问控制规则。计算机通常在此模式下运行；</li>
+<li>许可（<em>Permissive</em>）：SELinux 处于活动状态，但不强制执行访问控制规则，而是记录违反规则的警告。该模式主要用于测试和故障排除；</li>
+<li>禁用（<em>Disable</em>）：SELinux 完全关闭 —— 不拒绝任何 SELinux 违规，甚至不予记录。不建议禁用 SELinux。</li>
+</ul>
+<h2 id="SELinux-工作原理">SELinux 工作原理</h2>
+<p>​SELinux 是用于确定哪个进程可以访问哪些文件、目录和端口的一组安全规则。每个文件、进程、目录和端口都具有专门的安全标签，称为 SELinux 上下文。上下文是一个名称，SELinux 策略使用它来确定某个进程能否访问文件、目录或端口。除非显式规则授予访问权限，否则，在默认情况下，策略不允许任何交互。如果没有允许规则，则不允许访问。</p>
+<p>​SELinux 标签具有多种上下文：<em>用户</em>、<em>角色</em>、<em>类型</em>和<em>敏感度</em>。目标策略会根据三个上下文（即类型上下文）来制定自己的规则。类型上下文名称通常以 <em>_t</em> 结尾。</p>
+<blockquote>
+<p>​    <em>unconfined_u</em>:<em>object_r</em>:<em>httpd_sys_content_t</em>:<em>s0</em> /var/www/html/file2</p>
+<p>​     SELinux 用户    角色            类型       级别         文件</p>
+</blockquote>
+<p>​说明：</p>
+<blockquote>
+<p>Web 服务器的类型上下文是 <em>httpd_t</em>。通常位于 <em>/var/www/html</em> 中的文件和目录的类型上下文是 <em>httpd_sys_content_t</em>。通常位于 <em>/tmp</em> 和 <em>/var/tmp</em> 中的文件和目录上下文是 <em>tmp_t</em>。Web 服务器端口的类型上下文是 <em>http_port_t</em>。</p>
+</blockquote>
+<p>​Apache 具有类型上下文 <em>httpd_t</em>。有一个策略规则允许 Apache 访问具有 <em>httpd_sys_content_t</em> 类型上下文的文件和目录。默认情况下，在 <em>var/www/html</em> 和其他 Web 服务器目录中找到的文件具有 <em>httpd_sys_content_t</em> 类型上下文。策略中没有允许规则适用于通常位于 <em>/tmp</em> 和 <em>/var/tmp</em> 中的文件，因此不允许访问。在启用 SELinux 的情况下，破坏了Web服务器进程的恶意用户将无法访问 <em>/tmp</em> 目录。</p>
+<p>​MariaDB 服务器具有类型上下文 <em>mysqld_t</em>。默认情况下，在 <em>/data/mysql</em> 中找到的文件具有 <em>mysqld_db_t</em> 类型上下文。该类型上下文允许 MariaDB 访问这些文件，但禁止其他服务（如Apache Web服务）访问。</p>
+<blockquote>
+<p>许多处理文件的命令都使用 <em>-Z</em> 选项来显示或设置 SELinux 上下文。例如，<code>ps</code>、<code>ls</code>、<code>cp</code> 和 <code>mkdir</code> 都使用 <em>-Z</em> 选项显示或设置 SELinux 上下文。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]\<span class="comment"># ps axZ | head -n 3</span></span><br><span class="line">LABEL                               PID TTY      STAT   TIME COMMAND</span><br><span class="line">system_u:system_r:init_t:s0           1 ?        Ss     0:05 /usr/lib/systemd/systemd --switched-root --system --deserialize 18</span><br><span class="line">system_u:system_r:kernel_t:s0         2 ?        S      0:00 [kthreadd]</span><br><span class="line">[root@localhost ~]\<span class="comment"># ls -Z /home</span></span><br><span class="line">unconfined_u:object_r:user_home_dir_t:s0 student</span><br><span class="line">[root@localhost ~]\<span class="comment"># ls -Z /var/log/cups</span></span><br><span class="line">system_u:object_r:cupsd_log_t:s0 access_log</span><br><span class="line">system_u:object_r:cupsd_log_t:s0 access_log-20210819</span><br><span class="line">system_u:object_r:cupsd_log_t:s0 error_log</span><br><span class="line">system_u:object_r:cupsd_log_t:s0 error_log-20210819</span><br><span class="line">system_u:object_r:cupsd_log_t:s0 page_log</span><br><span class="line">system_u:object_r:cupsd_log_t:s0 page_log-20210819</span><br></pre></td></tr></table></figure>
+</blockquote>
+<h2 id="SELinux-工作模式">SELinux 工作模式</h2>
+<p>​SELinux 子系统提供了显示和更改模式的工具。要确定当前的 SELinux 模式，可以运行 <code>getenforce</code> 命令：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]\<span class="comment"># getenforce</span></span><br><span class="line">Enforcing</span><br></pre></td></tr></table></figure>
+<p>​要临时更改 SELinux 工作模式，可以使用 <code>setenforce</code> 命令：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]\<span class="comment"># setenforce</span></span><br><span class="line">usage:  setenforce [ Enforcing | Permissive | 1 | 0 ]</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>可以在系统启动时通过将向内核传递参数来设置 SELinux 模式：内核参数 <em>enforcing=0</em> 将以许可模式启动系统；值 <em>enforcing=1</em> 则设置强制模式。此外，您还可以通过传递内核参数 <em>selinux=0</em> 来彻底禁用 SELinux。值 <em>selinux=1</em> 将启用 SELinux。</p>
+</blockquote>
+<p>​可以在 <em>/etc/selinux/config</em> 文件来持久配置 SELinux。内核参数会覆盖此设置。</p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># This file controls the state of SELinux on the system.</span></span><br><span class="line"><span class="comment"># SELINUX= can take one of these three values:</span></span><br><span class="line"><span class="comment">#     enforcing - SELinux security policy is enforced.</span></span><br><span class="line"><span class="comment">#     permissive - SELinux prints warnings instead of enforcing.</span></span><br><span class="line"><span class="comment">#     disabled - No SELinux policy is loaded.</span></span><br><span class="line"><span class="attr">SELINUX</span>=enforcing</span><br><span class="line"><span class="comment"># SELINUXTYPE= can take one of these three values:</span></span><br><span class="line"><span class="comment">#     targeted - Targeted processes are protected,</span></span><br><span class="line"><span class="comment">#     minimum - Modification of targeted policy. Only selected processes are protected. </span></span><br><span class="line"><span class="comment">#     mls - Multi Level Security protection.</span></span><br><span class="line"><span class="attr">SELINUXTYPE</span>=targeted</span><br></pre></td></tr></table></figure>
+<h2 id="SELinux-上下文">SELinux 上下文</h2>
+<p>​在运行 SELinux 的系统上，所有进程和文件都会有响应的标签。标签代表了与安全有关的信息，称为 SELinux 上下文。</p>
+<p>​新文件通常从父目录继承其 SELinux 上下文，从而确保它们具有适当的上下文。但是，有两种不同的方式可能会破坏该继承过程。首先，如果您在与最终目标位置不同的位置创建文件，然后移动文件，则该文件将具有创建它时所在目录的 SELinux 上下文，而不是目标目录的 SELinux 上下文。其次，如果是复制一个保留 SELinux 上下文的文件（正如使用 <code>cp -a</code> 命令），则 SELinux 上下文将反映原始文件的位置。</p>
+<p>​以下示例演示了继承关系及存在的缺陷。以 <em>/tmp</em> 中创建的两个文件为例，一个移动到 <em>/var/www/html</em>，另一个复制到同一目录中。移动到 <em>/var/www/html</em> 目录的文件保留了 <em>/tmp</em> 目录的文件上下文。复制到 <em>/var/www/html</em> 目录中的文件则继承了 <em>/var/www/html</em> 目录的 SELinux 上下文。</p>
+<p>​使用 <code>ls -Z</code> 命令显示文件的 SELinux 上下文。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]\<span class="comment"># ls -Z /var/lib/nfs/etab</span></span><br><span class="line">system_u:object_r:var_lib_nfs_t:s0 /var/lib/nfs/etab</span><br></pre></td></tr></table></figure>
+<p>​使用 <code>ls -Zd</code> 命令显示目录的 SELinux 上下文。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]\<span class="comment"># ls -dZ /var/lib/nfs</span></span><br><span class="line">system_u:object_r:var_lib_nfs_t:s0 /var/lib/nfs</span><br></pre></td></tr></table></figure>
+<h3 id="更改文件的-SELinux-上下文">更改文件的 SELinux 上下文</h3>
+<p>​用于更改文件 SELinux 上下文的命令包括：<code>semanage fcontext</code>、<code>restorecon</code> 和 <code>chcon</code>。</p>
+<p>​为文件设置 SELinux 上下文的首选方法是使用 <code>semanage fcontext</code> 命令来声明文件的默认标签，然后使用 <code>restorecon</code> 命令将该上下文应用于文件。这样可确保标签符合预期，即便在对文件系统完全重新标记之后也是如此。</p>
+<p>​<code>chcon</code> 命令更改 SELinux 上下文。<code>chcon</code> 设置存储在文件系统中的文件安全上下文。它对于测试和实验很有用。但是，<b>它不会将上下文更改保存到 SELinux 上下文数据库中。</b>当 <code>restorecon</code> 命令运行时，<code>chcon</code> 命令所做的更改也同样无法保留。此外，如果对整个文件系统进行重新标记，则使用 <code>chcon</code> 更改过的文件的 SELinux 上下文将恢复。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 1. 创建测试目录并查看其 SELinux 上下文</span></span><br><span class="line">[root@localhost ~]\<span class="comment"># mkdir testdir</span></span><br><span class="line">[root@localhost ~]\<span class="comment"># ls -dZ testdir</span></span><br><span class="line">unconfined_u:object_r:admin_home_t:s0 testdir</span><br><span class="line"><span class="comment"># 2. 使用 chcon 命令修改其 SELinux 上下文</span></span><br><span class="line">[root@localhost ~]\<span class="comment"># chcon -t var_lib_nfs_t testdir</span></span><br><span class="line">[root@localhost ~]\<span class="comment"># ls -dZ testdir</span></span><br><span class="line">unconfined_u:object_r:var_lib_nfs_t:s0 testdir</span><br><span class="line"><span class="comment"># 3. 使用 restorecon 命令重置其 SELinux 上下文</span></span><br><span class="line">[root@localhost ~]\<span class="comment"># restorecon -v testdir</span></span><br><span class="line">Relabeled /root/testdir from unconfined_u:object_r:var_lib_nfs_t:s0 to unconfined_u:object_r:admin_home_t:s0</span><br><span class="line">[root@localhost ~]\<span class="comment"># ls -dZ testdir</span></span><br><span class="line">unconfined_u:object_r:admin_home_t:s0 testdir</span><br></pre></td></tr></table></figure>
+<h3 id="定义-SELinux-默认文件上下文规则">定义 SELinux 默认文件上下文规则</h3>
+<p>​<code>semanager fcontext</code> 命令可显示和修改 <code>restorecon</code> 用来设置默认文件上下文的规则。它使用扩展正则表达式来指定路径和文件名。<code>fcontext</code> 规则中最常用的扩展正则表达式是 <em>(/.*)?</em>，表示 “可选择匹配后跟任何数量字符的/” 。它将会匹配在表达式前面列出的目录并递归地匹配该目录中的所有内容。</p>
+<p>​<code>semanage fcontext</code> 命令的选项：</p>
+<table>
+<thead>
+<tr>
+<th>选项</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>-a, --add</td>
+<td>添加指定对象类型的记录</td>
+</tr>
+<tr>
+<td>-d, --delete</td>
+<td>删除指定对象类型的记录</td>
+</tr>
+<tr>
+<td>-l, --list</td>
+<td>列出指定对象类型的记录</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><code>restorecon</code> 命令依赖于 <em>policycoreutil</em> 软件包，<code>semanage</code> 命令依赖于 <em>policycoreutil-python</em> 软件包。</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]\<span class="comment"># semanage fcontext -l | grep var/lib/nfs</span></span><br><span class="line">/var/lib/nfs(/.*)?                                 all files          system_u:object_r:var_lib_nfs_t:s0 </span><br><span class="line">/var/lib/nfs/rpc_pipefs(/.*)?                      all files          &lt;&lt;<span class="string">None&gt;&gt;</span></span><br></pre></td></tr></table></figure>
+<p>​接 1 中的例子（文件已创建），此次永久设置其 SELinux 上下文：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 4. 将 /root/testdir 的类型上下文永久修改为 var_lib_nfs_t（继承）</span></span><br><span class="line">[root@localhost ~]\<span class="comment"># semanage fcontext -a -t var_lib_nfs_t &#x27;/root/testdir(/.*)?&#x27;</span></span><br><span class="line">[root@localhost ~]\<span class="comment"># ls -dZ testdir/</span></span><br><span class="line">unconfined_u:object_r:admin_home_t:s0 testdir/</span><br><span class="line">[root@localhost ~]\<span class="comment"># restorecon -RFvv testdir/</span></span><br><span class="line">Relabeled /root/testdir from unconfined_u:object_r:admin_home_t:s0 to system_u:object_r:var_lib_nfs_t:s0</span><br><span class="line"><span class="comment"># 5. 尝试在此目录下创建文件再验证：</span></span><br><span class="line">[root@localhost ~]\<span class="comment"># touch testdir/test.txt</span></span><br><span class="line">[root@localhost ~]\<span class="comment"># ls -Z testdir/test.txt </span></span><br><span class="line">unconfined_u:object_r:var_lib_nfs_t:s0 testdir/test.txt</span><br><span class="line"><span class="comment"># 6. 删除刚才的配置</span></span><br><span class="line">[root@localhost ~]\<span class="comment"># semanage fcontext -d -t var_lib_nfs_t &#x27;/root/testdir(/.*)?&#x27;</span></span><br><span class="line">[root@localhost ~]\<span class="comment"># restorecon -RFvv testdir/</span></span><br><span class="line">Relabeled /root/testdir from system_u:object_r:var_lib_nfs_t:s0 to system_u:object_r:admin_home_t:s0</span><br><span class="line">Relabeled /root/testdir/test.txt from unconfined_u:object_r:var_lib_nfs_t:s0 to system_u:object_r:admin_home_t:s0</span><br></pre></td></tr></table></figure>
+<h2 id="使用布尔值调整-SELinux-策略">使用布尔值调整 SELinux 策略</h2>
+<p>​SELinux 布尔值是可更改 SELinux 策略行为的参数。SELinux 布尔值是可以启用或禁用的规则。安全管理员可以使用 SELinux 布尔值来有选择地调整策略。</p>
+<blockquote>
+<p><em>selinux-policy-doc</em> 软件包附带的 SELinux man page 中介绍了可用布尔值的用途。使用 <code>man -k '_selinux'</code> 命令可以列出这些 man page。</p>
+</blockquote>
+<p>​使用 <code>getsebool</code> 命令列出机器状态的布尔值。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 选项：</span></span><br><span class="line">-a  <span class="comment"># 列出所有配置</span></span><br><span class="line"><span class="comment"># 例子：</span></span><br><span class="line">[root@localhost ~]\<span class="comment"># getsebool -a | head -n 10</span></span><br><span class="line">abrt_anon_write --&gt; off</span><br><span class="line">abrt_handle_event --&gt; off</span><br><span class="line">abrt_upload_watch_anon_write --&gt; on</span><br><span class="line">antivirus_can_scan_system --&gt; off</span><br><span class="line">antivirus_use_jit --&gt; off</span><br><span class="line">auditadm_exec_content --&gt; on</span><br><span class="line">authlogin_nsswitch_use_ldap --&gt; off</span><br><span class="line">authlogin_radius --&gt; off</span><br><span class="line">authlogin_yubikey --&gt; off</span><br><span class="line">awstats_purge_apache_log_files --&gt; off</span><br><span class="line">[root@localhost ~]\<span class="comment"># getsebool httpd_enable_homedirs</span></span><br><span class="line">httpd_enable_homedirs --&gt; off</span><br></pre></td></tr></table></figure>
+<p>​使用 <code>setsebool</code> 命令修改布尔值。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 选项：</span></span><br><span class="line">-P  <span class="comment"># 将设置持久化到政策文件中</span></span><br><span class="line"><span class="comment"># 例子：</span></span><br><span class="line">[root@localhost ~]\<span class="comment"># setsebool httpd_enable_homedirs on</span></span><br><span class="line">[root@localhost ~]\<span class="comment"># getsebool -P httpd_enable_homedirs off</span></span><br></pre></td></tr></table></figure>
+<p>​使用 <code>semanage boolean -l</code> 将报告布尔值是否为持久值，并提供该布尔值的简短描述。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]\<span class="comment"># semanage boolean -l | grep httpd_enable_homedirs </span></span><br><span class="line">httpd_enable_homedirs          (off  ,  off)  Allow httpd to <span class="built_in">enable</span> homedirs</span><br></pre></td></tr></table></figure>
+<p>​使用 <code>semanage boolean -l -C</code> 列出当前状态与默认配置不同的布尔值.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]\<span class="comment"># semanage boolean -l -C</span></span><br></pre></td></tr></table></figure>
+<h2 id="排查和解决-SELinux-问题">排查和解决 SELinux 问题</h2>
+<p>​解决因 SELinux 阻止而使得某些应用无法访问某些文件时应注意以下原则：</p>
+<ul>
+<li>在考虑任何调整之前，应了解到 SELinux 禁止意图访问的这一做法也许很正确，如 Web 服务器对 /home 的访问；</li>
+<li>最常见的 SELinux 问题是使用不正确的文件上下文，这种情况下可以运行 <code>restorecon</code> 来更正因为移动文件产生的文件访问问题；</li>
+<li>对于严苛限制性访问的另一个补救措施可以是调整布尔值，如 <em>ftpd_anon_write</em> 布尔值控制匿名 FTP 用户能否上传文件；</li>
+<li>SELinux 策略可能存在阻止合法访问的漏洞，此种情况极少。</li>
+</ul>
+<h3 id="监控-SELinux-冲突">监控 SELinux 冲突</h3>
+<blockquote>
+<p>依赖软件包：<em>setroubleshoot-server</em>。安装后 SELinux 消息将会发送至 /var/log/messages。</p>
+</blockquote>
+<p>​<em>setroubleshoot-server</em> 侦听 <em>/var/log/audit/audit.log</em> 中的审核消息，并发送简短摘要到 /var/log/messages。该摘要包括 SELinux 冲突的唯一标识符（UUID），可用于收集更多信息。<code>sealert -l UUID</code> 命令用于生成特定事件的报告。使用 <code>sealert -a /var/log/audit/audit.log</code> 可以在该文件中生成所有事件的报告。</p>
+<blockquote>
+<p>使用 <code>ausearch</code> 命令可以检索 <em>/var/log/audit.log</em> 中的日志内容，<em>-m</em> 选项指定消息类型，<em>-ts</em> 指定时间，如：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]\<span class="comment"># ausearch -m AVC -ts recent</span></span><br><span class="line">&lt;no matches&gt;</span><br></pre></td></tr></table></figure>
+</blockquote>
+<h3 id="以标准-Apache-Web-服务器为例">以标准 Apache Web 服务器为例</h3>
+<p>​在 root 用户家目录创建 html 文件并将其移动到 Apache 静态页存放目录，启动 Apache 服务后访问：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]\<span class="comment"># touch /root/file &amp;&amp; mv /root/file /var/www/html</span></span><br><span class="line">[root@localhost ~]\<span class="comment"># systemctl start httpd</span></span><br><span class="line">[root@localhost ~]\<span class="comment"># curl http://localhost/file</span></span><br><span class="line">&lt;!DOCTYPE HTML PUBLIC <span class="string">&quot;-//IFTF//DTD HTML 2.0//EN&quot;</span>&gt;</span><br><span class="line">&lt;html&gt;&lt;<span class="built_in">head</span>&gt;&lt;title&gt;403 Forbidden&lt;/title&gt;&lt;/head&gt;</span><br><span class="line">&lt;body&gt;&lt;h1&gt;Forbidden&lt;/h1&gt;</span><br><span class="line">&lt;p&gt;You don\`t have permission to access /file on this server.&lt;/p&gt;</span><br><span class="line">&lt;/body&gt;&lt;/html&gt;</span><br></pre></td></tr></table></figure>
+<p>​按理说 file 文件在 Apache 的静态页目录里，一般不会出现访问被拒绝的情况，但是它却返回了 <em>permission denied</em> 的错误提示页面，可以通过查看 <em>1.监控 SELinux 冲突</em> 里的两个文件来分析问题：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]\<span class="comment"># tail /var/log/audit/audit.log</span></span><br><span class="line"><span class="built_in">type</span>=AVC msg=audit(1392944135.482:429): avc: denied &#123; getattr &#125; <span class="keyword">for</span></span><br><span class="line">  pid=1609 <span class="built_in">comm</span>=<span class="string">&quot;httpd&quot;</span> path=<span class="string">&quot;/var/www/html/file&quot;</span> dev=<span class="string">&quot;sda1&quot;</span> ino=8980981</span><br><span class="line">  scontext=system_u:system_r:httpd_t:s0 tcontext=unconfined_u:object_r:admin_home_t:s0</span><br><span class="line">  tclass=file</span><br><span class="line">[root@localhost ~]\<span class="comment"># tail /var/log/messages</span></span><br><span class="line">Oct 8 10:18:20 localhost setroubleshoot: SELinux is preventing /usr/sbin/httpd from getattr access on the file. For complete SELinux messages, run `sealert -l 12345678-1234-5678-1234567890ab`.</span><br></pre></td></tr></table></figure>
+<p>​根据提示可以使用 <code>sealert -l 12345678-1234-5678-1234567890ab</code> 来查看更多信息，包括可能的解决办法：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]\<span class="comment"># sealert -l 12345678-1234-5678-1234567890ab</span></span><br><span class="line">SELinux is preventing /usr/sbin/httpd from getattr access on the file.</span><br><span class="line"></span><br><span class="line">***** Plugin catchall (100. confidence) suggests *****************************************</span><br><span class="line"></span><br><span class="line">If you believe that httpd should be allowed getattr access on the file by default.</span><br><span class="line">Then you should report this as a bug.</span><br><span class="line">You can generate a <span class="built_in">local</span> policy module to allow this access. </span><br><span class="line">Do</span><br><span class="line">allow this access <span class="keyword">for</span> now by executing:</span><br><span class="line"><span class="comment"># grep httpd /var/log/audit/audit.log | audit2allow -M mypol</span></span><br><span class="line"><span class="comment"># semodule -i mypol.pp</span></span><br><span class="line"></span><br><span class="line">Additional Information:</span><br><span class="line">Source Context                system_u:system_r:httpd_t:s0</span><br><span class="line">Target Context              unconfined_u:object_r:admin_home_t:s0</span><br><span class="line">Target Objects                 [ file ]</span><br><span class="line">Source                         httpd</span><br><span class="line">Source Path                    /usr/sbin/httpd</span><br><span class="line">Port                         &lt;Unknown&gt;</span><br><span class="line">Host                        localhost</span><br><span class="line">Source RPM Packages            httpd-2.4.6-14.el7.x86_64</span><br><span class="line">Target RPM Packages</span><br><span class="line">Policy RPM                     selinux-policy-3.12.1-124.el7.noarch</span><br><span class="line">Selinux Enabled             True</span><br><span class="line">Policy Type                    targeted</span><br><span class="line">Enforcing Mode                 Enforcing</span><br><span class="line">......</span><br><span class="line"></span><br><span class="line">Raw Audit Messages</span><br><span class="line"><span class="built_in">type</span>=AVC msg=audit(1392944135.482:429): avc: denied &#123; getattr &#125; <span class="keyword">for</span></span><br><span class="line">  pid=1609 <span class="built_in">comm</span>=<span class="string">&quot;httpd&quot;</span> path=<span class="string">&quot;/var/www/html/file&quot;</span> dev=<span class="string">&quot;sda1&quot;</span> ino=8980981</span><br><span class="line">  scontext=system_u:system_r:httpd_t:s0 tcontext=unconfined_u:object_r:admin_home_t:s0</span><br><span class="line">  tclass=file</span><br><span class="line"></span><br><span class="line"><span class="built_in">type</span>=SYSCALL msg=audit(1392944135.482:429): <span class="built_in">arch</span>=x86_64 syscall=lstat success=no</span><br><span class="line">  <span class="built_in">exit</span>=EACCES a0=7f9fed0edea88 a1=7fff7bffc770 a2=7fff7bffc770 a3=0 items=0 ppid=1608 </span><br><span class="line">  pid=1609 auid=4294967295 uid=48 gid=48 euid=48 suid=48 fsuid=48 egid=48 sgid=48 </span><br><span class="line">  fsgid=48 <span class="built_in">tty</span>=(none) ses=4294967295 <span class="built_in">comm</span>=httpd exe=/usr/sbin/httpd </span><br><span class="line">  subj=system_u:system_r:httpd_t:s0 key=(null)</span><br><span class="line"></span><br><span class="line">Hash: httpd,httpd_t,admin_home_t,file,getattr</span><br></pre></td></tr></table></figure>
+<p>​从该详细信息的 &quot;Raw Audit Messages&quot; 部分可以看出来目标文件 /var/www/html/file 正是问题所在：目标上下文 <em>tcontext</em> 并不属于 Web 服务器。可以使用 <code>restorecon /var/www/html/file</code> 命令修复此文件上下文。</p>
+
+        </div>
+        
+<blockquote class="copyright">
+    <p><strong>本文链接 : </strong><a class="permalink" href="https://skinyi.github.io/2022-08-15-Linux%20|%20%E4%BD%BF%E7%94%A8%20SELinux%20%E7%A1%AE%E4%BF%9D%E7%B3%BB%E7%BB%9F%E5%AE%89%E5%85%A8%E6%80%A7.html">https://skinyi.github.io/2022-08-15-Linux | 使用 SELinux 确保系统安全性.html</a></p>
+    <p><strong>这篇文章由作者胡编乱造或者由其他文章复制粘贴而来，其中有些内容可能已经过时，请谨慎参考复制文章中的内容。</strong></p>
+</blockquote>
+
+
+    </article>
+    
+    <section id="comments">
+        
+    </section>
+
+
+    
+
+</main>
+
+
+<aside style="" id="sidebar" class="aside aside-fixture">
+    <div class="toc-sidebar">
+        <nav id="toc" class="article-toc">
+            <h3 class="toc-title">文章目录</h3>
+            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#SELinux-%E7%AE%80%E8%BF%B0"><span class="toc-number">1.</span> <span class="toc-text">SELinux 简述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#SELinux-%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86"><span class="toc-number">2.</span> <span class="toc-text">SELinux 工作原理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#SELinux-%E5%B7%A5%E4%BD%9C%E6%A8%A1%E5%BC%8F"><span class="toc-number">3.</span> <span class="toc-text">SELinux 工作模式</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#SELinux-%E4%B8%8A%E4%B8%8B%E6%96%87"><span class="toc-number">4.</span> <span class="toc-text">SELinux 上下文</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9B%B4%E6%94%B9%E6%96%87%E4%BB%B6%E7%9A%84-SELinux-%E4%B8%8A%E4%B8%8B%E6%96%87"><span class="toc-number">4.1.</span> <span class="toc-text">更改文件的 SELinux 上下文</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9A%E4%B9%89-SELinux-%E9%BB%98%E8%AE%A4%E6%96%87%E4%BB%B6%E4%B8%8A%E4%B8%8B%E6%96%87%E8%A7%84%E5%88%99"><span class="toc-number">4.2.</span> <span class="toc-text">定义 SELinux 默认文件上下文规则</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8%E5%B8%83%E5%B0%94%E5%80%BC%E8%B0%83%E6%95%B4-SELinux-%E7%AD%96%E7%95%A5"><span class="toc-number">5.</span> <span class="toc-text">使用布尔值调整 SELinux 策略</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8E%92%E6%9F%A5%E5%92%8C%E8%A7%A3%E5%86%B3-SELinux-%E9%97%AE%E9%A2%98"><span class="toc-number">6.</span> <span class="toc-text">排查和解决 SELinux 问题</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%9B%91%E6%8E%A7-SELinux-%E5%86%B2%E7%AA%81"><span class="toc-number">6.1.</span> <span class="toc-text">监控 SELinux 冲突</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%A5%E6%A0%87%E5%87%86-Apache-Web-%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%B8%BA%E4%BE%8B"><span class="toc-number">6.2.</span> <span class="toc-text">以标准 Apache Web 服务器为例</span></a></li></ol></li></ol>
+        </nav>
+    </div>
+</aside>
+
+
+
+
+
+        </section>
+        <footer class="hidden lg:block fixed bottom-0 left-0 sm:w-1/12 bg-gray-100 z-40">
+    
+    
+        <p class="footer-custom">❤ Powered by <a href="https://hexo.io/" target="_blank" rel="noopener noreferrer">Hexo</a> with <a href="https://github.com/fengkx/hexo-theme-purer" target="_blank" rel="noopener noreferrer">Purer theme</a>.</p>
+    
+</footer>
+
+        <div id="mask" class="hidden mask fixed inset-0 bg-gray-900 opacity-75 z-40"></div>
+        <div id="search-view-container" class="hidden shadow-xl"></div>
+        
+<script src="/js/dom-event.min.js"></script>
+
+
+
+<script src="/js/local-search.min.js"></script>
+
+
+
+    <script src="//cdn.jsdelivr.net/npm/lightgallery.js@1.1.3/dist/js/lightgallery.min.js"></script>
+    
+<script src="/js/light-gallery.min.js"></script>
+
+
+
+
+
+
+    </body>
+</html>

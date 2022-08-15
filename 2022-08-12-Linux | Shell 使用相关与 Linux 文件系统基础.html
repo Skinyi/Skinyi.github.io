@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html  lang="zh-CN,en,default" >
+    <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, maximum-scale=5, viewport-fit=cover">
+    <title>Shell 使用相关与 Linux 文件系统基础 | Avery Ma 的个人网站</title>
+    <meta name="description" content="🔴 此文章由之前的 Typora 笔记迁移过来，内容可能已经过时。  Shell 使用相关 在图形界面中打开终端 ​最常用的是找终端的图标单击打开，也可以使用快捷键 &quot;Alt + F2&quot; 打开 ”Enter a command“ 窗口（类似于 windows 上的 ”运行“ 窗口），输入 ”gnome-terminal“ 按回车即可打开图形界面自带的终端。 终端上常用的快捷">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Shell 使用相关与 Linux 文件系统基础">
+<meta property="og:url" content="https://skinyi.github.io/2022-08-12-Linux%20|%20Shell%20%E4%BD%BF%E7%94%A8%E7%9B%B8%E5%85%B3%E4%B8%8E%20Linux%20%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80.html">
+<meta property="og:site_name" content="Avery Ma 的个人网站">
+<meta property="og:description" content="🔴 此文章由之前的 Typora 笔记迁移过来，内容可能已经过时。  Shell 使用相关 在图形界面中打开终端 ​最常用的是找终端的图标单击打开，也可以使用快捷键 &quot;Alt + F2&quot; 打开 ”Enter a command“ 窗口（类似于 windows 上的 ”运行“ 窗口），输入 ”gnome-terminal“ 按回车即可打开图形界面自带的终端。 终端上常用的快捷">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-08-12T10:27:44.899Z">
+<meta property="article:modified_time" content="2022-08-12T10:55:30.838Z">
+<meta property="article:author" content="skinyi">
+<meta property="article:tag" content="Linux">
+<meta property="article:tag" content="RHEL">
+<meta property="article:tag" content="RHCE">
+<meta property="article:tag" content="认证考试">
+<meta name="twitter:card" content="summary">
+
+    
+    <link rel="icon" href="images/favicon.png" type="image/x-icon">
+
+    
+<link rel="stylesheet" href="/css/common.min.css">
+
+
+
+    
+    
+    
+    
+        <link href="//cdn.jsdelivr.net/npm/lightgallery.js@1.1.3/dist/css/lightgallery.min.css" rel="stylesheet">
+    
+    
+    
+<link rel="stylesheet" href="/css/iconfont.min.css">
+
+    
+<meta name="generator" content="Hexo 6.2.0"></head>
+
+    <body>
+        <header class="header header-fixture">
+    <div class="profile-search-wrap flex sm:block">
+        
+        
+        <div class="profile sm:text-center md:px-1 lg:px-3 sm:pb-4 sm:pt-6">
+            <a id="avatar" role="link" href="https://github.com/skinyi" class="inline-block lg:w-16 lg:h-16 w-8 h-8 m-2" target="_blank" rel="noopener" rel="noreferrer" >
+                <img src="/images/avatar.jpg" class="rounded-full" alt="avatar">
+            </a>
+            <h2 id="name" class="hidden lg:block">Avery Ma</h2>
+            <h3 id="title" class="hidden xl:block">IT 从业者</h3>
+            
+            <small id="location" class="hidden lg:block">
+                <i class="iconfont icon-map-icon"></i>
+                宁夏, 中国
+            </small>
+            
+        </div>
+        
+        
+<div class="search flex-1 flex lg:inline-block sm:hidden lg:px-4 lg:mt-2 lg:w-full">
+    <form id="search-form" class="my-auto flex-1 lg:border lg:border-solid lg:border-gray-200">
+        <div class="input-group table bg-gray-100 lg:bg-white w-full">
+            <input id="search-input" type="text" placeholder="搜索" class="inline-block w-full bg-gray-100 lg:bg-white">
+            <span class="table-cell">
+                <button name="search tigger button" disabled>
+                    <i class="iconfont icon-search m-2"></i>
+                </button>
+            </span>
+        </div>
+    </form>
+        
+<div id="content-json" data-placeholder="搜索" class="invisible hidden">/content.json</div>
+<script id="search-teamplate" type="text/html" data-path="/content.json">
+    <div>
+        <div class="search-header bg-gray-400">
+            <input id="actual-search-input" model="keyword" ref="input" class="inline-block w-full h-10 px-2 py-1" placeholder="搜索" type="text">
+        </div>
+        <div class="search-result bg-gray-200">
+            {{#each searchPosts}}
+            <a href="/{{ path }}" class="result-item block px-2 pb-3 mb-1 pt-1 hover:bg-indigo-100">
+                <i class="iconfont icon-file"></i>
+                <h1 class="result-title inline font-medium text-lg">{{ title }}</h1>
+                <p class="result-content text-gray-600 text-sm">{{{ text }}}</p>
+            </a>
+            {{/each}}
+        </div>
+    </div>
+</script>
+
+</div>
+
+
+        <button name="menu toogle button" id="menu-toggle-btn" class="block sm:hidden p-3" role="button" aria-expanded="false">
+            <i class="iconfont icon-hamburger"></i>
+        </button>
+    </div>
+    <nav id="menu-nav" class="hidden sm:flex flex-col">
+        
+        
+            <div class="menu-item menu-home" role="menuitem">
+                <a href="/.">
+                    <i class="iconfont icon-home" aria-hidden="true"></i>
+                    <span class="menu-title">首页</span>
+                </a>
+            </div>
+        
+        
+            <div class="menu-item menu-archives" role="menuitem">
+                <a href="/archives">
+                    <i class="iconfont icon-archive" aria-hidden="true"></i>
+                    <span class="menu-title">归档</span>
+                </a>
+            </div>
+        
+        
+            <div class="menu-item menu-categories" role="menuitem">
+                <a href="/categories">
+                    <i class="iconfont icon-folder" aria-hidden="true"></i>
+                    <span class="menu-title">分类</span>
+                </a>
+            </div>
+        
+        
+            <div class="menu-item menu-tags" role="menuitem">
+                <a href="/tags">
+                    <i class="iconfont icon-tag" aria-hidden="true"></i>
+                    <span class="menu-title">标签</span>
+                </a>
+            </div>
+        
+        
+            <div class="menu-item menu-repository" role="menuitem">
+                <a href="/repository">
+                    <i class="iconfont icon-project" aria-hidden="true"></i>
+                    <span class="menu-title">项目</span>
+                </a>
+            </div>
+        
+        
+            <div class="menu-item menu-about" role="menuitem">
+                <a href="/about">
+                    <i class="iconfont icon-cup" aria-hidden="true"></i>
+                    <span class="menu-title">关于</span>
+                </a>
+            </div>
+        
+        
+
+    </nav>
+</header>
+
+        <section class="main-section">
+            
+    <main class="flex-1 px-4 py-14 md:px-5 lg:px-8 lg:py-4 relative min-h-screen">
+    
+
+    <article class="content article article-archives article-type-list" itemscope="">
+        <header class="article-header">
+            
+    
+        <h1 class="article-title text-lg" itemprop="name">
+            Shell 使用相关与 Linux 文件系统基础
+        </h1>
+    
+
+
+
+            <p class="article-meta mb-3 text-xs">
+                <span class="article-date">
+    <i class="iconfont icon-calendar-check"></i>
+	<a href="/2022-08-12-Linux%20%7C%20Shell%20%E4%BD%BF%E7%94%A8%E7%9B%B8%E5%85%B3%E4%B8%8E%20Linux%20%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80.html" class="article-date">
+	  <time datetime="2022-08-12T10:27:44.899Z" itemprop="datePublished">8月 12</time>
+	</a>
+</span>
+
+                
+    <span class="article-category">
+    <i class="iconfont icon-folder"></i>
+    <a class="article-category-link" href="/categories/%E5%AD%A6%E4%B9%A0/">学习</a> , <a class="article-category-link" href="/categories/%E5%AD%A6%E4%B9%A0/Linux/">Linux</a> , <a class="article-category-link" href="/categories/%E6%97%A5%E5%B8%B8%E8%AE%B0%E5%BD%95/">日常记录</a> , <a class="article-category-link" href="/categories/%E8%BF%81%E7%A7%BB%E6%96%87%E7%AB%A0/">迁移文章</a>
+  </span>
+
+
+                
+    <span class="article-tags">
+    <i class="iconfont icon-tag"></i>
+    <a class="article-tag-none-link" href="/tags/Linux/" rel="tag">Linux</a>, <a class="article-tag-none-link" href="/tags/RHCE/" rel="tag">RHCE</a>, <a class="article-tag-none-link" href="/tags/RHEL/" rel="tag">RHEL</a>, <a class="article-tag-none-link" href="/tags/%E8%AE%A4%E8%AF%81%E8%80%83%E8%AF%95/" rel="tag">认证考试</a>
+  </span>
+
+
+                
+                
+    
+        <span class="post-wordcount" itemprop="wordCount">字数统计: 3.1k(字)</span>
+    
+    
+        <span class="post-readcount" itemprop="timeRequired">阅读时长: 11(分)</span>
+    
+
+
+            </p>
+        </header>
+        <div class="marked-body article-body">
+            <blockquote>
+<p>🔴 此文章由之前的 Typora 笔记迁移过来，内容可能已经过时。</p>
+</blockquote>
+<h2 id="Shell-使用相关">Shell 使用相关</h2>
+<h3 id="在图形界面中打开终端">在图形界面中打开终端</h3>
+<p>​最常用的是找终端的图标单击打开，也可以使用快捷键 &quot;<code>Alt</code> + <code>F2</code>&quot; 打开 ”Enter a command“ 窗口（类似于 windows 上的 ”运行“ 窗口），输入 ”<code>gnome-terminal</code>“ 按回车即可打开图形界面自带的终端。</p>
+<h3 id="终端上常用的快捷键操作">终端上常用的快捷键操作</h3>
+<p>a. tab：可以实现命令的自动补全（当所输入的内容可以推断出唯一结果时），连按两次会给出所有可能匹配的结果。（此功能由软件包 bash-completion 提供，最小化安装操作系统时可能不会自动安装）；</p>
+<p>b. 调整光标位置或内容调整：</p>
+<table>
+<thead>
+<tr>
+<th>快捷键</th>
+<th>效果</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Ctrl + A</td>
+<td>跳到命令行语句的开头</td>
+</tr>
+<tr>
+<td>Ctrl + E</td>
+<td>跳到命令行语句的末尾</td>
+</tr>
+<tr>
+<td>Ctrl + U</td>
+<td>将光标处到命令行语句开头的内容清除</td>
+</tr>
+<tr>
+<td>Ctrl + K</td>
+<td>将光标处到命令行语句末尾的内容清除</td>
+</tr>
+<tr>
+<td>Ctrl + ←</td>
+<td>跳到命令行语句中前一字的开头</td>
+</tr>
+<tr>
+<td>Ctrl + →</td>
+<td>跳到命令行语句中下一字的末尾</td>
+</tr>
+<tr>
+<td>Ctrl + R</td>
+<td>在历史记录列表中搜索某一模式的命令</td>
+</tr>
+<tr>
+<td>Esc + .</td>
+<td>插入执行的上条命令的参数</td>
+</tr>
+</tbody>
+</table>
+<h3 id="Shell-历史命令操作">Shell 历史命令操作</h3>
+<p>​使用 <code>history</code> 命令可以查看历史执行过的命令。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]\<span class="comment"># type history</span></span><br><span class="line"><span class="built_in">history</span> is a shell <span class="built_in">builtin</span>        <span class="comment"># history 命令是 bash 内建命令</span></span><br><span class="line">[root@localhost ~]\<span class="comment"># history    # 使用 history 命令可以查看之前执行过的命令</span></span><br><span class="line">    1  ip addr show</span><br><span class="line">    2  clear</span><br><span class="line">    3  vim /etc/sysconfig/network-scripts/ifcfg-ens160</span><br><span class="line">    4  <span class="built_in">ls</span> /etc/sysconfig/network-scripts/</span><br><span class="line">    5  <span class="built_in">ls</span></span><br><span class="line">    6  <span class="built_in">ls</span> -a /etc/sysconfig/network-scripts/</span><br><span class="line">    7  ll -a /etc/sysconfig/network-scripts/</span><br><span class="line">    8  clear</span><br><span class="line">    9  vim /etc/sysconfig/network-scripts/ifcfg-ens160 </span><br><span class="line">   10  reboot</span><br><span class="line">   11  ip addr show</span><br><span class="line">   12  <span class="built_in">type</span> <span class="built_in">history</span></span><br><span class="line">   13  <span class="built_in">history</span></span><br></pre></td></tr></table></figure>
+<p>​此时如果还想执行之前执行过的第 7 行命令，则只需执行：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]\<span class="comment"># !7                    # 使用 &quot;!&quot; 后跟历史序号即可执行 history 结果里的第该序号条命令</span></span><br><span class="line">ll -a /etc/sysconfig/network-scripts/    <span class="comment"># 执行的历史命令的内容会首先列出</span></span><br><span class="line">total 8                                    <span class="comment"># 然后是执行结果</span></span><br><span class="line">drwxr-xr-x. 2 root root   26 Apr  9 06:01 .</span><br><span class="line">drwxr-xr-x. 6 root root 4096 Apr  9 04:39 ..</span><br><span class="line">-rw-r--r--. 1 root root  282 Apr  9 06:01 ifcfg-ens160</span><br></pre></td></tr></table></figure>
+<p>​特殊的，如果想再次执行上一次执行的命令，如下例所示：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]\<span class="comment"># type file    # 执行 ”!!“ 前的上一条命令</span></span><br><span class="line">file is /usr/bin/file</span><br><span class="line">[root@localhost ~]\<span class="comment"># !!    # 使用 ”!!“ 再次执行</span></span><br><span class="line"><span class="built_in">type</span> file                <span class="comment"># 同样会先显示执行内容</span></span><br><span class="line">file is /usr/bin/file    <span class="comment"># 执行结果</span></span><br><span class="line"><span class="comment"># sudo !! 的例子</span></span><br><span class="line">[student@localhost root]\$ dnf update    <span class="comment"># 该普通用户没有权限，无法升级本地软件包</span></span><br><span class="line">2021-04-10 22:13:38,682 [ERROR] dnf:5314:MainThread @logutil.py:194 - [Errno 13] Permission denied: <span class="string">&#x27;/var/log/rhsm/rhsm.log&#x27;</span> - Further logging output will be written to stderr</span><br><span class="line">Not root, Subscription Management repositories not updated</span><br><span class="line">[student@localhost root]\$ sudo !!    <span class="comment"># 使用 sudo 提升当前用户的权限再次执行上次未成功的操作（前提是当前用户是管理员，即在 sudoers 里）</span></span><br><span class="line">sudo dnf update</span><br><span class="line">Updating Subscription Management repositories.</span><br></pre></td></tr></table></figure>
+<h3 id="Shell-配置文件">Shell 配置文件</h3>
+<table>
+<thead>
+<tr>
+<th>文件路径</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>~/.bashrc 和 /etc/bashrc</td>
+<td>分别对应当前用户和全局用户的 bash 的一些个性化设置，如命令别名、函数等，通常不建议直接修改 /etc/bashrc 而应该在 /etc/profile.d/ 目录中添加自己的脚本</td>
+</tr>
+<tr>
+<td>~/.bash_profile 和 /etc/profile</td>
+<td>分别对应当前用户和全局用户的 bash 环境变量以及启动程序等，通常不建议直接修改 /etc/bashrc 而应该在 /etc/profile.d/ 目录中添加自己的脚本</td>
+</tr>
+<tr>
+<td>~/.bash_history</td>
+<td>存储当前用户终端中执行过的历史命令，环境变量 <code>$HISSIZE</code> 定义其存储大小</td>
+</tr>
+<tr>
+<td>~/.bash_logout</td>
+<td>存储当前用户登出终端时要执行的命令</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>🟢 配置文件读取情景及读取顺序</p>
+<ol>
+<li>图形界面登陆时：/etc/profile -&gt; ~/.profile</li>
+<li>登陆后，打开终端后：-&gt; /etc/bashrc -&gt; ~/.bashrc</li>
+<li>文本模式登陆时：/etc/bashrc -&gt; /etc/profile -&gt; ~/.bash_profile</li>
+<li>从其它用户 <code>su</code> 到该用户，则分两种情况：<br />
+a. 带 <code>-l, -, --login</code> 参数：/etc/bash -&gt; /etc/profile -&gt; ~/.bash_profile<br />
+b. 没有带 <code>-l</code> 参数：/etc/bashrc -&gt; /bashrc</li>
+<li>注销时，或退出 <code>su -l</code> 登陆的用户时会读取：~/.bash_logout</li>
+<li>执行自定义的 shell 文件时，若使用 <code>bash -l a.sh</code> 的方式，则 bash 会读取：/etc/profile 和 ~/.bash_profile，若使用其他方式，如：<code>bash a.sh</code>，<code>./a.sh</code>，<code>sh a.sh</code> 则不会读取上面任何文件。</li>
+</ol>
+</blockquote>
+<h2 id="Linux-文件系统基础">Linux 文件系统基础</h2>
+<p>​大多数 linux 发行版采用 FHS（Filesystem Hierarchy Standard,文件系统层次化标准）来组织文件系统结构，这是一种以一个根节点开始的倒置的树形结构，FHS定义了系统中每个区域的用途、所需要的最小构成的文件和目录，同时还给出了例外处理与矛盾处理。</p>
+<p>​FHS 定义了两层规范，一是 linux 文件系统根目录（即 &quot;<code>/</code>&quot; ）下的各个目录该放什么文件数据，二是针对/usr及/var这两个目录的子目录来进行了更深一层的定义。</p>
+<p>​Linux 的文件结构树根据每个人的喜好不同可能会被组织成各式各样的形式，这无疑会导致一种混乱的局势，FHS 一定程度上提供了一种共识，是即使是不同的 linux 发行版不会因为文件结构的混乱产生很大的学习成本。</p>
+<p>​在Linux文件系统中有两个特殊的目录，一个用户所在的工作目录，也叫当前目录，可以使用一个点来表示；另一个是当前目录的上一级目录，也叫父目录，可以使用两个点来表示：</p>
+<ul>
+<li>
+<p>. ：代表当前的目录，也可以使用 ./ 来表示；</p>
+</li>
+<li>
+<p>.. ：代表上一层目录，也可以使用 ../ 来代表。</p>
+</li>
+</ul>
+<p>​如果一个目录或文件名以一个点 &quot;<code>.</code>&quot; 开始，表示这个目录或文件是一个隐藏目录或文件(如：.bashrc)，以默认方式查找时，不显示该目录或文件。</p>
+<h3 id="linux-文件系统中的一些重要目录及其作用">linux 文件系统中的一些重要目录及其作用</h3>
+<table>    <tr>        <th>根目录</th>        <th>一级目录</th>        <th>二级目录</th>        <th>描述</th>    </tr>    <tr>        <td rowspan="33">/</td>        <td>boot</td>        <td></td>        <td>系统启动目录，包含可引导的 linux 内核和引导装载配置文件，删除后虚拟机无法启动</td>    </tr>    <tr>        <td>root</td>        <td></td>        <td>root 用户的家目录</td>    </tr>    <tr>        <td>home</td>        <td>student</td>        <td>/home是所有普通用户家目录存放的路径，普通用户一般再次路径下拥有和自己用户名一样的家目录，用以存放保存的文件、个人配置文件等，此例中有一个 student 用户的家目录：/home/student</td>    </tr>    <tr>        <td rowspan="7">usr</td>        <td>bin</td>        <td>见/bin，/bin下的命令在任何运行级别都可以使用，此路径下的命令在单用户模式下不能执行</td>    </tr>    <tr>        <td>sbin</td>        <td>见/sbin</td>    </tr>    <tr>        <td>local</td>        <td>手工安装的软件保存位置，一般建议源码包软件安装在这个位置</td>    </tr>    <tr>        <td>tmp</td>        <td>存放系统运行过程中产生的临时文件，其真实目录在/var/tmp，此目录存放需要长期保存的临时文件，未访问、修改、更改超 30 天的文件会被删除</td>    </tr>    <tr>        <td>local</td>        <td>手工安装的软件保存位置，一般建议源码包软件安装在这个位置</td>    </tr>    <tr>        <td>share</td>        <td>应用程序的资源文件保存位置，如帮助文档、说明文档和字体目录</td>    </tr>    <tr>        <td>include</td>        <td>C/C++ 等编程语言头文件的放置目录</td>    </tr>    <tr>        <td>bin</td>        <td></td>        <td>二进制文件目录的链接，真实目录为/usr/bin，普通用户和 root 用户均可操作，包含常用的 linux 用户命令</td>    </tr>    <tr>        <td>sbin</td>        <td></td>        <td>保存与系统环境设置相关的命令，只有 root 可以使用这些命令进行系统环境设置，真实目录在/usr/sbin</td>    </tr>    <tr>        <td>tmp</td>        <td></td>        <td>存放系统运行过程中产生的临时文件，存放的文件需要的生命周期较短，有些系统会十分频繁的清理这个目录（RHEL 自动删除未访问、修改、更改超 10 天的目录），为了追求读取和写入迅速有些系统甚至会将这个目录挂载到 RAM 上。在系统启动阶段，许多启动脚本将这个目录作为临时文件存放目录</td>    </tr>    <tr>        <td>lib</td>        <td></td>        <td>系统的动态库目录，存放/bin和/sbin目录中二进制文件依赖的运行库文件。几乎所有的应用程序都会用到该目录下的共享库</td>    </tr>    <tr>        <td>lib64</td>        <td></td>        <td>存放针对64位系统的特定的一些额外动态库的目录</td>    </tr>    <tr>        <td>opt</td>        <td></td>        <td>可选目录。一般用以存放第三方软件和数据文件</td>    </tr>    <tr>        <td>etc</td>        <td></td>        <td>配置文件保存位置。系统内所有采用默认安装方式的服务配置文件全部保存在此目录中，如用户信息、服务的启动脚本、常用服务的配置文件等</td>    </tr>    <tr>        <td>srv</td>        <td></td>        <td>服务目录，service 的缩写，主要用来存储本机或本服务器提供的服务或数据</td>    </tr>    <tr>        <td>sys</td>        <td></td>        <td>于2.6内核引入，存放sysfs在内存中，sysfs文件系统集成了下面3种信息：针对进程信息的proc文件系统、针对设备的devfs文件系统以及针对伪终端的devpts文件系统。该文件系统是内核设备树的一个直观反映。当一个内核对象被创建的时候，对应的文件和目录也在内核对象子系统中</td>    </tr>    <tr>        <td rowspan="6">var</td>        <td>tmp</td>        <td>/var为可变目录，用以存放经常变化的文件，如日志文件；/var/tmp见/usr/tmp</td>    </tr>    <tr>        <td>lib</td>        <td>程序运行中需要调用或改变的数据保存位置。如 MySQL 的数据库保存在 /var/lib/mysql 目录中</td>    </tr>    <tr>        <td>log</td>        <td>登陆文件放置的目录，其中所包含比较重要的文件如 /var/log/messages, /var/log/wtmp 等</td>    </tr>    <tr>        <td>run</td>        <td>一些服务和程序运行后，它们的 PID（进程 ID）保存位置</td>    </tr>    <tr>        <td>spool</td>        <td>里面主要都是一些临时存放，随时会被用户所调用的数据，例如 /var/spool/mail 存放新收到的邮件，/var/spool/cron/存放系统定时任务</td>    </tr>    <tr>        <td>nis和yp</td>        <td>NIS 服务机制所使用的目录，/var/nis 主要记录所有网络中每一个 client 的连接信息；/var/yp 是 linux 的 nis 服务的日志文件存放的目录</td>    </tr>    <tr>        <td>run</td>        <td></td>        <td>一个临时文件系统，存储系统启动以来的信息（PID和锁文件）。当系统重启时，这个目录下的文件应该被删掉或清除。如果你的系统上有 /var/run 目录，应该让它指向 run</td>    </tr>    <tr>        <td rowspan="4">proc</td>        <td colspan="2">虚拟文件系统，数据直接保存在内存中，将内核、进程、外部设备和网络状态归档为文本文件（系统信息都存放在这目录下），例如：uptime、network。在 linux 中，对应 procfs 格式挂载，目录下文件只能看不能改</td>    </tr>    <tr>        <td>cpuinfo</td>        <td>保存 CPU 信息</td>    </tr>    <tr>        <td>devices</td>        <td>保存设备驱动列表</td>    </tr>    <tr>        <td>net</td>        <td>保存网络协议信息</td>    </tr>    <tr>        <td>dev</td>        <td></td>        <td>设备文件，任何设备与接口设备都是以文件形式存在于这个目录的，包括终端设备 tty、软盘 fd、硬盘 hd、RAM ram 和 CD-ROM cd等，用户通过设备文件直接访问这些设备</td>    </tr>    <tr>        <td>mnt</td>        <td></td>        <td>临时挂载的文件系统，比如移动硬盘, U盘和其他操作系统的分区</td>    </tr>    <tr>        <td>media</td>        <td></td>        <td>媒体目录，也是挂载点目录，提供挂载和自动挂载设备的标准位置，如远程访问文件系统和可移动介质</td>    </tr></table>
+<h3 id="文件系统归类：">文件系统归类：</h3>
+<ol>
+<li>
+<p>系统启动必须：/boot、/etc、/lib、/sys；</p>
+</li>
+<li>
+<p>二进制指令集合：/bin、/sbin；</p>
+</li>
+<li>
+<p>外部文件管理：/dev、/media、/mnt；</p>
+</li>
+<li>
+<p>账户相关：/root、/home、/usr、/usr/bin、/usr/sbin、/usr/src；</p>
+</li>
+<li>
+<p>运行过程相关：/var、/proc；</p>
+</li>
+<li>
+<p>扩展用的：/opt、/srv；</p>
+</li>
+</ol>
+<h3 id="其它常用的重要文件位置及作用：">其它常用的重要文件位置及作用：</h3>
+<table>
+<thead>
+<tr>
+<th>位置</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>/etc/yum.repos.d/redhat.repo</td>
+<td>RHEL YUM 仓库的配置文件（安装、更新软件相关）</td>
+</tr>
+<tr>
+<td>/etc/sysconfig/network-scripts/ifcfg-ens160</td>
+<td>网卡配置文件（连接外网）</td>
+</tr>
+<tr>
+<td>/boot/vmlinuz-4.18.0-240.el8.x86_64</td>
+<td>内核文件</td>
+</tr>
+<tr>
+<td>/boot/initramfs-4.18.0-240.el8.x86_64.img</td>
+<td>是内存中的磁盘结构的实现，其中包含必要的工具和脚本，用于在将控制权交给根文件系统上的 init 应用程序之前挂载所需的文件系统</td>
+</tr>
+<tr>
+<td>/boot/grub2/..</td>
+<td>与引导程序有关的文件</td>
+</tr>
+<tr>
+<td>/etc/ssh/sshd.conf</td>
+<td>SSH 配置文件</td>
+</tr>
+<tr>
+<td>/etc/services</td>
+<td>常用和已注册的网络端口监听列表</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+
+        </div>
+        
+<blockquote class="copyright">
+    <p><strong>本文链接 : </strong><a class="permalink" href="https://skinyi.github.io/2022-08-12-Linux%20|%20Shell%20%E4%BD%BF%E7%94%A8%E7%9B%B8%E5%85%B3%E4%B8%8E%20Linux%20%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80.html">https://skinyi.github.io/2022-08-12-Linux | Shell 使用相关与 Linux 文件系统基础.html</a></p>
+    <p><strong>这篇文章由作者胡编乱造或者由其他文章复制粘贴而来，其中有些内容可能已经过时，请谨慎参考复制文章中的内容。</strong></p>
+</blockquote>
+
+
+    </article>
+    
+    <section id="comments">
+        
+    </section>
+
+
+    
+
+</main>
+
+
+<aside style="" id="sidebar" class="aside aside-fixture">
+    <div class="toc-sidebar">
+        <nav id="toc" class="article-toc">
+            <h3 class="toc-title">文章目录</h3>
+            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Shell-%E4%BD%BF%E7%94%A8%E7%9B%B8%E5%85%B3"><span class="toc-number">1.</span> <span class="toc-text">Shell 使用相关</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9C%A8%E5%9B%BE%E5%BD%A2%E7%95%8C%E9%9D%A2%E4%B8%AD%E6%89%93%E5%BC%80%E7%BB%88%E7%AB%AF"><span class="toc-number">1.1.</span> <span class="toc-text">在图形界面中打开终端</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BB%88%E7%AB%AF%E4%B8%8A%E5%B8%B8%E7%94%A8%E7%9A%84%E5%BF%AB%E6%8D%B7%E9%94%AE%E6%93%8D%E4%BD%9C"><span class="toc-number">1.2.</span> <span class="toc-text">终端上常用的快捷键操作</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Shell-%E5%8E%86%E5%8F%B2%E5%91%BD%E4%BB%A4%E6%93%8D%E4%BD%9C"><span class="toc-number">1.3.</span> <span class="toc-text">Shell 历史命令操作</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Shell-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6"><span class="toc-number">1.4.</span> <span class="toc-text">Shell 配置文件</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Linux-%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80"><span class="toc-number">2.</span> <span class="toc-text">Linux 文件系统基础</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#linux-%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F%E4%B8%AD%E7%9A%84%E4%B8%80%E4%BA%9B%E9%87%8D%E8%A6%81%E7%9B%AE%E5%BD%95%E5%8F%8A%E5%85%B6%E4%BD%9C%E7%94%A8"><span class="toc-number">2.1.</span> <span class="toc-text">linux 文件系统中的一些重要目录及其作用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F%E5%BD%92%E7%B1%BB%EF%BC%9A"><span class="toc-number">2.2.</span> <span class="toc-text">文件系统归类：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%85%B6%E5%AE%83%E5%B8%B8%E7%94%A8%E7%9A%84%E9%87%8D%E8%A6%81%E6%96%87%E4%BB%B6%E4%BD%8D%E7%BD%AE%E5%8F%8A%E4%BD%9C%E7%94%A8%EF%BC%9A"><span class="toc-number">2.3.</span> <span class="toc-text">其它常用的重要文件位置及作用：</span></a></li></ol></li></ol>
+        </nav>
+    </div>
+</aside>
+
+
+
+
+
+        </section>
+        <footer class="hidden lg:block fixed bottom-0 left-0 sm:w-1/12 bg-gray-100 z-40">
+    
+    
+        <p class="footer-custom">❤ Powered by <a href="https://hexo.io/" target="_blank" rel="noopener noreferrer">Hexo</a> with <a href="https://github.com/fengkx/hexo-theme-purer" target="_blank" rel="noopener noreferrer">Purer theme</a>.</p>
+    
+</footer>
+
+        <div id="mask" class="hidden mask fixed inset-0 bg-gray-900 opacity-75 z-40"></div>
+        <div id="search-view-container" class="hidden shadow-xl"></div>
+        
+<script src="/js/dom-event.min.js"></script>
+
+
+
+<script src="/js/local-search.min.js"></script>
+
+
+
+    <script src="//cdn.jsdelivr.net/npm/lightgallery.js@1.1.3/dist/js/lightgallery.min.js"></script>
+    
+<script src="/js/light-gallery.min.js"></script>
+
+
+
+
+
+
+    </body>
+</html>

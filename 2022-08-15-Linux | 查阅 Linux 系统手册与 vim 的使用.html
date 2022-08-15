@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html  lang="zh-CN,en,default" >
+    <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, maximum-scale=5, viewport-fit=cover">
+    <title>查阅 Linux 系统手册与 Vim 的使用 | Avery Ma 的个人网站</title>
+    <meta name="description" content="🔴 此文章由之前的 Typora 笔记迁移过来，内容可能已经过时。  Linux 操作手册 ​Linux 本地系统提供的一个 linux 操作文档是系统手册，或称为 man page，可以通过 man 命令从命令行进行访问查询。man page 源自过去的 Linux 程序员手册，该手册篇幅很长，足以打印成多个章节，每个章节中都包含了有关特定主题的信息。以下列举了一些常见的章节。    章节">
+<meta property="og:type" content="article">
+<meta property="og:title" content="查阅 Linux 系统手册与 Vim 的使用">
+<meta property="og:url" content="https://skinyi.github.io/2022-08-15-Linux%20|%20%E6%9F%A5%E9%98%85%20Linux%20%E7%B3%BB%E7%BB%9F%E6%89%8B%E5%86%8C%E4%B8%8E%20vim%20%E7%9A%84%E4%BD%BF%E7%94%A8.html">
+<meta property="og:site_name" content="Avery Ma 的个人网站">
+<meta property="og:description" content="🔴 此文章由之前的 Typora 笔记迁移过来，内容可能已经过时。  Linux 操作手册 ​Linux 本地系统提供的一个 linux 操作文档是系统手册，或称为 man page，可以通过 man 命令从命令行进行访问查询。man page 源自过去的 Linux 程序员手册，该手册篇幅很长，足以打印成多个章节，每个章节中都包含了有关特定主题的信息。以下列举了一些常见的章节。    章节">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-08-15T00:57:36.250Z">
+<meta property="article:modified_time" content="2022-08-15T01:00:44.943Z">
+<meta property="article:author" content="skinyi">
+<meta property="article:tag" content="Linux">
+<meta property="article:tag" content="RHEL">
+<meta property="article:tag" content="RHCE">
+<meta property="article:tag" content="认证考试">
+<meta name="twitter:card" content="summary">
+
+    
+    <link rel="icon" href="images/favicon.png" type="image/x-icon">
+
+    
+<link rel="stylesheet" href="/css/common.min.css">
+
+
+
+    
+    
+    
+    
+        <link href="//cdn.jsdelivr.net/npm/lightgallery.js@1.1.3/dist/css/lightgallery.min.css" rel="stylesheet">
+    
+    
+    
+<link rel="stylesheet" href="/css/iconfont.min.css">
+
+    
+<meta name="generator" content="Hexo 6.2.0"></head>
+
+    <body>
+        <header class="header header-fixture">
+    <div class="profile-search-wrap flex sm:block">
+        
+        
+        <div class="profile sm:text-center md:px-1 lg:px-3 sm:pb-4 sm:pt-6">
+            <a id="avatar" role="link" href="https://github.com/skinyi" class="inline-block lg:w-16 lg:h-16 w-8 h-8 m-2" target="_blank" rel="noopener" rel="noreferrer" >
+                <img src="/images/avatar.jpg" class="rounded-full" alt="avatar">
+            </a>
+            <h2 id="name" class="hidden lg:block">Avery Ma</h2>
+            <h3 id="title" class="hidden xl:block">IT 从业者</h3>
+            
+            <small id="location" class="hidden lg:block">
+                <i class="iconfont icon-map-icon"></i>
+                宁夏, 中国
+            </small>
+            
+        </div>
+        
+        
+<div class="search flex-1 flex lg:inline-block sm:hidden lg:px-4 lg:mt-2 lg:w-full">
+    <form id="search-form" class="my-auto flex-1 lg:border lg:border-solid lg:border-gray-200">
+        <div class="input-group table bg-gray-100 lg:bg-white w-full">
+            <input id="search-input" type="text" placeholder="搜索" class="inline-block w-full bg-gray-100 lg:bg-white">
+            <span class="table-cell">
+                <button name="search tigger button" disabled>
+                    <i class="iconfont icon-search m-2"></i>
+                </button>
+            </span>
+        </div>
+    </form>
+        
+<div id="content-json" data-placeholder="搜索" class="invisible hidden">/content.json</div>
+<script id="search-teamplate" type="text/html" data-path="/content.json">
+    <div>
+        <div class="search-header bg-gray-400">
+            <input id="actual-search-input" model="keyword" ref="input" class="inline-block w-full h-10 px-2 py-1" placeholder="搜索" type="text">
+        </div>
+        <div class="search-result bg-gray-200">
+            {{#each searchPosts}}
+            <a href="/{{ path }}" class="result-item block px-2 pb-3 mb-1 pt-1 hover:bg-indigo-100">
+                <i class="iconfont icon-file"></i>
+                <h1 class="result-title inline font-medium text-lg">{{ title }}</h1>
+                <p class="result-content text-gray-600 text-sm">{{{ text }}}</p>
+            </a>
+            {{/each}}
+        </div>
+    </div>
+</script>
+
+</div>
+
+
+        <button name="menu toogle button" id="menu-toggle-btn" class="block sm:hidden p-3" role="button" aria-expanded="false">
+            <i class="iconfont icon-hamburger"></i>
+        </button>
+    </div>
+    <nav id="menu-nav" class="hidden sm:flex flex-col">
+        
+        
+            <div class="menu-item menu-home" role="menuitem">
+                <a href="/.">
+                    <i class="iconfont icon-home" aria-hidden="true"></i>
+                    <span class="menu-title">首页</span>
+                </a>
+            </div>
+        
+        
+            <div class="menu-item menu-archives" role="menuitem">
+                <a href="/archives">
+                    <i class="iconfont icon-archive" aria-hidden="true"></i>
+                    <span class="menu-title">归档</span>
+                </a>
+            </div>
+        
+        
+            <div class="menu-item menu-categories" role="menuitem">
+                <a href="/categories">
+                    <i class="iconfont icon-folder" aria-hidden="true"></i>
+                    <span class="menu-title">分类</span>
+                </a>
+            </div>
+        
+        
+            <div class="menu-item menu-tags" role="menuitem">
+                <a href="/tags">
+                    <i class="iconfont icon-tag" aria-hidden="true"></i>
+                    <span class="menu-title">标签</span>
+                </a>
+            </div>
+        
+        
+            <div class="menu-item menu-repository" role="menuitem">
+                <a href="/repository">
+                    <i class="iconfont icon-project" aria-hidden="true"></i>
+                    <span class="menu-title">项目</span>
+                </a>
+            </div>
+        
+        
+            <div class="menu-item menu-about" role="menuitem">
+                <a href="/about">
+                    <i class="iconfont icon-cup" aria-hidden="true"></i>
+                    <span class="menu-title">关于</span>
+                </a>
+            </div>
+        
+        
+
+    </nav>
+</header>
+
+        <section class="main-section">
+            
+    <main class="flex-1 px-4 py-14 md:px-5 lg:px-8 lg:py-4 relative min-h-screen">
+    
+
+    <article class="content article article-archives article-type-list" itemscope="">
+        <header class="article-header">
+            
+    
+        <h1 class="article-title text-lg" itemprop="name">
+            查阅 Linux 系统手册与 Vim 的使用
+        </h1>
+    
+
+
+
+            <p class="article-meta mb-3 text-xs">
+                <span class="article-date">
+    <i class="iconfont icon-calendar-check"></i>
+	<a href="/2022-08-15-Linux%20%7C%20%E6%9F%A5%E9%98%85%20Linux%20%E7%B3%BB%E7%BB%9F%E6%89%8B%E5%86%8C%E4%B8%8E%20vim%20%E7%9A%84%E4%BD%BF%E7%94%A8.html" class="article-date">
+	  <time datetime="2022-08-15T00:57:36.250Z" itemprop="datePublished">8月 15</time>
+	</a>
+</span>
+
+                
+    <span class="article-category">
+    <i class="iconfont icon-folder"></i>
+    <a class="article-category-link" href="/categories/%E5%AD%A6%E4%B9%A0/">学习</a> , <a class="article-category-link" href="/categories/%E5%AD%A6%E4%B9%A0/Linux/">Linux</a> , <a class="article-category-link" href="/categories/%E6%97%A5%E5%B8%B8%E8%AE%B0%E5%BD%95/">日常记录</a> , <a class="article-category-link" href="/categories/%E8%BF%81%E7%A7%BB%E6%96%87%E7%AB%A0/">迁移文章</a>
+  </span>
+
+
+                
+    <span class="article-tags">
+    <i class="iconfont icon-tag"></i>
+    <a class="article-tag-none-link" href="/tags/Linux/" rel="tag">Linux</a>, <a class="article-tag-none-link" href="/tags/RHCE/" rel="tag">RHCE</a>, <a class="article-tag-none-link" href="/tags/RHEL/" rel="tag">RHEL</a>, <a class="article-tag-none-link" href="/tags/%E8%AE%A4%E8%AF%81%E8%80%83%E8%AF%95/" rel="tag">认证考试</a>
+  </span>
+
+
+                
+                
+    
+        <span class="post-wordcount" itemprop="wordCount">字数统计: 1.1k(字)</span>
+    
+    
+        <span class="post-readcount" itemprop="timeRequired">阅读时长: 4(分)</span>
+    
+
+
+            </p>
+        </header>
+        <div class="marked-body article-body">
+            <blockquote>
+<p>🔴 此文章由之前的 Typora 笔记迁移过来，内容可能已经过时。</p>
+</blockquote>
+<h2 id="Linux-操作手册">Linux 操作手册</h2>
+<p>​Linux 本地系统提供的一个 linux 操作文档是系统手册，或称为 man page，可以通过 <code>man</code> 命令从命令行进行访问查询。man page 源自过去的 Linux 程序员手册，该手册篇幅很长，足以打印成多个章节，每个章节中都包含了有关特定主题的信息。以下列举了一些常见的章节。</p>
+<table>
+<thead>
+<tr>
+<th>章节</th>
+<th>内容类型</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>用户命令（可执行命令和 shell 程序）</td>
+</tr>
+<tr>
+<td>2</td>
+<td>系统调用（从用户空间调用的内核例程）</td>
+</tr>
+<tr>
+<td>3</td>
+<td>库函数（由程序库提供）</td>
+</tr>
+<tr>
+<td>4</td>
+<td>特殊文件（如设备文件）</td>
+</tr>
+<tr>
+<td>5</td>
+<td>文件格式（用于许多配置文件和结构）</td>
+</tr>
+<tr>
+<td>6</td>
+<td>游戏（过去的有趣程序章节）</td>
+</tr>
+<tr>
+<td>7</td>
+<td>惯例、标准和其他（协议、文件系统）</td>
+</tr>
+<tr>
+<td>8</td>
+<td>系统管理和特权命令（维护任务）</td>
+</tr>
+<tr>
+<td>9</td>
+<td>Linux 内核 API（内核调用）</td>
+</tr>
+</tbody>
+</table>
+<p>​为区分不同章节中的相同主题名称，man page 参考中在主题后附上了章节编号（用括号括起）：如 passwd(1) 介绍使用 passwd 命令更改用户密码，而 passwd(5) 说明用于存储本地用户账户的 /etc/passwd 配置文件格式。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">man [THEME_NUM] TOPIC <span class="comment"># 使用 man 命令查阅 TOPIC 的相关文档，不指定 THEME_NUM 则默认为 1</span></span><br><span class="line"><span class="comment"># 例子：</span></span><br><span class="line">man passwd <span class="comment"># 查看 passwd 命令的帮助信息</span></span><br><span class="line">man 5 passwd <span class="comment"># 查看 passwd 配置文件的介绍信息</span></span><br></pre></td></tr></table></figure>
+<h2 id="阅读文档相关">阅读文档相关</h2>
+<h3 id="导航与搜索">导航与搜索</h3>
+<p>​man page 底层使用 <code>less</code> 作为其查看器，具体的导航与查找的操作信息可参见 <em>04. Linux 文件操作、重定向和管道</em> 中与 <code>less</code> 命令有关的相关章节。</p>
+<h3 id="小标题">小标题</h3>
+<p>​man page 每个主题都划分为几个部分，每个部分都有固定的小标题，大多数主题都共享相同的小标题，且这些小标题出现的循序都是约定俗成的。每个主题下不可能包含所有的小标题，因为有些小标题不适用于当前主题。以下列举了一些常见的小标题：</p>
+<table>
+<thead>
+<tr>
+<th>标题</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>NAME</td>
+<td>主题名称，通常是命令或文件名，后跟非常简短的描述</td>
+</tr>
+<tr>
+<td>SYNOPSIS</td>
+<td>命令语法的概要</td>
+</tr>
+<tr>
+<td>DESCRIPTION</td>
+<td>提供对主题的基本理解的深度描述</td>
+</tr>
+<tr>
+<td>OPTIONS</td>
+<td>对命令执行选项的说明</td>
+</tr>
+<tr>
+<td>EXAMPLES</td>
+<td>有关如何使用命令、功能或文件的示例</td>
+</tr>
+<tr>
+<td>FILES</td>
+<td>与 man page 相关的文件和目录的列表</td>
+</tr>
+<tr>
+<td>SEE ALSO</td>
+<td>相关的信息，通常是其他 man page 的主题</td>
+</tr>
+<tr>
+<td>BUGS</td>
+<td>软件中的已知错误</td>
+</tr>
+<tr>
+<td>AUTHOR</td>
+<td>有关参与编写该主题的人员的信息</td>
+</tr>
+</tbody>
+</table>
+<h3 id="根据关键字搜索-man-page">根据关键字搜索 man page</h3>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">man -k keyword <span class="comment"># 在 manpage 中搜索跟 keyword 有关的 man page 主题和章节号</span></span><br><span class="line"><span class="comment"># 需更新 whatis 库后才能使用，否则提示：[KEYWORD]: nothting appropriate</span></span><br><span class="line"><span class="comment"># 通过 root 使用 makewhatis 指令来手动建立资料库 </span></span><br><span class="line">apropos 与 man -k 相同， whatis 与 man -f 相同。</span><br><span class="line"><span class="comment"># 好吧，我系统上也没装 makewhatis ，知道就行算了😒</span></span><br></pre></td></tr></table></figure>
+<h2 id="pinfo-操作手册">pinfo 操作手册</h2>
+<p>​通常而言，man page 文档更加正式，其采用独立文本文件的结构，pinfo 文档更加全面和灵活，采用超文本文档的结构。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pinfo [TOPIC] <span class="comment"># 打开关于 TOPIC 的 info 文档，不指定 TOPIC 则打开顶级目录</span></span><br></pre></td></tr></table></figure>
+<p>如果系统中没有针对该主题的 info 条目，则 pinfo 就会去查找 man page 并显示相应的内容。</p>
+<p>​pinfo 和 man 命令的键盘导航操作的区别如下：</p>
+<table>
+<thead>
+<tr>
+<th>导航操作</th>
+<th>pinfo</th>
+<th>man</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>向前（下）滚动一个屏幕</td>
+<td>PgDn 或 SPACE</td>
+<td>PgDn 或 SPACE</td>
+</tr>
+<tr>
+<td>向后（上）滚动一个屏幕</td>
+<td>PgUp 或 b</td>
+<td>PgUp 或 b</td>
+</tr>
+<tr>
+<td>显示主题目录</td>
+<td>d</td>
+<td>无</td>
+</tr>
+<tr>
+<td>向前（下）滚动半个屏幕</td>
+<td>无</td>
+<td>d</td>
+</tr>
+<tr>
+<td>显示主题的父节点</td>
+<td>u</td>
+<td>无</td>
+</tr>
+<tr>
+<td>显示主题的顶部（上部）</td>
+<td>h</td>
+<td>g</td>
+</tr>
+<tr>
+<td>向后（上）滚动半个屏幕</td>
+<td>-</td>
+<td>u</td>
+</tr>
+<tr>
+<td>向前（下）滚动到下一个超链接</td>
+<td>↓</td>
+<td>无</td>
+</tr>
+<tr>
+<td>打开光标处的主题</td>
+<td>ENTER</td>
+<td>无</td>
+</tr>
+<tr>
+<td>向前（下）滚动一行</td>
+<td>无</td>
+<td>↓ 或 ENTER</td>
+</tr>
+<tr>
+<td>向后（上）滚动到上一超链接</td>
+<td>↑</td>
+<td>无</td>
+</tr>
+<tr>
+<td>向后（上）滚动一行</td>
+<td>无</td>
+<td>↑</td>
+</tr>
+<tr>
+<td>搜索某种模式</td>
+<td>/string</td>
+<td>/sting 和 ?string</td>
+</tr>
+<tr>
+<td>显示主题中的下一节点（章节）</td>
+<td>n</td>
+<td>无</td>
+</tr>
+<tr>
+<td>重复之前的向前（下）搜索</td>
+<td>/ + ENTER</td>
+<td>n</td>
+</tr>
+<tr>
+<td>显示主题中的上一节点（章节）</td>
+<td>p</td>
+<td>无</td>
+</tr>
+<tr>
+<td>重复之前的向后（上）搜索</td>
+<td>无</td>
+<td>SHIFT + n</td>
+</tr>
+<tr>
+<td>退出程序</td>
+<td>q</td>
+<td>q</td>
+</tr>
+</tbody>
+</table>
+<h2 id="Vim-Cheat-Sheet">Vim Cheat Sheet</h2>
+<p>​中文版 Cheat Sheet 可以参阅<a target="_blank" rel="noopener" href="https://vim.rtorr.com/lang/zh_cn">这里</a>。</p>
+
+        </div>
+        
+<blockquote class="copyright">
+    <p><strong>本文链接 : </strong><a class="permalink" href="https://skinyi.github.io/2022-08-15-Linux%20|%20%E6%9F%A5%E9%98%85%20Linux%20%E7%B3%BB%E7%BB%9F%E6%89%8B%E5%86%8C%E4%B8%8E%20vim%20%E7%9A%84%E4%BD%BF%E7%94%A8.html">https://skinyi.github.io/2022-08-15-Linux | 查阅 Linux 系统手册与 vim 的使用.html</a></p>
+    <p><strong>这篇文章由作者胡编乱造或者由其他文章复制粘贴而来，其中有些内容可能已经过时，请谨慎参考复制文章中的内容。</strong></p>
+</blockquote>
+
+
+    </article>
+    
+    <section id="comments">
+        
+    </section>
+
+
+    
+
+</main>
+
+
+<aside style="" id="sidebar" class="aside aside-fixture">
+    <div class="toc-sidebar">
+        <nav id="toc" class="article-toc">
+            <h3 class="toc-title">文章目录</h3>
+            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Linux-%E6%93%8D%E4%BD%9C%E6%89%8B%E5%86%8C"><span class="toc-number">1.</span> <span class="toc-text">Linux 操作手册</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%98%85%E8%AF%BB%E6%96%87%E6%A1%A3%E7%9B%B8%E5%85%B3"><span class="toc-number">2.</span> <span class="toc-text">阅读文档相关</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AF%BC%E8%88%AA%E4%B8%8E%E6%90%9C%E7%B4%A2"><span class="toc-number">2.1.</span> <span class="toc-text">导航与搜索</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B0%8F%E6%A0%87%E9%A2%98"><span class="toc-number">2.2.</span> <span class="toc-text">小标题</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A0%B9%E6%8D%AE%E5%85%B3%E9%94%AE%E5%AD%97%E6%90%9C%E7%B4%A2-man-page"><span class="toc-number">2.3.</span> <span class="toc-text">根据关键字搜索 man page</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#pinfo-%E6%93%8D%E4%BD%9C%E6%89%8B%E5%86%8C"><span class="toc-number">3.</span> <span class="toc-text">pinfo 操作手册</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Vim-Cheat-Sheet"><span class="toc-number">4.</span> <span class="toc-text">Vim Cheat Sheet</span></a></li></ol>
+        </nav>
+    </div>
+</aside>
+
+
+
+
+
+        </section>
+        <footer class="hidden lg:block fixed bottom-0 left-0 sm:w-1/12 bg-gray-100 z-40">
+    
+    
+        <p class="footer-custom">❤ Powered by <a href="https://hexo.io/" target="_blank" rel="noopener noreferrer">Hexo</a> with <a href="https://github.com/fengkx/hexo-theme-purer" target="_blank" rel="noopener noreferrer">Purer theme</a>.</p>
+    
+</footer>
+
+        <div id="mask" class="hidden mask fixed inset-0 bg-gray-900 opacity-75 z-40"></div>
+        <div id="search-view-container" class="hidden shadow-xl"></div>
+        
+<script src="/js/dom-event.min.js"></script>
+
+
+
+<script src="/js/local-search.min.js"></script>
+
+
+
+    <script src="//cdn.jsdelivr.net/npm/lightgallery.js@1.1.3/dist/js/lightgallery.min.js"></script>
+    
+<script src="/js/light-gallery.min.js"></script>
+
+
+
+
+
+
+    </body>
+</html>

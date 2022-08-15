@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html  lang="zh-CN,en,default" >
+    <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, maximum-scale=5, viewport-fit=cover">
+    <title>监控和管理 Linux 进程（一） | Avery Ma 的个人网站</title>
+    <meta name="description" content="🔴 此文章由之前的 Typora 笔记迁移过来，内容可能已经过时。  了解 Linux 进程 什么是进程 ​进程是已启动的可执行程序的运行中实例，其由以下组成部分组成：  已分配内存的地址空间； 安全属性； 程序代码的一个或多个运行线程； 进程状态；  ​进程的环境包括：   本地和全局变量；   当前调度上下文；   分配的系统资源，如文件描述符和网络端口；   ​现有的（父）进程复制自己的">
+<meta property="og:type" content="article">
+<meta property="og:title" content="监控和管理 Linux 进程（一）">
+<meta property="og:url" content="https://skinyi.github.io/2022-08-15-Linux%20|%20%E7%9B%91%E6%8E%A7%E5%92%8C%E7%AE%A1%E7%90%86%20Linux%20%E8%BF%9B%E7%A8%8B%EF%BC%88%E4%B8%80%EF%BC%89.html">
+<meta property="og:site_name" content="Avery Ma 的个人网站">
+<meta property="og:description" content="🔴 此文章由之前的 Typora 笔记迁移过来，内容可能已经过时。  了解 Linux 进程 什么是进程 ​进程是已启动的可执行程序的运行中实例，其由以下组成部分组成：  已分配内存的地址空间； 安全属性； 程序代码的一个或多个运行线程； 进程状态；  ​进程的环境包括：   本地和全局变量；   当前调度上下文；   分配的系统资源，如文件描述符和网络端口；   ​现有的（父）进程复制自己的">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://skinyi.github.io/images/linux/Linux-%E8%BF%9B%E7%A8%8B%E7%9A%84%E7%8A%B6%E6%80%81.png">
+<meta property="article:published_time" content="2022-08-15T02:20:42.222Z">
+<meta property="article:modified_time" content="2022-08-15T02:29:08.419Z">
+<meta property="article:author" content="skinyi">
+<meta property="article:tag" content="Linux">
+<meta property="article:tag" content="RHEL">
+<meta property="article:tag" content="RHCE">
+<meta property="article:tag" content="认证考试">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://skinyi.github.io/images/linux/Linux-%E8%BF%9B%E7%A8%8B%E7%9A%84%E7%8A%B6%E6%80%81.png">
+
+    
+    <link rel="icon" href="images/favicon.png" type="image/x-icon">
+
+    
+<link rel="stylesheet" href="/css/common.min.css">
+
+
+
+    
+    
+    
+    
+        <link href="//cdn.jsdelivr.net/npm/lightgallery.js@1.1.3/dist/css/lightgallery.min.css" rel="stylesheet">
+    
+    
+    
+<link rel="stylesheet" href="/css/iconfont.min.css">
+
+    
+<meta name="generator" content="Hexo 6.2.0"></head>
+
+    <body>
+        <header class="header header-fixture">
+    <div class="profile-search-wrap flex sm:block">
+        
+        
+        <div class="profile sm:text-center md:px-1 lg:px-3 sm:pb-4 sm:pt-6">
+            <a id="avatar" role="link" href="https://github.com/skinyi" class="inline-block lg:w-16 lg:h-16 w-8 h-8 m-2" target="_blank" rel="noopener" rel="noreferrer" >
+                <img src="/images/avatar.jpg" class="rounded-full" alt="avatar">
+            </a>
+            <h2 id="name" class="hidden lg:block">Avery Ma</h2>
+            <h3 id="title" class="hidden xl:block">IT 从业者</h3>
+            
+            <small id="location" class="hidden lg:block">
+                <i class="iconfont icon-map-icon"></i>
+                宁夏, 中国
+            </small>
+            
+        </div>
+        
+        
+<div class="search flex-1 flex lg:inline-block sm:hidden lg:px-4 lg:mt-2 lg:w-full">
+    <form id="search-form" class="my-auto flex-1 lg:border lg:border-solid lg:border-gray-200">
+        <div class="input-group table bg-gray-100 lg:bg-white w-full">
+            <input id="search-input" type="text" placeholder="搜索" class="inline-block w-full bg-gray-100 lg:bg-white">
+            <span class="table-cell">
+                <button name="search tigger button" disabled>
+                    <i class="iconfont icon-search m-2"></i>
+                </button>
+            </span>
+        </div>
+    </form>
+        
+<div id="content-json" data-placeholder="搜索" class="invisible hidden">/content.json</div>
+<script id="search-teamplate" type="text/html" data-path="/content.json">
+    <div>
+        <div class="search-header bg-gray-400">
+            <input id="actual-search-input" model="keyword" ref="input" class="inline-block w-full h-10 px-2 py-1" placeholder="搜索" type="text">
+        </div>
+        <div class="search-result bg-gray-200">
+            {{#each searchPosts}}
+            <a href="/{{ path }}" class="result-item block px-2 pb-3 mb-1 pt-1 hover:bg-indigo-100">
+                <i class="iconfont icon-file"></i>
+                <h1 class="result-title inline font-medium text-lg">{{ title }}</h1>
+                <p class="result-content text-gray-600 text-sm">{{{ text }}}</p>
+            </a>
+            {{/each}}
+        </div>
+    </div>
+</script>
+
+</div>
+
+
+        <button name="menu toogle button" id="menu-toggle-btn" class="block sm:hidden p-3" role="button" aria-expanded="false">
+            <i class="iconfont icon-hamburger"></i>
+        </button>
+    </div>
+    <nav id="menu-nav" class="hidden sm:flex flex-col">
+        
+        
+            <div class="menu-item menu-home" role="menuitem">
+                <a href="/.">
+                    <i class="iconfont icon-home" aria-hidden="true"></i>
+                    <span class="menu-title">首页</span>
+                </a>
+            </div>
+        
+        
+            <div class="menu-item menu-archives" role="menuitem">
+                <a href="/archives">
+                    <i class="iconfont icon-archive" aria-hidden="true"></i>
+                    <span class="menu-title">归档</span>
+                </a>
+            </div>
+        
+        
+            <div class="menu-item menu-categories" role="menuitem">
+                <a href="/categories">
+                    <i class="iconfont icon-folder" aria-hidden="true"></i>
+                    <span class="menu-title">分类</span>
+                </a>
+            </div>
+        
+        
+            <div class="menu-item menu-tags" role="menuitem">
+                <a href="/tags">
+                    <i class="iconfont icon-tag" aria-hidden="true"></i>
+                    <span class="menu-title">标签</span>
+                </a>
+            </div>
+        
+        
+            <div class="menu-item menu-repository" role="menuitem">
+                <a href="/repository">
+                    <i class="iconfont icon-project" aria-hidden="true"></i>
+                    <span class="menu-title">项目</span>
+                </a>
+            </div>
+        
+        
+            <div class="menu-item menu-about" role="menuitem">
+                <a href="/about">
+                    <i class="iconfont icon-cup" aria-hidden="true"></i>
+                    <span class="menu-title">关于</span>
+                </a>
+            </div>
+        
+        
+
+    </nav>
+</header>
+
+        <section class="main-section">
+            
+    <main class="flex-1 px-4 py-14 md:px-5 lg:px-8 lg:py-4 relative min-h-screen">
+    
+
+    <article class="content article article-archives article-type-list" itemscope="">
+        <header class="article-header">
+            
+    
+        <h1 class="article-title text-lg" itemprop="name">
+            监控和管理 Linux 进程（一）
+        </h1>
+    
+
+
+
+            <p class="article-meta mb-3 text-xs">
+                <span class="article-date">
+    <i class="iconfont icon-calendar-check"></i>
+	<a href="/2022-08-15-Linux%20%7C%20%E7%9B%91%E6%8E%A7%E5%92%8C%E7%AE%A1%E7%90%86%20Linux%20%E8%BF%9B%E7%A8%8B%EF%BC%88%E4%B8%80%EF%BC%89.html" class="article-date">
+	  <time datetime="2022-08-15T02:20:42.222Z" itemprop="datePublished">8月 15</time>
+	</a>
+</span>
+
+                
+    <span class="article-category">
+    <i class="iconfont icon-folder"></i>
+    <a class="article-category-link" href="/categories/%E5%AD%A6%E4%B9%A0/">学习</a> , <a class="article-category-link" href="/categories/%E5%AD%A6%E4%B9%A0/Linux/">Linux</a> , <a class="article-category-link" href="/categories/%E6%97%A5%E5%B8%B8%E8%AE%B0%E5%BD%95/">日常记录</a> , <a class="article-category-link" href="/categories/%E8%BF%81%E7%A7%BB%E6%96%87%E7%AB%A0/">迁移文章</a>
+  </span>
+
+
+                
+    <span class="article-tags">
+    <i class="iconfont icon-tag"></i>
+    <a class="article-tag-none-link" href="/tags/Linux/" rel="tag">Linux</a>, <a class="article-tag-none-link" href="/tags/RHCE/" rel="tag">RHCE</a>, <a class="article-tag-none-link" href="/tags/RHEL/" rel="tag">RHEL</a>, <a class="article-tag-none-link" href="/tags/%E8%AE%A4%E8%AF%81%E8%80%83%E8%AF%95/" rel="tag">认证考试</a>
+  </span>
+
+
+                
+                
+    
+        <span class="post-wordcount" itemprop="wordCount">字数统计: 3.4k(字)</span>
+    
+    
+        <span class="post-readcount" itemprop="timeRequired">阅读时长: 12(分)</span>
+    
+
+
+            </p>
+        </header>
+        <div class="marked-body article-body">
+            <blockquote>
+<p>🔴 此文章由之前的 Typora 笔记迁移过来，内容可能已经过时。</p>
+</blockquote>
+<h2 id="了解-Linux-进程">了解 Linux 进程</h2>
+<h3 id="什么是进程">什么是进程</h3>
+<p>​进程是已启动的可执行程序的运行中实例，其由以下组成部分组成：</p>
+<ul>
+<li>已分配内存的地址空间；</li>
+<li>安全属性；</li>
+<li>程序代码的一个或多个运行线程；</li>
+<li>进程状态；</li>
+</ul>
+<p>​进程的环境包括：</p>
+<ul>
+<li>
+<p>本地和全局变量；</p>
+</li>
+<li>
+<p>当前调度上下文；</p>
+</li>
+<li>
+<p>分配的系统资源，如文件描述符和网络端口；</p>
+</li>
+</ul>
+<p>​现有的（父）进程复制自己的地址空间（fork）来创建一个新的（子）进程结构。每个新进程分配有一个唯一进程 ID(PID) ，满足跟踪和安全性的需要。PID 和父进程 ID(PPID) 是新进程环境的元素。任何进程都可创建子进程。所有进程都是第一个系统进程的后代，在 RHEL8 系统上，第一个系统进程是 systemd。</p>
+<p>​通过fork例程，子进程继承安全性身份、过去和当前的文件描述符、端口和资源特权、环境变量，以及程序代码。随后，子进程可能 exec 其自己的程序代码。通常，父进程在子进程运行期间处于睡眠状态，设置一个在子进程完成时发出信号的请求 wait ）。在退出时，子进程已经关闭或丢弃了其资源和环境。唯一剩下的资源称为僵停，是进程表中的一个条目。父进程在子进程退出时收到信号而被唤醒，清理子条目的进程表，由此释放子进程的最后一个资源。然后，父进程继续执行自己的程序代码。</p>
+<h3 id="进程的状态">进程的状态</h3>
+<p>​在多任务处理操作系统中，每个 CPU（或 CPU 核心）在一个时间点上处理一个进程。在进程运行时，它对 CPU 时间和资源分配的直接要求会有变化。进程分配有一个状态，它随着环境的要求而改变。</p>
+<p><img src="images/linux/Linux-%E8%BF%9B%E7%A8%8B%E7%9A%84%E7%8A%B6%E6%80%81.png" alt="Linux 进程状态" /></p>
+<p>​上图展示了 Linux 进程运行过程中的各种状态，下表是对以上状态的说明：</p>
+<table>
+    <tr>
+        <th>名称</th>
+        <th>标志</th>
+        <th>内核定义的状态名称</th>
+        <th>描述</th>
+    </tr>
+    <tr>
+        <td>运行</td>
+        <td>R</td>
+        <td>TASK_RUNNING</td>
+        <td>进程正在 CPU 上执行，或者正在等待运行。处于运行中（或可运行）状态时，进程可能正在执行用户例程或内核例程（系统调用），或者已排队并就绪。</td>
+    </tr>
+    <tr>
+        <td rowspan="4">睡眠</td>
+        <td>S</td>
+        <td>TASK_INTERRUPTIBLE</td>
+        <td>进程正在等待某一条件：硬件请求、系统资源访问或信号。当事件或信号满足该条件时，该进程将返回到运行中。</td>
+    </tr>
+    <tr>
+        <td>D</td>
+        <td>TASK_UNINTERRUPTIBLE</td>
+        <td>此进程也在睡眠，但与 S 状态不同，不会响应信号。仅在进程中断可能会导致意外设备状态的情况下使用。</td>
+    </tr>
+    <tr>
+        <td>K</td>
+        <td>TASK_KILLABLE</td>
+        <td>与不可中断的 D 状态相同吧，但有所修改，允许等待中的任务响应要被中断（彻底退出）的信号。实用程序通常将可中断的进程显示为 K 状态。</td>
+    </tr>
+    <tr>
+        <td>I</td>
+        <td>TASK_REPORT_IDLE</td>
+        <td>D 状态的一个子集。在计算负载平均值时，内核不会统计这些进程。用于内核线程。设置了 TASK_UNINTERRUPTABLE 和 TASK_NOLOAD 标志。类似于 TASK_KILLABLE，也是 D 状态的一个子集。它接受致命信号。</td>
+    </tr>
+    <tr>
+        <td rowspan="2">已停止</td>
+        <td>T</td>
+        <td>TASK_STOPPED</td>
+        <td>进程已被停止（暂停），通常是通过用户或其他进程发出的信号。进程可以通过另一信号返回到运行中状态，继续执行（恢复）。</td>
+    </tr>
+    <tr>
+        <td>T</td>
+        <td>TASK_TRACED</td>
+        <td>正在被调试的进程也会临时停止，并且共享同一个 T 状态标志。</td>
+    </tr>
+    <tr>
+        <td rowspan="2">僵停</td>
+        <td>Z</td>
+        <td>EXIT_ZOMBIE</td>
+        <td>子进程在退出时向父进程发出信号。除进程身份（PID）之外的所有资源都已释放。</td>
+    </tr>
+    <tr>
+        <td>X</td>
+        <td>EXIT_DEAD</td>
+        <td>当父进程清理（获取）剩余的子进程结构时，进程现在已彻底释放。此状态从不会在进程列出实用程序中看到。</td>
+    </tr>
+</table>
+<p>​在对系统进行故障排除时，了解内核如何与进程通信以及进程如何相互通信非常重要。在创建进程时，系统会为进程分配一个状态。top命令的 S 列或 ps 的 STAT 列显示每个进程的状态。在单 CPU 系统上，一次只能运行一个进程。可以看到多个状态为 R 的进程。然而，并非所有这些进程都在持续运行，其中一些将处于等待状态。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]\<span class="comment"># ps aux</span></span><br><span class="line">USER         PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND</span><br><span class="line">root           1  0.0  0.3 245648 14544 ?        Ss   Apr25   0:16 /usr/lib/systemd/systemd --switched-root --system --deserialize 18</span><br><span class="line">root           2  0.0  0.0      0     0 ?        S    Apr25   0:00 [kthreadd]</span><br><span class="line">root           3  0.0  0.0      0     0 ?        I&lt;   Apr25   0:00 [rcu_gp]</span><br><span class="line">root           4  0.0  0.0      0     0 ?        I&lt;   Apr25   0:00 [rcu_par_gp]</span><br><span class="line">......</span><br></pre></td></tr></table></figure>
+<p>​可以使用信号暂停、停止、恢复、终止和中断进程，信号可以由其他进程、内核本身或登陆系统的用户使用。以下会有详细介绍。</p>
+<h3 id="列出进程">列出进程</h3>
+<p>​<code>ps</code> 命令可以用于列出当前的进程，它可以提供详细的进程信息，包括：</p>
+<ul>
+<li>用户标识符（UID），它确定进程的特权；</li>
+<li>唯一进程识别符（PID）；</li>
+<li>CPU 和已经花费的实时时间；</li>
+<li>进程在各种位置上分配的内存数量；</li>
+<li>进程 stdout 的位置，称为控制终端；</li>
+<li>当前的进程状态。</li>
+</ul>
+<blockquote>
+<p>🟢 常见选项组合</p>
+<ul>
+<li>aux: 显示包括五控制终端的进程在内的所有进程，注意 aux != -aux；</li>
+</ul>
+<p>USER         PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND</p>
+<p>root           1  0.0  0.3 245648 14544 ?        Ss   Apr25   0:16 &gt; /usr/lib/systemd/systemd --switched-root --system --deserialize 18</p>
+<ul>
+<li>lax: 长列表提供更多技术详细信息，但可以通过避免查询用户名来加快显示。</li>
+</ul>
+<p>F   UID     PID    PPID PRI  NI    VSZ   RSS WCHAN  STAT TTY        TIME COMMAND</p>
+<p>4     0       1       0  20   0 245648 14544 do_epo Ss   ?          0:16 &gt; /usr/lib/systemd/systemd --switched-root --system --deserialize 18</p>
+<ul>
+<li>-ef:</li>
+</ul>
+<p>UID          PID    PPID  C STIME TTY          TIME CMD</p>
+<p>root           1       0  0 Apr25 ?        00:00:16 /usr/lib/systemd/systemd --&gt; switched-root --system --deserialize 18</p>
+<ul>
+<li>没有选项：选择具有与当前用户相同的有效用户 ID(EUID) 并于调用 ps 所处统一终端关联的所有进程。</li>
+</ul>
+<p>PID TTY          TIME CMD</p>
+<p>19667 pts/0    00:00:00 bash</p>
+</blockquote>
+<blockquote>
+<p>🟢 使用 <code>ps -ef | grep [PROC_NAME]</code> 时注意此命令会将 grep 命令自身的进程也列出一份。</p>
+</blockquote>
+<blockquote>
+<p>🟢 其他事项</p>
+<ul>
+<li>方括号中的进程（通常位于列表顶部）为调度的内核线程；</li>
+<li>僵停列为 exiting 或 defunct；</li>
+<li>ps 的输出仅显示一次。使用 top 来获得动态更新的进程显示；</li>
+<li>ps 可以采用树形显示格式（f 选项），以便查看父进程和子进程之间的关系，（更直观的可以使用 pstree 命令）；</li>
+<li>默认输出按进程 ID 编号排序。</li>
+</ul>
+</blockquote>
+<h2 id="作业控制">作业控制</h2>
+<h3 id="进程组、作业、会话">进程组、作业、会话</h3>
+<p>​Linux 下进程不仅有自己独一无二的 PID，还有其属于哪个进程组的标识 PGID。如果某进程的 PGID 等于其自身的 PID，那么此进程就可以被称为与它具有同一 PGID 的进程组的组长进程。当一个程序创建一个进程组时，其创建进程组的这个进程就为组长进程。程序实例的生命周期只与进程组中的最后一个进程有关。Shell 的作业控制功能控制的对象是作业或者进程组而不是进程。每个终端前台只能运行一个进程组或一个组或一个作业，而每个终端后台可以运行多个进程组和多个作业。会话是一个或多个进程组的集合。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]\<span class="comment"># ps -ajx | grep 19667</span></span><br><span class="line">   PPID     PID    PGID     SID TTY        TPGID STAT   UID   TIME COMMAND</span><br><span class="line">  19658   19667   19667   19667 pts/0      20514 Ss       0   0:00 -bash					<span class="comment">#			同一			</span></span><br><span class="line">  19667   20514   20514   19667 pts/0      20514 R+       0   0:00 ps -ajx					<span class="comment"># 同一个	  个会</span></span><br><span class="line">  19667   20515   20514   19667 pts/0      20514 S+       0   0:00 grep --color=auto 19667	<span class="comment"># 进程组	  话</span></span><br></pre></td></tr></table></figure>
+<p>​ps 命令在 TTY 列中显示进程的控制终端的设备名称。某些进程（如系统守护进程）由系统启动，并不是从 shell 提示符启动。这些进程没有控制终端，也不是作业的成员，无法转至前台。ps 命令在 TTY 列中针对这些进程显示一个问号。</p>
+<h3 id="查看当前会话的作业列表">查看当前会话的作业列表</h3>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">jobs</span> [-lnprs] [jobspec ...] <span class="comment"># 显示当前会话所有（或提供 jobspec 参数指定的）作业的状态</span></span><br><span class="line"><span class="comment"># 选项：</span></span><br><span class="line">-l, <span class="comment"># 额外列出进程的 PID</span></span><br><span class="line">-n, <span class="comment"># 列出最后一次通知后改变运行状态的进程</span></span><br><span class="line">-p, <span class="comment"># 只列出进程的 PID</span></span><br><span class="line">-r, <span class="comment"># 仅限输出正在运行的作业</span></span><br><span class="line">-s, <span class="comment"># 仅限输出已经停止的作业</span></span><br></pre></td></tr></table></figure>
+<h3 id="将作业放在前台执行">将作业放在前台执行</h3>
+<ul>
+<li>
+<p>对于将要运行的程序：在命令行的结尾处不附加符号 <code>&amp;</code>，这样程序所对应的作业直接在前台下运行。</p>
+</li>
+<li>
+<p>把后台作业拉到前台运行：执行命令</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">fg</span> [%]作业号	<span class="comment"># [%] 表示 % 为可选</span></span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<blockquote>
+<p>🟢 当在前台下运行一个作业时，shell 会被拉到后台，因为前台只能运行一个作业或者进程组。</p>
+</blockquote>
+<h3 id="将作业放在后台执行">将作业放在后台执行</h3>
+<ul>
+<li>
+<p>对于将要运行的程序：在命令行的结尾处附加符号 <code>&amp;</code>。</p>
+</li>
+<li>
+<p>把一个正在前台运行的程序放到后台运行：先使用 <code>Ctrl</code> + <code>Z</code> 快捷键将前台的作业放到后台，此时该后台作业是处于暂停状态的，使用以下命令将其从停止状态恢复到运行状态：</p>
+</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">bg</span> [%]作业号	<span class="comment"># [%] 表示 % 为可选</span></span><br></pre></td></tr></table></figure>
+<h3 id="使作业在关闭终端后也能运行">使作业在关闭终端后也能运行</h3>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">nohup</span> COMMAND [ARG]... [&gt; FILE] 	<span class="comment"># 执行命令，忽略挂起信号（一般后面追加个 &amp; 配合使用） </span></span><br></pre></td></tr></table></figure>
+<h3 id="终止当前运行的前台任务">终止当前运行的前台任务</h3>
+<p>​使用 <code>Ctrl</code> + <code>C</code> 快捷键。</p>
+<h2 id="中断进程">中断进程</h2>
+<h3 id="使用信号控制进程">使用信号控制进程</h3>
+<p>​信号是传递至进程的软件中断。信号向执行中的程序报告事件。生成信号的事件可以是错误或外部事件（I/O请求或定时器过期），或者来自于显式使用信号发送命令或键盘序列。以下是一些常见的中断信号的介绍（更详细的可参见 manpage signal(7)）：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">信号编号</th>
+<th style="text-align:center">名称</th>
+<th style="text-align:center">定义</th>
+<th>用途</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">1</td>
+<td style="text-align:center">SIGHUP</td>
+<td style="text-align:center">挂起</td>
+<td>用于报告终端控制进程的终止。也用于请求进程重新初始化（重新加载配置）而不终止。</td>
+</tr>
+<tr>
+<td style="text-align:center">2</td>
+<td style="text-align:center">SIGINT</td>
+<td style="text-align:center">键盘中断</td>
+<td>导致程序终止。可以被拦截或处理。通过按 INTR 键盘序列（CTRL + C）发送。</td>
+</tr>
+<tr>
+<td style="text-align:center">3</td>
+<td style="text-align:center">SIGQUIT</td>
+<td style="text-align:center">键盘退出</td>
+<td>与 SIGINT 相似；在终止时添加进程转储。通过按 QUIT 键序列（CTRL + \）发送。</td>
+</tr>
+<tr>
+<td style="text-align:center">9</td>
+<td style="text-align:center">SIGKILL</td>
+<td style="text-align:center">中断，无法拦截</td>
+<td>导致立即终止程序。无法被拦截、忽略或处理；总是致命的。</td>
+</tr>
+<tr>
+<td style="text-align:center">15默认</td>
+<td style="text-align:center">SIGTERM</td>
+<td style="text-align:center">终止</td>
+<td>导致程序终止。和 SIGKILL 不同，可以被拦截、忽略或处理。要求程序终止的“友好”方式；允许自我清理。</td>
+</tr>
+<tr>
+<td style="text-align:center">18</td>
+<td style="text-align:center">SIGCONT</td>
+<td style="text-align:center">继续</td>
+<td>发送至进程使其恢复（若已停止）。无法被拦截。即使被处理，也始终恢复进程。</td>
+</tr>
+<tr>
+<td style="text-align:center">19</td>
+<td style="text-align:center">SIGSTOP</td>
+<td style="text-align:center">停止，无法拦截</td>
+<td>暂停进程。无法被拦截或处理。</td>
+</tr>
+<tr>
+<td style="text-align:center">20</td>
+<td style="text-align:center">SIGTSTP</td>
+<td style="text-align:center">键盘停止</td>
+<td>和SIGSTOP不同，可以被拦截、忽略或处理。通过按 SUSP 键序列（CTRL + Z）发送。</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>🟢 信号编号跟硬件平台有关，上表中的编号以 x86_64 系统为例。作为命令使用时建议使用信号名称作为参数。</p>
+</blockquote>
+<h3 id="向作业发送信号">向作业发送信号</h3>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">kill</span> [-s sigspec | -n signum | -sigspec] pid | jobspec ... <span class="comment"># 向作业发送信号，未指定信号的话则默认发送 SIGTERM 信号</span></span><br><span class="line"><span class="built_in">kill</span> -l [sigspec] <span class="comment"># 列出所有可用的中断名称或指定 sigspec 的中断号</span></span><br><span class="line"><span class="comment"># 常见选项：</span></span><br><span class="line">-s SIG <span class="comment"># SIG 是信号名称</span></span><br><span class="line">-n SIGNUM <span class="comment"># SIGN 是信号编码</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">killall [-s sigspec | -sigspec] NAME... <span class="comment"># 向多个作业发送信号，未指定信号的话则默认发送 SIGTERM 信号</span></span><br><span class="line"><span class="comment"># 该命令还有一些筛选选项，具体用到时可参见其 --help 选项的说明</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">pkill [-&lt;SIG&gt; | --signal &lt;SIG&gt;] [OTHER_OPTIONS] PATTERN <span class="comment"># 向多个作业发送信号，未指定信号的话则默认发送 SIGTERM 信号</span></span><br><span class="line"><span class="comment"># 此命令的筛选条件更详细，且进程名都是可以使用模式匹配的</span></span><br></pre></td></tr></table></figure>
+<h3 id="以管理员的身份注销其他用户的登陆">以管理员的身份注销其他用户的登陆</h3>
+<p>​要注销某个用户，首先确定要终止的登录会话。使用 <code>w</code> 命令列出用户登陆和当前运行的进程。记录 TTY 和 FROM 列，以确定要关闭的会话。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]\<span class="comment"># w</span></span><br><span class="line"> 11:06:17 up 1 day,  2:29,  2 <span class="built_in">users</span>,  load average: 0.00, 0.00, 0.00</span><br><span class="line">USER     TTY      FROM             LOGIN@   IDLE   JCPU   PCPU WHAT</span><br><span class="line">student  tty2     tty2             15Apr21 10days  5:04   1.20s /usr/libexec/track</span><br><span class="line">root     pts/0    192.168.30.1     07:35    1.00s  0.25s  0.01s w</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>🟢 TTY 列：pts/N 代表图形界面终端窗口或远程登录会话相关联的伪终端；ttyN 代表用户位于一个系统控制台、替代控制台或其他直接连接的终端设备上。</p>
+</blockquote>
+<p>​使用 pgrep 确定要中断的 PID 编号：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]\<span class="comment"># pgrep -l -u student	# pgrep 与 pkill 命令的用法类似，作用不同</span></span><br><span class="line">2238 systemd</span><br><span class="line">2248 (sd-pam)</span><br><span class="line">2257 pulseaudio</span><br><span class="line">2263 gnome-keyring-d</span><br><span class="line">......</span><br><span class="line">[root@localhost ~]\<span class="comment"># pkill -SIGKILL -u student	# 杀死 student 用户的所有进程</span></span><br><span class="line">[root@localhost ~]\<span class="comment"># pgrep -l -u student</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>🟢 通常建议不要直接使用 <em>SIGKILL</em> 杀死进程，而是在尝试 <em>SIGTERM</em> 和 <em>SIGINT</em> 不起作用之后使用。</p>
+</blockquote>
+
+        </div>
+        
+<blockquote class="copyright">
+    <p><strong>本文链接 : </strong><a class="permalink" href="https://skinyi.github.io/2022-08-15-Linux%20|%20%E7%9B%91%E6%8E%A7%E5%92%8C%E7%AE%A1%E7%90%86%20Linux%20%E8%BF%9B%E7%A8%8B%EF%BC%88%E4%B8%80%EF%BC%89.html">https://skinyi.github.io/2022-08-15-Linux | 监控和管理 Linux 进程（一）.html</a></p>
+    <p><strong>这篇文章由作者胡编乱造或者由其他文章复制粘贴而来，其中有些内容可能已经过时，请谨慎参考复制文章中的内容。</strong></p>
+</blockquote>
+
+
+    </article>
+    
+    <section id="comments">
+        
+    </section>
+
+
+    
+
+</main>
+
+
+<aside style="" id="sidebar" class="aside aside-fixture">
+    <div class="toc-sidebar">
+        <nav id="toc" class="article-toc">
+            <h3 class="toc-title">文章目录</h3>
+            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%86%E8%A7%A3-Linux-%E8%BF%9B%E7%A8%8B"><span class="toc-number">1.</span> <span class="toc-text">了解 Linux 进程</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF%E8%BF%9B%E7%A8%8B"><span class="toc-number">1.1.</span> <span class="toc-text">什么是进程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BF%9B%E7%A8%8B%E7%9A%84%E7%8A%B6%E6%80%81"><span class="toc-number">1.2.</span> <span class="toc-text">进程的状态</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%97%E5%87%BA%E8%BF%9B%E7%A8%8B"><span class="toc-number">1.3.</span> <span class="toc-text">列出进程</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BD%9C%E4%B8%9A%E6%8E%A7%E5%88%B6"><span class="toc-number">2.</span> <span class="toc-text">作业控制</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BF%9B%E7%A8%8B%E7%BB%84%E3%80%81%E4%BD%9C%E4%B8%9A%E3%80%81%E4%BC%9A%E8%AF%9D"><span class="toc-number">2.1.</span> <span class="toc-text">进程组、作业、会话</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9F%A5%E7%9C%8B%E5%BD%93%E5%89%8D%E4%BC%9A%E8%AF%9D%E7%9A%84%E4%BD%9C%E4%B8%9A%E5%88%97%E8%A1%A8"><span class="toc-number">2.2.</span> <span class="toc-text">查看当前会话的作业列表</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B0%86%E4%BD%9C%E4%B8%9A%E6%94%BE%E5%9C%A8%E5%89%8D%E5%8F%B0%E6%89%A7%E8%A1%8C"><span class="toc-number">2.3.</span> <span class="toc-text">将作业放在前台执行</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B0%86%E4%BD%9C%E4%B8%9A%E6%94%BE%E5%9C%A8%E5%90%8E%E5%8F%B0%E6%89%A7%E8%A1%8C"><span class="toc-number">2.4.</span> <span class="toc-text">将作业放在后台执行</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%BF%E4%BD%9C%E4%B8%9A%E5%9C%A8%E5%85%B3%E9%97%AD%E7%BB%88%E7%AB%AF%E5%90%8E%E4%B9%9F%E8%83%BD%E8%BF%90%E8%A1%8C"><span class="toc-number">2.5.</span> <span class="toc-text">使作业在关闭终端后也能运行</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BB%88%E6%AD%A2%E5%BD%93%E5%89%8D%E8%BF%90%E8%A1%8C%E7%9A%84%E5%89%8D%E5%8F%B0%E4%BB%BB%E5%8A%A1"><span class="toc-number">2.6.</span> <span class="toc-text">终止当前运行的前台任务</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%AD%E6%96%AD%E8%BF%9B%E7%A8%8B"><span class="toc-number">3.</span> <span class="toc-text">中断进程</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8%E4%BF%A1%E5%8F%B7%E6%8E%A7%E5%88%B6%E8%BF%9B%E7%A8%8B"><span class="toc-number">3.1.</span> <span class="toc-text">使用信号控制进程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%90%91%E4%BD%9C%E4%B8%9A%E5%8F%91%E9%80%81%E4%BF%A1%E5%8F%B7"><span class="toc-number">3.2.</span> <span class="toc-text">向作业发送信号</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%A5%E7%AE%A1%E7%90%86%E5%91%98%E7%9A%84%E8%BA%AB%E4%BB%BD%E6%B3%A8%E9%94%80%E5%85%B6%E4%BB%96%E7%94%A8%E6%88%B7%E7%9A%84%E7%99%BB%E9%99%86"><span class="toc-number">3.3.</span> <span class="toc-text">以管理员的身份注销其他用户的登陆</span></a></li></ol></li></ol>
+        </nav>
+    </div>
+</aside>
+
+
+
+
+
+        </section>
+        <footer class="hidden lg:block fixed bottom-0 left-0 sm:w-1/12 bg-gray-100 z-40">
+    
+    
+        <p class="footer-custom">❤ Powered by <a href="https://hexo.io/" target="_blank" rel="noopener noreferrer">Hexo</a> with <a href="https://github.com/fengkx/hexo-theme-purer" target="_blank" rel="noopener noreferrer">Purer theme</a>.</p>
+    
+</footer>
+
+        <div id="mask" class="hidden mask fixed inset-0 bg-gray-900 opacity-75 z-40"></div>
+        <div id="search-view-container" class="hidden shadow-xl"></div>
+        
+<script src="/js/dom-event.min.js"></script>
+
+
+
+<script src="/js/local-search.min.js"></script>
+
+
+
+    <script src="//cdn.jsdelivr.net/npm/lightgallery.js@1.1.3/dist/js/lightgallery.min.js"></script>
+    
+<script src="/js/light-gallery.min.js"></script>
+
+
+
+
+
+
+    </body>
+</html>

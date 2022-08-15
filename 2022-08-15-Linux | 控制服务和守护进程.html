@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html  lang="zh-CN,en,default" >
+    <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, maximum-scale=5, viewport-fit=cover">
+    <title>控制服务和守护进程 | Avery Ma 的个人网站</title>
+    <meta name="description" content="🔴 此文章由之前的 Typora 笔记迁移过来，内容可能已经过时。  SYSTEMCTL命令摘要    任务 命令     查看有关单元状态的详细信息 systemctl status UNIT   在运行中的系统上停止一项服务 systemctl stop UNIT   在运行中的系统上启动一项服务 systemctl start UNIT   在运行中的系统上重新启动一项服务 system">
+<meta property="og:type" content="article">
+<meta property="og:title" content="控制服务和守护进程">
+<meta property="og:url" content="https://skinyi.github.io/2022-08-15-Linux%20|%20%E6%8E%A7%E5%88%B6%E6%9C%8D%E5%8A%A1%E5%92%8C%E5%AE%88%E6%8A%A4%E8%BF%9B%E7%A8%8B.html">
+<meta property="og:site_name" content="Avery Ma 的个人网站">
+<meta property="og:description" content="🔴 此文章由之前的 Typora 笔记迁移过来，内容可能已经过时。  SYSTEMCTL命令摘要    任务 命令     查看有关单元状态的详细信息 systemctl status UNIT   在运行中的系统上停止一项服务 systemctl stop UNIT   在运行中的系统上启动一项服务 systemctl start UNIT   在运行中的系统上重新启动一项服务 system">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-08-15T02:37:40.706Z">
+<meta property="article:modified_time" content="2022-08-15T02:45:47.715Z">
+<meta property="article:author" content="skinyi">
+<meta property="article:tag" content="Linux">
+<meta property="article:tag" content="RHEL">
+<meta property="article:tag" content="RHCE">
+<meta property="article:tag" content="认证考试">
+<meta name="twitter:card" content="summary">
+
+    
+    <link rel="icon" href="images/favicon.png" type="image/x-icon">
+
+    
+<link rel="stylesheet" href="/css/common.min.css">
+
+
+
+    
+    
+    
+    
+        <link href="//cdn.jsdelivr.net/npm/lightgallery.js@1.1.3/dist/css/lightgallery.min.css" rel="stylesheet">
+    
+    
+    
+<link rel="stylesheet" href="/css/iconfont.min.css">
+
+    
+<meta name="generator" content="Hexo 6.2.0"></head>
+
+    <body>
+        <header class="header header-fixture">
+    <div class="profile-search-wrap flex sm:block">
+        
+        
+        <div class="profile sm:text-center md:px-1 lg:px-3 sm:pb-4 sm:pt-6">
+            <a id="avatar" role="link" href="https://github.com/skinyi" class="inline-block lg:w-16 lg:h-16 w-8 h-8 m-2" target="_blank" rel="noopener" rel="noreferrer" >
+                <img src="/images/avatar.jpg" class="rounded-full" alt="avatar">
+            </a>
+            <h2 id="name" class="hidden lg:block">Avery Ma</h2>
+            <h3 id="title" class="hidden xl:block">IT 从业者</h3>
+            
+            <small id="location" class="hidden lg:block">
+                <i class="iconfont icon-map-icon"></i>
+                宁夏, 中国
+            </small>
+            
+        </div>
+        
+        
+<div class="search flex-1 flex lg:inline-block sm:hidden lg:px-4 lg:mt-2 lg:w-full">
+    <form id="search-form" class="my-auto flex-1 lg:border lg:border-solid lg:border-gray-200">
+        <div class="input-group table bg-gray-100 lg:bg-white w-full">
+            <input id="search-input" type="text" placeholder="搜索" class="inline-block w-full bg-gray-100 lg:bg-white">
+            <span class="table-cell">
+                <button name="search tigger button" disabled>
+                    <i class="iconfont icon-search m-2"></i>
+                </button>
+            </span>
+        </div>
+    </form>
+        
+<div id="content-json" data-placeholder="搜索" class="invisible hidden">/content.json</div>
+<script id="search-teamplate" type="text/html" data-path="/content.json">
+    <div>
+        <div class="search-header bg-gray-400">
+            <input id="actual-search-input" model="keyword" ref="input" class="inline-block w-full h-10 px-2 py-1" placeholder="搜索" type="text">
+        </div>
+        <div class="search-result bg-gray-200">
+            {{#each searchPosts}}
+            <a href="/{{ path }}" class="result-item block px-2 pb-3 mb-1 pt-1 hover:bg-indigo-100">
+                <i class="iconfont icon-file"></i>
+                <h1 class="result-title inline font-medium text-lg">{{ title }}</h1>
+                <p class="result-content text-gray-600 text-sm">{{{ text }}}</p>
+            </a>
+            {{/each}}
+        </div>
+    </div>
+</script>
+
+</div>
+
+
+        <button name="menu toogle button" id="menu-toggle-btn" class="block sm:hidden p-3" role="button" aria-expanded="false">
+            <i class="iconfont icon-hamburger"></i>
+        </button>
+    </div>
+    <nav id="menu-nav" class="hidden sm:flex flex-col">
+        
+        
+            <div class="menu-item menu-home" role="menuitem">
+                <a href="/.">
+                    <i class="iconfont icon-home" aria-hidden="true"></i>
+                    <span class="menu-title">首页</span>
+                </a>
+            </div>
+        
+        
+            <div class="menu-item menu-archives" role="menuitem">
+                <a href="/archives">
+                    <i class="iconfont icon-archive" aria-hidden="true"></i>
+                    <span class="menu-title">归档</span>
+                </a>
+            </div>
+        
+        
+            <div class="menu-item menu-categories" role="menuitem">
+                <a href="/categories">
+                    <i class="iconfont icon-folder" aria-hidden="true"></i>
+                    <span class="menu-title">分类</span>
+                </a>
+            </div>
+        
+        
+            <div class="menu-item menu-tags" role="menuitem">
+                <a href="/tags">
+                    <i class="iconfont icon-tag" aria-hidden="true"></i>
+                    <span class="menu-title">标签</span>
+                </a>
+            </div>
+        
+        
+            <div class="menu-item menu-repository" role="menuitem">
+                <a href="/repository">
+                    <i class="iconfont icon-project" aria-hidden="true"></i>
+                    <span class="menu-title">项目</span>
+                </a>
+            </div>
+        
+        
+            <div class="menu-item menu-about" role="menuitem">
+                <a href="/about">
+                    <i class="iconfont icon-cup" aria-hidden="true"></i>
+                    <span class="menu-title">关于</span>
+                </a>
+            </div>
+        
+        
+
+    </nav>
+</header>
+
+        <section class="main-section">
+            
+    <main class="flex-1 px-4 py-14 md:px-5 lg:px-8 lg:py-4 relative min-h-screen">
+    
+
+    <article class="content article article-archives article-type-list" itemscope="">
+        <header class="article-header">
+            
+    
+        <h1 class="article-title text-lg" itemprop="name">
+            控制服务和守护进程
+        </h1>
+    
+
+
+
+            <p class="article-meta mb-3 text-xs">
+                <span class="article-date">
+    <i class="iconfont icon-calendar-check"></i>
+	<a href="/2022-08-15-Linux%20%7C%20%E6%8E%A7%E5%88%B6%E6%9C%8D%E5%8A%A1%E5%92%8C%E5%AE%88%E6%8A%A4%E8%BF%9B%E7%A8%8B.html" class="article-date">
+	  <time datetime="2022-08-15T02:37:40.706Z" itemprop="datePublished">8月 15</time>
+	</a>
+</span>
+
+                
+    <span class="article-category">
+    <i class="iconfont icon-folder"></i>
+    <a class="article-category-link" href="/categories/%E5%AD%A6%E4%B9%A0/">学习</a> , <a class="article-category-link" href="/categories/%E5%AD%A6%E4%B9%A0/Linux/">Linux</a> , <a class="article-category-link" href="/categories/%E6%97%A5%E5%B8%B8%E8%AE%B0%E5%BD%95/">日常记录</a> , <a class="article-category-link" href="/categories/%E8%BF%81%E7%A7%BB%E6%96%87%E7%AB%A0/">迁移文章</a>
+  </span>
+
+
+                
+    <span class="article-tags">
+    <i class="iconfont icon-tag"></i>
+    <a class="article-tag-none-link" href="/tags/Linux/" rel="tag">Linux</a>, <a class="article-tag-none-link" href="/tags/RHCE/" rel="tag">RHCE</a>, <a class="article-tag-none-link" href="/tags/RHEL/" rel="tag">RHEL</a>, <a class="article-tag-none-link" href="/tags/%E8%AE%A4%E8%AF%81%E8%80%83%E8%AF%95/" rel="tag">认证考试</a>
+  </span>
+
+
+                
+                
+    
+        <span class="post-wordcount" itemprop="wordCount">字数统计: 4.5k(字)</span>
+    
+    
+        <span class="post-readcount" itemprop="timeRequired">阅读时长: 21(分)</span>
+    
+
+
+            </p>
+        </header>
+        <div class="marked-body article-body">
+            <blockquote>
+<p>🔴 此文章由之前的 Typora 笔记迁移过来，内容可能已经过时。</p>
+</blockquote>
+<h2 id="SYSTEMCTL命令摘要">SYSTEMCTL命令摘要</h2>
+<table>
+<thead>
+<tr>
+<th>任务</th>
+<th>命令</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>查看有关单元状态的详细信息</td>
+<td>systemctl status UNIT</td>
+</tr>
+<tr>
+<td>在运行中的系统上停止一项服务</td>
+<td>systemctl stop UNIT</td>
+</tr>
+<tr>
+<td>在运行中的系统上启动一项服务</td>
+<td>systemctl start UNIT</td>
+</tr>
+<tr>
+<td>在运行中的系统上重新启动一项服务</td>
+<td>systemctl restart UNIT</td>
+</tr>
+<tr>
+<td>重新加载运行中服务的配置文件</td>
+<td>systemctl reload UNIT</td>
+</tr>
+<tr>
+<td>彻底禁用服务，使其无法手动启动或在系统引导时启动</td>
+<td>systemctl mask UNIT</td>
+</tr>
+<tr>
+<td>使屏蔽的服务变为可用</td>
+<td>systemctl unmask UNIT</td>
+</tr>
+<tr>
+<td>将服务配置为在系统引导时启动</td>
+<td>systemctl enable UNIT</td>
+</tr>
+<tr>
+<td>禁止服务在系统引导时启动</td>
+<td>systemctl disable UNIT</td>
+</tr>
+<tr>
+<td>列出指定单元依赖的单元</td>
+<td>systemctl list-dependencies UNIT</td>
+</tr>
+</tbody>
+</table>
+<h2 id="认识-SYSTEMD-服务">认识 SYSTEMD 服务</h2>
+<p>​Systemd 服务可以管理系统守护进程和网络服务，包括 Linux 的启动，一般包括服务启动和服务管理。它可在系统引导时以及运行中的系统上激活系统资源、服务器守护进程和其他进程。</p>
+<p>​守护进程是在执行各种任务的后台等待或运行的进程。一般情况下，守护进程在系统引导时自动启动并持续运行至关机或手动停止。按照惯例，许多守护进程的名称以字母 d 结尾。</p>
+<p>​systemd 意义上的服务通常指的是一个或多个守护进程，但启动或停止一项服务可能会对系统的状态进行一次性更改，不会留下守护进程之后继续运行（称为 oneshot）。</p>
+<p>​在 RHEL 中，第一个启动的进程（PID 1）是 systemd。 如下是 systemd 提供的几项功能：</p>
+<ul>
+<li>
+<p>并行化功能（同时启动多个服务），它可提高系统的启动速度。</p>
+</li>
+<li>
+<p>按需启动守护进程，而不需要单独的服务。</p>
+</li>
+<li>
+<p>自动服务依赖关系管理，可以防止长时间超时。例如，只有在网络可用时，依赖网络的服务才会尝试启动。</p>
+</li>
+<li>
+<p>利用 Linux 控制组一起追踪相关进程的方式。</p>
+</li>
+</ul>
+<h2 id="SYSTEMD-服务单元">SYSTEMD 服务单元</h2>
+<p>​Systemd 使用单元来管理不同类型的对象。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">单元类型</th>
+<th style="text-align:center">拓展名</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">系统服务</td>
+<td style="text-align:center">.service</td>
+<td>用于启动、停止、重启和重载经常访问的守护进程，如 web 服务器。</td>
+</tr>
+<tr>
+<td style="text-align:center">进程间通信（IPC）套接字</td>
+<td style="text-align:center">.socket</td>
+<td>由 Systemd 应监控的进程间通信（IPC）套接字。如果客户端连接套接字，systemd 将启动一个守护进程并将连接传递给它。套接字单元用于延迟系统启动时的服务启动，或者按需启动不常使用的服务。</td>
+</tr>
+<tr>
+<td style="text-align:center">路径单元</td>
+<td style="text-align:center">.path</td>
+<td>用于将服务的激活推迟到特定文件系统更改发生之后。这通常用于使用假脱机目录的服务，如打印系统。</td>
+</tr>
+<tr>
+<td style="text-align:center">Target</td>
+<td style="text-align:center">.target</td>
+<td>定义 target 信息(类似之前的 run-level)及依赖关系，一般仅包含 Unit 段</td>
+</tr>
+<tr>
+<td style="text-align:center">设备单元</td>
+<td style="text-align:center">.device</td>
+<td>对于 <em>/dev</em> 目录下的硬件设备，主要用于定义设备之间的依赖关系</td>
+</tr>
+<tr>
+<td style="text-align:center">挂载单元</td>
+<td style="text-align:center">.mount</td>
+<td>定义文件系统的挂载点，可以替代过去的 <em>/etc/fstab</em> 配置文件</td>
+</tr>
+<tr>
+<td style="text-align:center">自动挂载单元</td>
+<td style="text-align:center">.automount</td>
+<td>用于控制自动挂载文件系统，相当于 SysV-init 的 autofs 服务</td>
+</tr>
+<tr>
+<td style="text-align:center">Scope</td>
+<td style="text-align:center">.scope</td>
+<td>非用户创建，由 Systemd 运行时产生的，描述一些系统服务的分组信息</td>
+</tr>
+<tr>
+<td style="text-align:center">Slice</td>
+<td style="text-align:center">.slice</td>
+<td>用于表示一个 CGroup 的树</td>
+</tr>
+<tr>
+<td style="text-align:center">Snapshot</td>
+<td style="text-align:center">.snapshot</td>
+<td>用于表示一个由 systemctl snapshot 命令创建的 Systemd Units 运行状态快照，可以切回某个快照</td>
+</tr>
+<tr>
+<td style="text-align:center">交换分区单元</td>
+<td style="text-align:center">.swap</td>
+<td>定义一个用户做虚拟内存的交换分区</td>
+</tr>
+<tr>
+<td style="text-align:center">定时器单元</td>
+<td style="text-align:center">.timer</td>
+<td>用于配置在特定时间出发的任务，替代了 Crontab 的功能</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>若要修改某单元文件请勿在 <em>/usr/lib/systemd/system</em> 目录里直接修改，而应在 <em>/etc/systemd/system</em> 目录下创建该单元文件的一个副本，然后修改该副本文件。Systemd 会优先使用 <em>/etc/systemd/system</em> 目录下的单元文件。</p>
+</blockquote>
+<h3 id="查看所有已加载的服务单元">查看所有已加载的服务单元</h3>
+<p>​可以使用以下命令来列出 systemd 加载的所有服务单元：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]\<span class="comment"># systemctl list-units --type=service # 指定不同的 type 可以列出不同的单元类型</span></span><br><span class="line">UNIT                               LOAD   ACTIVE SUB     DESCRIPTION              </span><br><span class="line">abrt-journal-core.service          loaded active running Creates ABRT problems from coredumpctl messages</span><br><span class="line">abrt-oops.service                  loaded active running ABRT kernel <span class="built_in">log</span> watcher</span><br><span class="line">......</span><br></pre></td></tr></table></figure>
+<p>​其中，该命令输出的各列的意义是：</p>
+<table>
+<thead>
+<tr>
+<th>列名</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>UNIT</td>
+<td>单元名称</td>
+</tr>
+<tr>
+<td>LOAD</td>
+<td>systemd 是否正确解析了单元的配置并将该单元加载到内存中</td>
+</tr>
+<tr>
+<td>ACTIVE</td>
+<td>单元的高级别激活状态。此信息表明单元是否已成功启动</td>
+</tr>
+<tr>
+<td>SUB</td>
+<td>单元的低级别激活状态。此信息指示有关该单元的更多详细信息。信息视单元类型、状态以及单元的执行方式而异</td>
+</tr>
+<tr>
+<td>DESCRIPTION</td>
+<td>单元的简短描述</td>
+</tr>
+</tbody>
+</table>
+<p>​默认情况下，``systemctl list-units --type=service` 命令仅列出激活状态为 <em>active</em> 的服务单元。指定 <em>--all</em> 选项可列出所有服务单元，不论激活状态如何：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]\<span class="comment"># systemctl list-units --type=service --all</span></span><br><span class="line">  UNIT                                   LOAD      ACTIVE   SUB     DESCRIPTION                                                                  </span><br><span class="line">  abrt-ccpp.service                      loaded    inactive dead    Install ABRT coredump hook                                                   </span><br><span class="line">  abrt-journal-core.service              loaded    active   running Creates ABRT problems from coredumpctl messages</span><br></pre></td></tr></table></figure>
+<p>​使用 <em>--state=</em> 选项可按照 LOAD、ACTIVE 或 SUB 字段中的值进行筛选。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]\<span class="comment"># systemctl list-units --type=service --state=dead | head -n 3</span></span><br><span class="line">  UNIT                                   LOAD      ACTIVE   SUB  DESCRIPTION                                                     </span><br><span class="line">  abrt-ccpp.service                      loaded    inactive dead Install ABRT coredump hook                                      </span><br><span class="line">  abrt-vmcore.service                    loaded    inactive dead Harvest vmcores <span class="keyword">for</span> ABRT</span><br></pre></td></tr></table></figure>
+<p>​不带任何参数运行 systemctl 命令可以列出已加载和活动的单元。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]\<span class="comment"># systemctl</span></span><br><span class="line">UNIT                                                                                                     LOAD   ACTIVE SUB       DESCRIPTION                                               </span><br><span class="line">proc-sys-fs-binfmt_misc.automount                                                                        loaded active waiting   Arbitrary Executable File Formats File System Automount Po&gt;</span><br><span class="line">sys-devices-pci0000:00-0000:00:11.0-0000:02:00.0-usb2-2\x2d2-2\x2d2.1-2\x2d2.1:1.0-bluetooth-hci0.device loaded active plugged   /sys/devices/pci0000:00/0000:00:11.0/0000:02:00.0/usb2/2-2&gt;</span><br><span class="line">......</span><br><span class="line">-.mount                                                                                                  loaded active mounted   Root Mount                                                </span><br><span class="line">boot.mount                                                                                               loaded active mounted   /boot</span><br><span class="line"></span><br><span class="line">......</span><br><span class="line">cups.path                                                                                                loaded active running   CUPS Scheduler                                            </span><br><span class="line">systemd-ask-password-plymouth.path                                                                       loaded active waiting   Forward Password Requests to Plymouth Directory Watch </span><br><span class="line">......</span><br><span class="line">init.scope                                                                                               loaded active running   System and Service Manager                                </span><br><span class="line">session-2.scope                                                                                          loaded active running   Session 2 of user student </span><br><span class="line">......</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<h3 id="查看所有已安装的单元文件的状态">查看所有已安装的单元文件的状态</h3>
+<p>​<em>systemctl list-units</em> 命令显示 <em>systemd</em> 服务尝试解析并加载到内存中的单元；它不显示已安装但未启用的单元。可以使用以下命令来查看所有已安装的单元文件的状态：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]\<span class="comment"># systemctl list-unit-files</span></span><br><span class="line">UNIT FILE                                                                 STATE    </span><br><span class="line">proc-sys-fs-binfmt_misc.automount                                         static   </span><br><span class="line">-.mount                                                                   generated</span><br></pre></td></tr></table></figure>
+<p>​*--type=* 以及 <em>state=</em> 选项同样适用于此命令。其中 STATE 的可选值为 [enabled | disabled | static | masked]。</p>
+<h3 id="3-查看服务状态">3. 查看服务状态</h3>
+<p>​使用 <code>systemctl status name.type</code> 命令来查看特定单元的状态，如果未提供单元类型，则 systemctl 将显示服务单元的状态（如果存在）。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]\<span class="comment"># systemctl status cups</span></span><br><span class="line">● cups.service - CUPS Scheduler</span><br><span class="line">   Loaded: loaded (/usr/lib/systemd/system/cups.service; enabled; vendor preset: e&gt;</span><br><span class="line">   Active: active (running) since Mon 2021-08-09 17:08:41 PDT; 1h 11min ago</span><br><span class="line">     Docs: man:cupsd(8)</span><br><span class="line"> Main PID: 1213 (cupsd)</span><br><span class="line">   Status: <span class="string">&quot;Scheduler is running...&quot;</span></span><br><span class="line">    Tasks: 1 (<span class="built_in">limit</span>: 23503)</span><br><span class="line">   Memory: 3.7M</span><br><span class="line">   CGroup: /system.slice/cups.service</span><br><span class="line">           └─1213 /usr/sbin/cupsd -l</span><br><span class="line"></span><br><span class="line">Aug 09 17:08:40 localhost.localdomain systemd[1]: Starting CUPS Scheduler...</span><br><span class="line">Aug 09 17:08:41 localhost.localdomain systemd[1]: Started CUPS Scheduler.</span><br><span class="line">......</span><br><span class="line">[root@localhost ~]\<span class="comment"># systemctl status cups.path</span></span><br><span class="line">● cups.path - CUPS Scheduler</span><br><span class="line">   Loaded: loaded (/usr/lib/systemd/system/cups.path; enabled; vendor preset: enab&gt;</span><br><span class="line">   Active: active (running) since Mon 2021-08-09 17:08:29 PDT; 1h 13min ago</span><br><span class="line"></span><br><span class="line">Aug 09 17:08:29 localhost.localdomain systemd[1]: Started CUPS Scheduler.</span><br><span class="line">......</span><br></pre></td></tr></table></figure>
+<p>​一些重要字段的含义：</p>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Loaded</td>
+<td>服务单元是否已加载到内存中。</td>
+</tr>
+<tr>
+<td>Active</td>
+<td>服务单元是否正在运行，若是，他已经运行了多久。</td>
+</tr>
+<tr>
+<td>Main PID</td>
+<td>服务的主进程 ID, 包括命令名称。</td>
+</tr>
+<tr>
+<td>Status</td>
+<td>有关该服务的其他信息。</td>
+</tr>
+</tbody>
+</table>
+<p>​<em>Status</em> 字段的不同值的含义：</p>
+<table>
+<thead>
+<tr>
+<th>值</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>loaded</td>
+<td>单元配置文件已加载处理。</td>
+</tr>
+<tr>
+<td>active(running)</td>
+<td>正在通过一个或多个持续进程运行。</td>
+</tr>
+<tr>
+<td>active(exited)</td>
+<td>已成功完成一次性配置。</td>
+</tr>
+<tr>
+<td>active(waiting)</td>
+<td>运行中，但正在等待事件。</td>
+</tr>
+<tr>
+<td>inactive</td>
+<td>不在运行。</td>
+</tr>
+<tr>
+<td>enabled</td>
+<td>在系统引导时启动。</td>
+</tr>
+<tr>
+<td>disabled</td>
+<td>未设为在系统引导时启动。</td>
+</tr>
+<tr>
+<td>static</td>
+<td>无法启用，但可以由某一启用的单元自动启动。</td>
+</tr>
+</tbody>
+</table>
+<h3 id="验证服务的状态">验证服务的状态</h3>
+<p>​systemctl 命令提供了一些方法来验证服务的具体状态。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]\<span class="comment"># systemctl is-active sshd # 是否活动</span></span><br><span class="line">active    <span class="comment"># inactive</span></span><br><span class="line">[root@localhost ~]\<span class="comment"># systemctl is-enabled sshd    # 是否自启 </span></span><br><span class="line">enabled    <span class="comment"># disabled</span></span><br><span class="line">[root@localhost ~]\<span class="comment"># systemctl is-failed sshd    # 是否启动失败</span></span><br><span class="line">active    <span class="comment"># failed，若已被停止，则 unknown 或 inactive</span></span><br></pre></td></tr></table></figure>
+<p>​列出所有启动失败的单元：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]\<span class="comment"># systemctl --failed --type=service</span></span><br><span class="line">0 loaded units listed. Pass --all to see loaded but inactive units, too.</span><br><span class="line">To show all installed unit files use <span class="string">&#x27;systemctl list-unit-files&#x27;</span>.</span><br></pre></td></tr></table></figure>
+<h2 id="控制系统服务">控制系统服务</h2>
+<h3 id="手动启停服务">手动启停服务</h3>
+<p>​手动启停服务的原因：1. 更新服务；2. 更改配置文件；3. 卸载服务；4. 启动不常使用的服务。</p>
+<p>​启动服务前，可以先用 <code>systemctl status</code> 命令验证服务是否未在运行。启停服务需要 root 权限进行操作。以 cups 服务为例，以下命令展示了启停服务的命令：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 验证服务是否已经启动</span></span><br><span class="line">[root@localhost ~]\<span class="comment"># systemctl status cups</span></span><br><span class="line">● cups.service - CUPS Scheduler</span><br><span class="line">   Loaded: loaded (/usr/lib/systemd/system/cups.service; enabled; vendor preset: e&gt;</span><br><span class="line">   Active: active (running) since Mon 2021-08-09 17:08:41 PDT; 2h 0min ago</span><br><span class="line">     Docs: man:cupsd(8)</span><br><span class="line"> Main PID: 1213 (cupsd)</span><br><span class="line">   Status: <span class="string">&quot;Scheduler is running...&quot;</span></span><br><span class="line">    Tasks: 1 (<span class="built_in">limit</span>: 23503)</span><br><span class="line">   Memory: 3.7M</span><br><span class="line">   CGroup: /system.slice/cups.service</span><br><span class="line">           └─1213 /usr/sbin/cupsd -l</span><br><span class="line"></span><br><span class="line">Aug 09 17:08:40 localhost.localdomain systemd[1]: Starting CUPS Scheduler...</span><br><span class="line">Aug 09 17:08:41 localhost.localdomain systemd[1]: Started CUPS Scheduler.</span><br><span class="line"><span class="comment"># 停止 cups 守护进程服务并查看状态</span></span><br><span class="line">[root@localhost ~]\<span class="comment"># systemctl stop cups.service # .service 拓展可以省略，下同</span></span><br><span class="line">[root@localhost ~]\<span class="comment"># systemctl is-active cups    # 验证 cups 服务是否在活动</span></span><br><span class="line">inactive    <span class="comment"># 服务已停止</span></span><br><span class="line"><span class="comment"># 启动 cups 守护进程服务并查看状态</span></span><br><span class="line">[root@localhost ~]\<span class="comment"># systemctl start cups</span></span><br><span class="line">[root@localhost ~]\<span class="comment"># systemctl status cups</span></span><br><span class="line">● cups.service - CUPS Scheduler</span><br><span class="line">   Loaded: loaded (/usr/lib/systemd/system/cups.service; enabled; vendor preset: e&gt;</span><br><span class="line">   Active: active (running) (thawing) since Mon 2021-08-09 19:15:01 PDT; 1min 17s &gt;</span><br><span class="line">     Docs: man:cupsd(8)</span><br><span class="line"> Main PID: 4284 (cupsd)</span><br><span class="line">   Status: <span class="string">&quot;Scheduler is running...&quot;</span></span><br><span class="line">    Tasks: 1 (<span class="built_in">limit</span>: 23503)</span><br><span class="line">   Memory: 1.9M</span><br><span class="line">   CGroup: /system.slice/cups.service</span><br><span class="line">           └─4284 /usr/sbin/cupsd -l</span><br><span class="line"></span><br><span class="line">Aug 09 19:15:01 localhost.localdomain systemd[1]: Starting CUPS Scheduler...</span><br><span class="line">Aug 09 19:15:01 localhost.localdomain systemd[1]: Started CUPS Scheduler.</span><br></pre></td></tr></table></figure>
+<h3 id="手动重启服务和重新加载服务">手动重启服务和重新加载服务</h3>
+<p>​重启 = 停止 + 启动，因此重启后的服务进程 ID 会改变，并且在启动期间会关联新的进程 ID。若只是因为修改了某项支持重新加载的服务的配置文件，则可以直接重新加载该服务而无需重启该服务。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]\<span class="comment"># systemctl restart cups</span></span><br><span class="line">[root@localhost ~]\<span class="comment"># systemctl status cups</span></span><br><span class="line">● cups.service - CUPS Scheduler</span><br><span class="line">   Loaded: loaded (/usr/lib/systemd/system/cups.service; enabled; vendor preset: e&gt;</span><br><span class="line">   Active: active (running) (thawing) since Mon 2021-08-09 19:24:21 PDT; 10s ago</span><br><span class="line">     Docs: man:cupsd(8)</span><br><span class="line"> Main PID: 4384 (cupsd)</span><br><span class="line">   Status: <span class="string">&quot;Scheduler is running...&quot;</span></span><br><span class="line">    Tasks: 1 (<span class="built_in">limit</span>: 23503)</span><br><span class="line">   Memory: 2.0M</span><br><span class="line">   CGroup: /system.slice/cups.service</span><br><span class="line">           └─4384 /usr/sbin/cupsd -l</span><br><span class="line"></span><br><span class="line">Aug 09 19:24:21 localhost.localdomain systemd[1]: cups.service: Succeeded.</span><br><span class="line">Aug 09 19:24:21 localhost.localdomain systemd[1]: Stopped CUPS Scheduler.</span><br><span class="line">......</span><br><span class="line">[root@localhost ~]\<span class="comment"># systemctl reload cups # cups 服务不支持重载</span></span><br><span class="line">Failed to reload cups.service: Job <span class="built_in">type</span> reload is not applicable <span class="keyword">for</span> unit cups.service.</span><br><span class="line">[root@localhost ~]\<span class="comment"># systemctl reload firewalld # firewalld 服务支持重载</span></span><br><span class="line">[root@localhost ~]\<span class="comment"># systemctl status firewalld # 最底下详情记录了重载的信息</span></span><br><span class="line">● firewalld.service - firewalld - dynamic firewall daemon</span><br><span class="line">   Loaded: loaded (/usr/lib/systemd/system/firewalld.service; enabled; vendor preset: enabled)</span><br><span class="line">   Active: active (running) (thawing) since Mon 2021-08-09 17:08:40 PDT; 2h 19min ago</span><br><span class="line">     Docs: man:firewalld(1)</span><br><span class="line">  Process: 4443 ExecReload=/bin/kill -HUP <span class="variable">$MAINPID</span> (code=exited, status=0/SUCCESS)</span><br><span class="line"> Main PID: 1116 (firewalld)</span><br><span class="line">    Tasks: 3 (<span class="built_in">limit</span>: 23503)</span><br><span class="line">   Memory: 35.2M</span><br><span class="line">   CGroup: /system.slice/firewalld.service</span><br><span class="line">           └─1116 /usr/libexec/platform-python -s /usr/sbin/firewalld --nofork --nopid</span><br><span class="line"></span><br><span class="line">Aug 09 17:08:38 localhost.localdomain systemd[1]: Starting firewalld - dynamic firewall daemon...</span><br><span class="line">Aug 09 17:08:40 localhost.localdomain systemd[1]: Started firewalld - dynamic firewall daemon.</span><br><span class="line">Aug 09 17:08:41 localhost.localdomain firewalld[1116]: WARNING: AllowZoneDrifting is enabled. This is considered an insecure configuration option. It will be removed <span class="keyword">in</span> a future release. &gt;</span><br><span class="line">Aug 09 19:27:17 localhost.localdomain systemd[1]: Reloading firewalld - dynamic firewall daemon.</span><br><span class="line">Aug 09 19:27:17 localhost.localdomain systemd[1]: Reloaded firewalld - dynamic firewall daemon.</span><br><span class="line">Aug 09 19:27:17 localhost.localdomain firewalld[1116]: WARNING: AllowZoneDrifting is enabled. This is considered an insecure configuration option. It will be removed <span class="keyword">in</span> a future release. </span><br></pre></td></tr></table></figure>
+<p>​若不确定某服务是否具有重新加载配置文件更改的功能，则可以使用 <code>reload-or-restart</code> 选项来运行 systemctl 命令。如果重新加载功能可用，该命令将重新加载配置更改，否则，该命令将重新启动服务以实施新的配置更改：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]\<span class="comment"># systemctl status NetworkManager # 支持重载</span></span><br><span class="line">● NetworkManager.service - Network Manager</span><br><span class="line">   Loaded: loaded (/usr/lib/systemd/system/NetworkManager.service; enabled; vendor preset: enabled)</span><br><span class="line">   Active: active (running) (thawing) since Mon 2021-08-09 17:08:40 PDT; 2h 28min ago</span><br><span class="line">     Docs: man:NetworkManager(8)</span><br><span class="line">  Process: 4531 ExecReload=/usr/bin/busctl call org.freedesktop.NetworkManager /org/freedesktop/NetworkManager org.freedesktop.NetworkManager Reload u 0 (code=exited, status=0/SUCCESS)</span><br><span class="line"> Main PID: 1190 (NetworkManager)</span><br><span class="line">    Tasks: 3 (<span class="built_in">limit</span>: 23503)</span><br><span class="line">   Memory: 10.7M</span><br><span class="line">   CGroup: /system.slice/NetworkManager.service</span><br><span class="line">           └─1190 /usr/sbin/NetworkManager --no-daemon</span><br><span class="line"></span><br><span class="line">Aug 09 19:20:04 localhost.localdomain NetworkManager[1190]: &lt;info&gt;  [1628562004.4206] dhcp4 (ens160): option requested_subnet_mask =&gt; <span class="string">&#x27;1&#x27;</span></span><br><span class="line">Aug 09 19:20:04 localhost.localdomain NetworkManager[1190]: &lt;info&gt;  [1628562004.4206] dhcp4 (ens160): option requested_time_offset =&gt; <span class="string">&#x27;1&#x27;</span></span><br><span class="line">Aug 09 19:20:04 localhost.localdomain NetworkManager[1190]: &lt;info&gt;  [1628562004.4206] dhcp4 (ens160): option requested_wpad       =&gt; <span class="string">&#x27;1&#x27;</span></span><br><span class="line">Aug 09 19:20:04 localhost.localdomain NetworkManager[1190]: &lt;info&gt;  [1628562004.4206] dhcp4 (ens160): option routers              =&gt; <span class="string">&#x27;192.168.30.2&#x27;</span></span><br><span class="line">Aug 09 19:20:04 localhost.localdomain NetworkManager[1190]: &lt;info&gt;  [1628562004.4206] dhcp4 (ens160): option subnet_mask          =&gt; <span class="string">&#x27;255.255.255.0&#x27;</span></span><br><span class="line">Aug 09 19:20:04 localhost.localdomain NetworkManager[1190]: &lt;info&gt;  [1628562004.4206] dhcp4 (ens160): state changed bound -&gt; extended</span><br><span class="line">Aug 09 19:36:30 localhost.localdomain systemd[1]: Reloading Network Manager.</span><br><span class="line">Aug 09 19:36:30 localhost.localdomain NetworkManager[1190]: &lt;info&gt;  [1628562990.2331] audit: op=<span class="string">&quot;reload&quot;</span> arg=<span class="string">&quot;0&quot;</span> pid=4531 uid=0 result=<span class="string">&quot;success&quot;</span></span><br><span class="line">Aug 09 19:36:30 localhost.localdomain NetworkManager[1190]: &lt;info&gt;  [1628562990.2339] config: signal: SIGHUP (no changes from disk)</span><br><span class="line">Aug 09 19:36:30 localhost.localdomain systemd[1]: Reloaded Network Manager.</span><br><span class="line">[root@localhost ~]\<span class="comment"># systemctl reload-or-restart NetworkManager</span></span><br><span class="line">[root@localhost ~]\<span class="comment"># systemctl status NetworkManager</span></span><br><span class="line">● NetworkManager.service - Network Manager</span><br><span class="line">   Loaded: loaded (/usr/lib/systemd/system/NetworkManager.service; enabled; vendor preset: enabled)</span><br><span class="line">   Active: active (running) (thawing) since Mon 2021-08-09 17:08:40 PDT; 2h 28min ago</span><br><span class="line">     Docs: man:NetworkManager(8)</span><br><span class="line">  Process: 4547 ExecReload=/usr/bin/busctl call org.freedesktop.NetworkManager /org/freedesktop/NetworkManager org.freedesktop.NetworkManager Reload u 0 (code=exited, status=0/SUCCESS)</span><br><span class="line"> Main PID: 1190 (NetworkManager)</span><br><span class="line">    Tasks: 3 (<span class="built_in">limit</span>: 23503)</span><br><span class="line">   Memory: 10.8M</span><br><span class="line">   CGroup: /system.slice/NetworkManager.service</span><br><span class="line">           └─1190 /usr/sbin/NetworkManager --no-daemon</span><br><span class="line"></span><br><span class="line">Aug 09 19:20:04 localhost.localdomain NetworkManager[1190]: &lt;info&gt;  [1628562004.4206] dhcp4 (ens160): option subnet_mask          =&gt; <span class="string">&#x27;255.255.255.0&#x27;</span></span><br><span class="line">Aug 09 19:20:04 localhost.localdomain NetworkManager[1190]: &lt;info&gt;  [1628562004.4206] dhcp4 (ens160): state changed bound -&gt; extended</span><br><span class="line">Aug 09 19:36:30 localhost.localdomain systemd[1]: Reloading Network Manager.</span><br><span class="line">Aug 09 19:36:30 localhost.localdomain NetworkManager[1190]: &lt;info&gt;  [1628562990.2331] audit: op=<span class="string">&quot;reload&quot;</span> arg=<span class="string">&quot;0&quot;</span> pid=4531 uid=0 result=<span class="string">&quot;success&quot;</span></span><br><span class="line">Aug 09 19:36:30 localhost.localdomain NetworkManager[1190]: &lt;info&gt;  [1628562990.2339] config: signal: SIGHUP (no changes from disk)</span><br><span class="line">Aug 09 19:36:30 localhost.localdomain systemd[1]: Reloaded Network Manager.</span><br><span class="line">Aug 09 19:37:18 localhost.localdomain systemd[1]: Reloading Network Manager.</span><br><span class="line">Aug 09 19:37:19 localhost.localdomain NetworkManager[1190]: &lt;info&gt;  [1628563039.0110] audit: op=<span class="string">&quot;reload&quot;</span> arg=<span class="string">&quot;0&quot;</span> pid=4547 uid=0 result=<span class="string">&quot;success&quot;</span></span><br><span class="line">Aug 09 19:37:19 localhost.localdomain NetworkManager[1190]: &lt;info&gt;  [1628563039.0114] config: signal: SIGHUP (no changes from disk)</span><br><span class="line">Aug 09 19:37:19 localhost.localdomain systemd[1]: Reloaded Network Manager.</span><br></pre></td></tr></table></figure>
+<h3 id="列出单元依赖项">列出单元依赖项</h3>
+<p>​某些服务要求首先运行其他服务，从而创建对其他服务的依赖项。其他服务并不在系统引导时启动，而是仅在需要时启动。在这两种情况下， systemd 和 systemctl 根据需要启动服务，不论是解决依赖项，还是启动不经常使用的服务。</p>
+<p>​使用 <code>systemctl list-dependencies</code> 命令可以列出指定服务的依赖项树，如：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]\<span class="comment"># systemctl list-dependencies cups # 列出 cups 服务的依赖项</span></span><br><span class="line">cups.service</span><br><span class="line">● ├─cups.path</span><br><span class="line">● ├─cups.socket</span><br><span class="line">● ├─system.slice</span><br><span class="line">● └─sysinit.target</span><br><span class="line">●   ├─dev-hugepages.mount</span><br><span class="line">●   ├─dev-mqueue.mount</span><br><span class="line">......</span><br></pre></td></tr></table></figure>
+<h3 id="屏蔽未屏蔽的服务">屏蔽未屏蔽的服务</h3>
+<p>​目的：屏蔽服务可防止管理员意外启动与其他服务冲突的服务。</p>
+<p>​原理：在配置目录中创建指向 <em>/dev/null</em> 文件的链接，该文件可阻止服务启动。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]\<span class="comment"># systemctl mask cups    # 使用 mask 选项屏蔽某服务</span></span><br><span class="line">Created symlink /etc/systemd/system/cups.service → /dev/null.</span><br><span class="line">[root@localhost ~]\<span class="comment"># systemctl status cups</span></span><br><span class="line">● cups.service</span><br><span class="line">   Loaded: masked (Reason: Unit cups.service is masked.)</span><br><span class="line">   Active: active (running) (thawing) since Mon 2021-08-09 19:45:56 PDT; 11min ago</span><br><span class="line"> Main PID: 4653 (cupsd)</span><br><span class="line">   Status: <span class="string">&quot;Scheduler is running...&quot;</span></span><br><span class="line">    Tasks: 1 (<span class="built_in">limit</span>: 23503)</span><br><span class="line">   Memory: 1.9M</span><br><span class="line">   CGroup: /system.slice/cups.service</span><br><span class="line">           └─4653 /usr/sbin/cupsd -l</span><br><span class="line"></span><br><span class="line">Aug 09 19:45:56 localhost.localdomain systemd[1]: Starting CUPS Scheduler...</span><br><span class="line">Aug 09 19:45:56 localhost.localdomain systemd[1]: Started CUPS Scheduler.</span><br><span class="line">Aug 09 19:56:23 localhost.localdomain systemd[1]: cups.service: Current <span class="built_in">command</span> va&gt;</span><br><span class="line">[root@localhost ~]\<span class="comment"># systemctl stop cups</span></span><br><span class="line">[root@localhost ~]\<span class="comment"># systemctl status cups</span></span><br><span class="line">● cups.service</span><br><span class="line">   Loaded: masked (Reason: Unit cups.service is masked.)</span><br><span class="line">   Active: inactive (dead) (thawing) since Mon 2021-08-09 19:57:53 PDT; 3s ago</span><br><span class="line"> Main PID: 4653 (code=exited, status=0/SUCCESS)</span><br><span class="line">   Status: <span class="string">&quot;Scheduler is running...&quot;</span></span><br><span class="line"></span><br><span class="line">Aug 09 19:45:56 localhost.localdomain systemd[1]: Starting CUPS Scheduler...</span><br><span class="line">Aug 09 19:45:56 localhost.localdomain systemd[1]: Started CUPS Scheduler.</span><br><span class="line">Aug 09 19:56:23 localhost.localdomain systemd[1]: cups.service: Current <span class="built_in">command</span> va&gt;</span><br><span class="line">Aug 09 19:57:53 localhost.localdomain systemd[1]: Stopping cups.service...</span><br><span class="line">Aug 09 19:57:53 localhost.localdomain systemd[1]: cups.service: Succeeded.</span><br><span class="line">Aug 09 19:57:53 localhost.localdomain systemd[1]: Stopped cups.service.</span><br><span class="line">[root@localhost ~]\<span class="comment"># systemctl start cups</span></span><br><span class="line">Failed to start cups.service: Unit cups.service is masked.</span><br><span class="line">[root@localhost ~]\<span class="comment"># systemctl list-unit-files --type=service | grep masked</span></span><br><span class="line">cups.service                               masked  </span><br><span class="line">systemd-timedated.service                  masked  </span><br><span class="line">[root@localhost ~]\<span class="comment"># systemctl unmask cups    # 使用 unmask 接触对某服务的屏蔽</span></span><br><span class="line">Removed /etc/systemd/system/cups.service.</span><br><span class="line">[root@localhost ~]\<span class="comment"># systemctl start cups</span></span><br><span class="line">[root@localhost ~]\<span class="comment"># systemctl status cups</span></span><br><span class="line">● cups.service - CUPS Scheduler</span><br><span class="line">   Loaded: loaded (/usr/lib/systemd/system/cups.service; enabled; vendor preset: e&gt;</span><br><span class="line">   Active: active (running) (thawing) since Mon 2021-08-09 19:59:12 PDT; 4s ago</span><br><span class="line">     Docs: man:cupsd(8)</span><br><span class="line"> Main PID: 4833 (cupsd)</span><br><span class="line">   Status: <span class="string">&quot;Scheduler is running...&quot;</span></span><br><span class="line">    Tasks: 1 (<span class="built_in">limit</span>: 23503)</span><br><span class="line">   Memory: 1.9M</span><br><span class="line">   CGroup: /system.slice/cups.service</span><br><span class="line">           └─4833 /usr/sbin/cupsd -l</span><br><span class="line"></span><br><span class="line">Aug 09 19:59:12 localhost.localdomain systemd[1]: Starting CUPS Scheduler...</span><br><span class="line">Aug 09 19:59:12 localhost.localdomain systemd[1]: Started CUPS Scheduler.</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>🟢 mask 选项并不会自动停止已经启动的服务，而且只能屏蔽对服务的启动操作。</p>
+</blockquote>
+<h3 id="设置某服务开启或关闭开机自启">设置某服务开启或关闭开机自启</h3>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]\<span class="comment"># systemctl is-enabled cups    # 查看 cups 服务是否是开机自启的</span></span><br><span class="line">enabled</span><br><span class="line">[root@localhost ~]\<span class="comment"># systemctl disable cups    # 关闭 cups 开机自启</span></span><br><span class="line">Removed /etc/systemd/system/multi-user.target.wants/cups.service.</span><br><span class="line">Removed /etc/systemd/system/multi-user.target.wants/cups.path.</span><br><span class="line">Removed /etc/systemd/system/sockets.target.wants/cups.socket.</span><br><span class="line">Removed /etc/systemd/system/printer.target.wants/cups.service.</span><br><span class="line">[root@localhost ~]\<span class="comment"># systemctl is-enabled cups    # 验证</span></span><br><span class="line">disabled</span><br><span class="line">[root@localhost ~]\<span class="comment"># systemctl enable cups    # 开启 cups 开机自启</span></span><br><span class="line">Created symlink /etc/systemd/system/printer.target.wants/cups.service → /usr/lib/systemd/system/cups.service.</span><br><span class="line">Created symlink /etc/systemd/system/multi-user.target.wants/cups.service → /usr/lib/systemd/system/cups.service.</span><br><span class="line">Created symlink /etc/systemd/system/sockets.target.wants/cups.socket → /usr/lib/systemd/system/cups.socket.</span><br><span class="line">Created symlink /etc/systemd/system/multi-user.target.wants/cups.path → /usr/lib/systemd/system/cups.path.</span><br><span class="line">[root@localhost ~]\<span class="comment"># systemctl is-enabled cups    # 验证</span></span><br><span class="line">enabled</span><br></pre></td></tr></table></figure>
+<p>​设置开机自启某服务并不会立即启动该服务。</p>
+
+        </div>
+        
+<blockquote class="copyright">
+    <p><strong>本文链接 : </strong><a class="permalink" href="https://skinyi.github.io/2022-08-15-Linux%20|%20%E6%8E%A7%E5%88%B6%E6%9C%8D%E5%8A%A1%E5%92%8C%E5%AE%88%E6%8A%A4%E8%BF%9B%E7%A8%8B.html">https://skinyi.github.io/2022-08-15-Linux | 控制服务和守护进程.html</a></p>
+    <p><strong>这篇文章由作者胡编乱造或者由其他文章复制粘贴而来，其中有些内容可能已经过时，请谨慎参考复制文章中的内容。</strong></p>
+</blockquote>
+
+
+    </article>
+    
+    <section id="comments">
+        
+    </section>
+
+
+    
+
+</main>
+
+
+<aside style="" id="sidebar" class="aside aside-fixture">
+    <div class="toc-sidebar">
+        <nav id="toc" class="article-toc">
+            <h3 class="toc-title">文章目录</h3>
+            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#SYSTEMCTL%E5%91%BD%E4%BB%A4%E6%91%98%E8%A6%81"><span class="toc-number">1.</span> <span class="toc-text">SYSTEMCTL命令摘要</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AE%A4%E8%AF%86-SYSTEMD-%E6%9C%8D%E5%8A%A1"><span class="toc-number">2.</span> <span class="toc-text">认识 SYSTEMD 服务</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#SYSTEMD-%E6%9C%8D%E5%8A%A1%E5%8D%95%E5%85%83"><span class="toc-number">3.</span> <span class="toc-text">SYSTEMD 服务单元</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9F%A5%E7%9C%8B%E6%89%80%E6%9C%89%E5%B7%B2%E5%8A%A0%E8%BD%BD%E7%9A%84%E6%9C%8D%E5%8A%A1%E5%8D%95%E5%85%83"><span class="toc-number">3.1.</span> <span class="toc-text">查看所有已加载的服务单元</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9F%A5%E7%9C%8B%E6%89%80%E6%9C%89%E5%B7%B2%E5%AE%89%E8%A3%85%E7%9A%84%E5%8D%95%E5%85%83%E6%96%87%E4%BB%B6%E7%9A%84%E7%8A%B6%E6%80%81"><span class="toc-number">3.2.</span> <span class="toc-text">查看所有已安装的单元文件的状态</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E6%9F%A5%E7%9C%8B%E6%9C%8D%E5%8A%A1%E7%8A%B6%E6%80%81"><span class="toc-number">3.3.</span> <span class="toc-text">3. 查看服务状态</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%AA%8C%E8%AF%81%E6%9C%8D%E5%8A%A1%E7%9A%84%E7%8A%B6%E6%80%81"><span class="toc-number">3.4.</span> <span class="toc-text">验证服务的状态</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8E%A7%E5%88%B6%E7%B3%BB%E7%BB%9F%E6%9C%8D%E5%8A%A1"><span class="toc-number">4.</span> <span class="toc-text">控制系统服务</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%89%8B%E5%8A%A8%E5%90%AF%E5%81%9C%E6%9C%8D%E5%8A%A1"><span class="toc-number">4.1.</span> <span class="toc-text">手动启停服务</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%89%8B%E5%8A%A8%E9%87%8D%E5%90%AF%E6%9C%8D%E5%8A%A1%E5%92%8C%E9%87%8D%E6%96%B0%E5%8A%A0%E8%BD%BD%E6%9C%8D%E5%8A%A1"><span class="toc-number">4.2.</span> <span class="toc-text">手动重启服务和重新加载服务</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%97%E5%87%BA%E5%8D%95%E5%85%83%E4%BE%9D%E8%B5%96%E9%A1%B9"><span class="toc-number">4.3.</span> <span class="toc-text">列出单元依赖项</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B1%8F%E8%94%BD%E6%9C%AA%E5%B1%8F%E8%94%BD%E7%9A%84%E6%9C%8D%E5%8A%A1"><span class="toc-number">4.4.</span> <span class="toc-text">屏蔽未屏蔽的服务</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AE%BE%E7%BD%AE%E6%9F%90%E6%9C%8D%E5%8A%A1%E5%BC%80%E5%90%AF%E6%88%96%E5%85%B3%E9%97%AD%E5%BC%80%E6%9C%BA%E8%87%AA%E5%90%AF"><span class="toc-number">4.5.</span> <span class="toc-text">设置某服务开启或关闭开机自启</span></a></li></ol></li></ol>
+        </nav>
+    </div>
+</aside>
+
+
+
+
+
+        </section>
+        <footer class="hidden lg:block fixed bottom-0 left-0 sm:w-1/12 bg-gray-100 z-40">
+    
+    
+        <p class="footer-custom">❤ Powered by <a href="https://hexo.io/" target="_blank" rel="noopener noreferrer">Hexo</a> with <a href="https://github.com/fengkx/hexo-theme-purer" target="_blank" rel="noopener noreferrer">Purer theme</a>.</p>
+    
+</footer>
+
+        <div id="mask" class="hidden mask fixed inset-0 bg-gray-900 opacity-75 z-40"></div>
+        <div id="search-view-container" class="hidden shadow-xl"></div>
+        
+<script src="/js/dom-event.min.js"></script>
+
+
+
+<script src="/js/local-search.min.js"></script>
+
+
+
+    <script src="//cdn.jsdelivr.net/npm/lightgallery.js@1.1.3/dist/js/lightgallery.min.js"></script>
+    
+<script src="/js/light-gallery.min.js"></script>
+
+
+
+
+
+
+    </body>
+</html>

@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html  lang="zh-CN,en,default" >
+    <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, maximum-scale=5, viewport-fit=cover">
+    <title>管理临时文件 | Avery Ma 的个人网站</title>
+    <meta name="description" content="🔴 此文章由之前的 Typora 笔记迁移过来，内容可能已经过时。  概述 ​现代操作文件会在运行时产生大量的临时文件和目录，有些应用（和用户）会使用 &#x2F;tmp 目录来保存临时数据，还有一些应用（和用户）则使用更特定于任务的位置，如守护进程以及 &#x2F;run 下特定于用户的易失性（存储于内存，断电或重启丢失）目录。 ​为了保持系统充分运行，有必要创建那些不存在的目录和文件，因为守护进程和脚本可能会">
+<meta property="og:type" content="article">
+<meta property="og:title" content="管理临时文件">
+<meta property="og:url" content="https://skinyi.github.io/2022-08-15-Linux%20|%20%E7%AE%A1%E7%90%86%E4%B8%B4%E6%97%B6%E6%96%87%E4%BB%B6.html">
+<meta property="og:site_name" content="Avery Ma 的个人网站">
+<meta property="og:description" content="🔴 此文章由之前的 Typora 笔记迁移过来，内容可能已经过时。  概述 ​现代操作文件会在运行时产生大量的临时文件和目录，有些应用（和用户）会使用 &#x2F;tmp 目录来保存临时数据，还有一些应用（和用户）则使用更特定于任务的位置，如守护进程以及 &#x2F;run 下特定于用户的易失性（存储于内存，断电或重启丢失）目录。 ​为了保持系统充分运行，有必要创建那些不存在的目录和文件，因为守护进程和脚本可能会">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-08-15T06:15:46.625Z">
+<meta property="article:modified_time" content="2022-08-15T06:17:04.932Z">
+<meta property="article:author" content="skinyi">
+<meta property="article:tag" content="Linux">
+<meta property="article:tag" content="RHEL">
+<meta property="article:tag" content="RHCE">
+<meta property="article:tag" content="认证考试">
+<meta name="twitter:card" content="summary">
+
+    
+    <link rel="icon" href="images/favicon.png" type="image/x-icon">
+
+    
+<link rel="stylesheet" href="/css/common.min.css">
+
+
+
+    
+    
+    
+    
+        <link href="//cdn.jsdelivr.net/npm/lightgallery.js@1.1.3/dist/css/lightgallery.min.css" rel="stylesheet">
+    
+    
+    
+<link rel="stylesheet" href="/css/iconfont.min.css">
+
+    
+<meta name="generator" content="Hexo 6.2.0"></head>
+
+    <body>
+        <header class="header header-fixture">
+    <div class="profile-search-wrap flex sm:block">
+        
+        
+        <div class="profile sm:text-center md:px-1 lg:px-3 sm:pb-4 sm:pt-6">
+            <a id="avatar" role="link" href="https://github.com/skinyi" class="inline-block lg:w-16 lg:h-16 w-8 h-8 m-2" target="_blank" rel="noopener" rel="noreferrer" >
+                <img src="/images/avatar.jpg" class="rounded-full" alt="avatar">
+            </a>
+            <h2 id="name" class="hidden lg:block">Avery Ma</h2>
+            <h3 id="title" class="hidden xl:block">IT 从业者</h3>
+            
+            <small id="location" class="hidden lg:block">
+                <i class="iconfont icon-map-icon"></i>
+                宁夏, 中国
+            </small>
+            
+        </div>
+        
+        
+<div class="search flex-1 flex lg:inline-block sm:hidden lg:px-4 lg:mt-2 lg:w-full">
+    <form id="search-form" class="my-auto flex-1 lg:border lg:border-solid lg:border-gray-200">
+        <div class="input-group table bg-gray-100 lg:bg-white w-full">
+            <input id="search-input" type="text" placeholder="搜索" class="inline-block w-full bg-gray-100 lg:bg-white">
+            <span class="table-cell">
+                <button name="search tigger button" disabled>
+                    <i class="iconfont icon-search m-2"></i>
+                </button>
+            </span>
+        </div>
+    </form>
+        
+<div id="content-json" data-placeholder="搜索" class="invisible hidden">/content.json</div>
+<script id="search-teamplate" type="text/html" data-path="/content.json">
+    <div>
+        <div class="search-header bg-gray-400">
+            <input id="actual-search-input" model="keyword" ref="input" class="inline-block w-full h-10 px-2 py-1" placeholder="搜索" type="text">
+        </div>
+        <div class="search-result bg-gray-200">
+            {{#each searchPosts}}
+            <a href="/{{ path }}" class="result-item block px-2 pb-3 mb-1 pt-1 hover:bg-indigo-100">
+                <i class="iconfont icon-file"></i>
+                <h1 class="result-title inline font-medium text-lg">{{ title }}</h1>
+                <p class="result-content text-gray-600 text-sm">{{{ text }}}</p>
+            </a>
+            {{/each}}
+        </div>
+    </div>
+</script>
+
+</div>
+
+
+        <button name="menu toogle button" id="menu-toggle-btn" class="block sm:hidden p-3" role="button" aria-expanded="false">
+            <i class="iconfont icon-hamburger"></i>
+        </button>
+    </div>
+    <nav id="menu-nav" class="hidden sm:flex flex-col">
+        
+        
+            <div class="menu-item menu-home" role="menuitem">
+                <a href="/.">
+                    <i class="iconfont icon-home" aria-hidden="true"></i>
+                    <span class="menu-title">首页</span>
+                </a>
+            </div>
+        
+        
+            <div class="menu-item menu-archives" role="menuitem">
+                <a href="/archives">
+                    <i class="iconfont icon-archive" aria-hidden="true"></i>
+                    <span class="menu-title">归档</span>
+                </a>
+            </div>
+        
+        
+            <div class="menu-item menu-categories" role="menuitem">
+                <a href="/categories">
+                    <i class="iconfont icon-folder" aria-hidden="true"></i>
+                    <span class="menu-title">分类</span>
+                </a>
+            </div>
+        
+        
+            <div class="menu-item menu-tags" role="menuitem">
+                <a href="/tags">
+                    <i class="iconfont icon-tag" aria-hidden="true"></i>
+                    <span class="menu-title">标签</span>
+                </a>
+            </div>
+        
+        
+            <div class="menu-item menu-repository" role="menuitem">
+                <a href="/repository">
+                    <i class="iconfont icon-project" aria-hidden="true"></i>
+                    <span class="menu-title">项目</span>
+                </a>
+            </div>
+        
+        
+            <div class="menu-item menu-about" role="menuitem">
+                <a href="/about">
+                    <i class="iconfont icon-cup" aria-hidden="true"></i>
+                    <span class="menu-title">关于</span>
+                </a>
+            </div>
+        
+        
+
+    </nav>
+</header>
+
+        <section class="main-section">
+            
+    <main class="flex-1 px-4 py-14 md:px-5 lg:px-8 lg:py-4 relative min-h-screen">
+    
+
+    <article class="content article article-archives article-type-list" itemscope="">
+        <header class="article-header">
+            
+    
+        <h1 class="article-title text-lg" itemprop="name">
+            管理临时文件
+        </h1>
+    
+
+
+
+            <p class="article-meta mb-3 text-xs">
+                <span class="article-date">
+    <i class="iconfont icon-calendar-check"></i>
+	<a href="/2022-08-15-Linux%20%7C%20%E7%AE%A1%E7%90%86%E4%B8%B4%E6%97%B6%E6%96%87%E4%BB%B6.html" class="article-date">
+	  <time datetime="2022-08-15T06:15:46.625Z" itemprop="datePublished">8月 15</time>
+	</a>
+</span>
+
+                
+    <span class="article-category">
+    <i class="iconfont icon-folder"></i>
+    <a class="article-category-link" href="/categories/%E5%AD%A6%E4%B9%A0/">学习</a> , <a class="article-category-link" href="/categories/%E5%AD%A6%E4%B9%A0/Linux/">Linux</a> , <a class="article-category-link" href="/categories/%E6%97%A5%E5%B8%B8%E8%AE%B0%E5%BD%95/">日常记录</a> , <a class="article-category-link" href="/categories/%E8%BF%81%E7%A7%BB%E6%96%87%E7%AB%A0/">迁移文章</a>
+  </span>
+
+
+                
+    <span class="article-tags">
+    <i class="iconfont icon-tag"></i>
+    <a class="article-tag-none-link" href="/tags/Linux/" rel="tag">Linux</a>, <a class="article-tag-none-link" href="/tags/RHCE/" rel="tag">RHCE</a>, <a class="article-tag-none-link" href="/tags/RHEL/" rel="tag">RHEL</a>, <a class="article-tag-none-link" href="/tags/%E8%AE%A4%E8%AF%81%E8%80%83%E8%AF%95/" rel="tag">认证考试</a>
+  </span>
+
+
+                
+                
+    
+        <span class="post-wordcount" itemprop="wordCount">字数统计: 1.1k(字)</span>
+    
+    
+        <span class="post-readcount" itemprop="timeRequired">阅读时长: 4(分)</span>
+    
+
+
+            </p>
+        </header>
+        <div class="marked-body article-body">
+            <blockquote>
+<p>🔴 此文章由之前的 Typora 笔记迁移过来，内容可能已经过时。</p>
+</blockquote>
+<h2 id="概述-2">概述</h2>
+<p>​现代操作文件会在运行时产生大量的临时文件和目录，有些应用（和用户）会使用 <em>/tmp</em> 目录来保存临时数据，还有一些应用（和用户）则使用更特定于任务的位置，如守护进程以及 <em>/run</em> 下特定于用户的易失性（存储于内存，断电或重启丢失）目录。</p>
+<p>​为了保持系统充分运行，有必要创建那些不存在的目录和文件，因为守护进程和脚本可能会依靠它们的存在，而清除旧文件后就不会填满磁盘空间或提供错误信息。</p>
+<p>​RHEL 7 以上引入了一个名为 <em>systemd-tmpfiles</em> 的新工具，它提供了一种结构化和可配置的方法来管理临时目录和文件。在 systemd 启动系统后，其中一个最先启动的服务单元是 systemd-tmpfiles-setup。该服务运行命令 <code>systemd-tmpfiles --create --remove</code>。此命令从 <em>/usr/lib/tmpfiles.d/*.conf</em>、<em>/run/tmpfiles.d/*.conf</em> 和 <em>/etc/tmpfiles.d/*.conf</em> 读取配置文件。系统会删除这些配置文件中标记的要删除的任何文件和目录，并且会创建标记要创建（或修复权限）的任何文件和目录，并使其拥有正确的权限（如有必要）。</p>
+<h2 id="使用定时器清理临时文件">使用定时器清理临时文件</h2>
+<p>​RHEL 内建了一个名为 systemd-tmpfiles-clean.timer 的 systemd 定时器单元定时触发 systemd-tmpfiles-clean.service 来执行 systemd-tmpfiles --clean 命令。</p>
+<p>​定时器 systemd-tmpfiles-clean.timer 文件的内容：</p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#  SPDX-License-Identifier: LGPL-2.1+</span></span><br><span class="line"><span class="comment"># </span></span><br><span class="line"><span class="comment">#  This file is part of systemd.</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment">#  systemd is free software; you can redistribute it and/or modify it</span></span><br><span class="line"><span class="comment">#  under the terms of the GNU Lesser General Public License as published by</span></span><br><span class="line"><span class="comment">#  the Free Software Foundation; either version 2.1 of the License, or</span></span><br><span class="line"><span class="comment">#  (at your option) any later version.</span></span><br><span class="line"></span><br><span class="line"><span class="section">[Unit]</span></span><br><span class="line"><span class="attr">Description</span>=Daily Cleanup of Temporary Directories</span><br><span class="line"><span class="attr">Documentation</span>=man:tmpfiles.d(<span class="number">5</span>) man:systemd-tmpfiles(<span class="number">8</span>)</span><br><span class="line"></span><br><span class="line"><span class="section">[Timer]</span></span><br><span class="line"><span class="comment"># 表示 systemd-tmpfiles-clean.service 将在系统启动 15min 后被触发</span></span><br><span class="line"><span class="attr">OnBootSec</span>=<span class="number">15</span>min</span><br><span class="line"><span class="comment"># 表示在上一次激活服务单元 1d 后再次触发 systemd-tmpfiles-clean.service</span></span><br><span class="line"><span class="attr">OnUnitActiveSec</span>=<span class="number">1</span>d</span><br></pre></td></tr></table></figure>
+<p>​服务单元 systemd-tmpfiles-clean.service 文件的内容：</p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment">#  This file is part of systemd.</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment">#  systemd is free software; you can redistribute it and/or modify it</span></span><br><span class="line"><span class="comment">#  under the terms of the GNU Lesser General Public License as published by</span></span><br><span class="line"><span class="comment">#  the Free Software Foundation; either version 2.1 of the License, or</span></span><br><span class="line"><span class="comment">#  (at your option) any later version.</span></span><br><span class="line"></span><br><span class="line"><span class="section">[Unit]</span></span><br><span class="line"><span class="attr">Description</span>=Cleanup of Temporary Directories</span><br><span class="line"><span class="attr">Documentation</span>=man:tmpfiles.d(<span class="number">5</span>) man:systemd-tmpfiles(<span class="number">8</span>)</span><br><span class="line"><span class="attr">DefaultDependencies</span>=<span class="literal">no</span></span><br><span class="line"><span class="attr">Conflicts</span>=shutdown.target</span><br><span class="line"><span class="attr">After</span>=local-fs.target time-sync.target</span><br><span class="line"><span class="attr">Before</span>=shutdown.target</span><br><span class="line"></span><br><span class="line"><span class="section">[Service]</span></span><br><span class="line"><span class="attr">Type</span>=<span class="literal">on</span>eshot</span><br><span class="line"><span class="attr">ExecStart</span>=/usr/bin/systemd-tmpfiles --clean</span><br><span class="line"><span class="attr">SuccessExitStatus</span>=<span class="number">65</span></span><br><span class="line"><span class="attr">IOSchedulingClass</span>=idle</span><br></pre></td></tr></table></figure>
+<p>​可以在 <em>/etc/systemd/system</em> 里更改 systemd-tmpfiles-clean.timer 的内容来定制自己的临时文件清理频率。</p>
+<h2 id="手动清理临时文件">手动清理临时文件</h2>
+<p>​命令 <em>systemd-tmpfiles --clean</em> 解析的配置文件与 <em>systemd-tmpfiles --create</em> 命令相同，但前者不会创建文件和目录，而是会清除在比配置文件中定义的最长期限更近的时间尚未访问、更改或修改的所有文件。</p>
+<p>​<em>systemd-tmpfiles</em>到的配置文件的基本语法由七列构成：”类型“、”路径“、”模式“、”UID“、”GID“、”期限“ 和 ”参数“。类型指的是 <em>systemd-tmpfiles</em> 应执行的操作；例如 <em>d</em> 表示创建还不存在的目录，或者 <em>Z</em> 表示以递归方式恢复 <em>SELinux</em> 上下文以及文件权限和所有权。示例：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">d /run/systemd/seats 0755 root root -</span><br><span class="line"><span class="comment"># 在创建文件和目录时，如果目录 /run/systemd/seats 还不存在，则创建该目录，所有者为用户 root 和组 root ，权限设置为 rwxr-x-r-x。系统不会自动清除该目录。</span></span><br><span class="line">D /home/student 0700 student student 1d</span><br><span class="line"><span class="comment"># 如果目录 /home/student 还不存在，则创建该目录。如果存在，则清空其所有内容。运行 systemd-tmpfiles --clean 时，删除在超过一天时间内尚未被访问、更改或删除的所有文件。</span></span><br><span class="line">L /run/fstablink - root root - /etc/fstab</span><br><span class="line"><span class="comment"># 创建指向 /etc/fstab 的符号链接 /run/fstab。绝对不要自动清除这一行。</span></span><br></pre></td></tr></table></figure>
+<h3 id="配置文件优先级">配置文件优先级</h3>
+<p>​配置文件可位于三个位置：</p>
+<ul>
+<li><em>/etc/tmpfiles.d/*.conf</em></li>
+<li><em>/run/tmpfiles.d/*.conf</em></li>
+<li><em>/usr/lib/tmpfiles.d/*.conf</em></li>
+</ul>
+<p>​*/usr/lib/tmpfiles.d* 中的文件是由相关 RPM 软件包提供的，不应编辑这些文件。<em>/run/tmpfiles.d/</em> 下的文件本身是易失性文件，通常由守护进程用来管理自己的运行时临时文件。<em>/etc/tmpfiles.d/</em> 下的文件旨在供管理员配置自定义临时位置，以及覆盖供应商提供的默认值。</p>
+<p>​同名文件生效优先级：<em>/etc/tmpfiles.d/</em> &gt; <em>/run/tmpfiles.d/</em> &gt; <em>/usr/lib/tmpfiles.d/</em>。</p>
+
+        </div>
+        
+<blockquote class="copyright">
+    <p><strong>本文链接 : </strong><a class="permalink" href="https://skinyi.github.io/2022-08-15-Linux%20|%20%E7%AE%A1%E7%90%86%E4%B8%B4%E6%97%B6%E6%96%87%E4%BB%B6.html">https://skinyi.github.io/2022-08-15-Linux | 管理临时文件.html</a></p>
+    <p><strong>这篇文章由作者胡编乱造或者由其他文章复制粘贴而来，其中有些内容可能已经过时，请谨慎参考复制文章中的内容。</strong></p>
+</blockquote>
+
+
+    </article>
+    
+    <section id="comments">
+        
+    </section>
+
+
+    
+
+</main>
+
+
+<aside style="" id="sidebar" class="aside aside-fixture">
+    <div class="toc-sidebar">
+        <nav id="toc" class="article-toc">
+            <h3 class="toc-title">文章目录</h3>
+            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A6%82%E8%BF%B0-2"><span class="toc-number">1.</span> <span class="toc-text">概述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8%E5%AE%9A%E6%97%B6%E5%99%A8%E6%B8%85%E7%90%86%E4%B8%B4%E6%97%B6%E6%96%87%E4%BB%B6"><span class="toc-number">2.</span> <span class="toc-text">使用定时器清理临时文件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%89%8B%E5%8A%A8%E6%B8%85%E7%90%86%E4%B8%B4%E6%97%B6%E6%96%87%E4%BB%B6"><span class="toc-number">3.</span> <span class="toc-text">手动清理临时文件</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E4%BC%98%E5%85%88%E7%BA%A7"><span class="toc-number">3.1.</span> <span class="toc-text">配置文件优先级</span></a></li></ol></li></ol>
+        </nav>
+    </div>
+</aside>
+
+
+
+
+
+        </section>
+        <footer class="hidden lg:block fixed bottom-0 left-0 sm:w-1/12 bg-gray-100 z-40">
+    
+    
+        <p class="footer-custom">❤ Powered by <a href="https://hexo.io/" target="_blank" rel="noopener noreferrer">Hexo</a> with <a href="https://github.com/fengkx/hexo-theme-purer" target="_blank" rel="noopener noreferrer">Purer theme</a>.</p>
+    
+</footer>
+
+        <div id="mask" class="hidden mask fixed inset-0 bg-gray-900 opacity-75 z-40"></div>
+        <div id="search-view-container" class="hidden shadow-xl"></div>
+        
+<script src="/js/dom-event.min.js"></script>
+
+
+
+<script src="/js/local-search.min.js"></script>
+
+
+
+    <script src="//cdn.jsdelivr.net/npm/lightgallery.js@1.1.3/dist/js/lightgallery.min.js"></script>
+    
+<script src="/js/light-gallery.min.js"></script>
+
+
+
+
+
+
+    </body>
+</html>

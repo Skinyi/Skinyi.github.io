@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html  lang="zh-CN,en,default" >
+    <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, maximum-scale=5, viewport-fit=cover">
+    <title>分析和存储系统日志 | Avery Ma 的个人网站</title>
+    <meta name="description" content="🔴 此文章由之前的 Typora 笔记迁移过来，内容可能已经过时。  系统日志概述 ​进程和操作系统内核会以发生的具体事件记录日志，这些日志可用于系统审核和问题的故障排除。 ​许多系统以文本文件的形式存储日志，它们一般都被保存在 &#x2F;var&#x2F;log 目录下。RHEL 内建了一个基于 Syslog 协议的标准日志记录系统。systemd-journald 和 rsyslog 服务处理红帽企业 li">
+<meta property="og:type" content="article">
+<meta property="og:title" content="分析和存储系统日志">
+<meta property="og:url" content="https://skinyi.github.io/2022-08-15-Linux%20|%20%E5%88%86%E6%9E%90%E5%92%8C%E5%AD%98%E5%82%A8%E7%B3%BB%E7%BB%9F%E6%97%A5%E5%BF%97.html">
+<meta property="og:site_name" content="Avery Ma 的个人网站">
+<meta property="og:description" content="🔴 此文章由之前的 Typora 笔记迁移过来，内容可能已经过时。  系统日志概述 ​进程和操作系统内核会以发生的具体事件记录日志，这些日志可用于系统审核和问题的故障排除。 ​许多系统以文本文件的形式存储日志，它们一般都被保存在 &#x2F;var&#x2F;log 目录下。RHEL 内建了一个基于 Syslog 协议的标准日志记录系统。systemd-journald 和 rsyslog 服务处理红帽企业 li">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-08-15T03:29:18.977Z">
+<meta property="article:modified_time" content="2022-08-15T03:38:21.121Z">
+<meta property="article:author" content="skinyi">
+<meta property="article:tag" content="Linux">
+<meta property="article:tag" content="RHEL">
+<meta property="article:tag" content="RHCE">
+<meta property="article:tag" content="认证考试">
+<meta name="twitter:card" content="summary">
+
+    
+    <link rel="icon" href="images/favicon.png" type="image/x-icon">
+
+    
+<link rel="stylesheet" href="/css/common.min.css">
+
+
+
+    
+    
+    
+    
+        <link href="//cdn.jsdelivr.net/npm/lightgallery.js@1.1.3/dist/css/lightgallery.min.css" rel="stylesheet">
+    
+    
+    
+<link rel="stylesheet" href="/css/iconfont.min.css">
+
+    
+<meta name="generator" content="Hexo 6.2.0"></head>
+
+    <body>
+        <header class="header header-fixture">
+    <div class="profile-search-wrap flex sm:block">
+        
+        
+        <div class="profile sm:text-center md:px-1 lg:px-3 sm:pb-4 sm:pt-6">
+            <a id="avatar" role="link" href="https://github.com/skinyi" class="inline-block lg:w-16 lg:h-16 w-8 h-8 m-2" target="_blank" rel="noopener" rel="noreferrer" >
+                <img src="/images/avatar.jpg" class="rounded-full" alt="avatar">
+            </a>
+            <h2 id="name" class="hidden lg:block">Avery Ma</h2>
+            <h3 id="title" class="hidden xl:block">IT 从业者</h3>
+            
+            <small id="location" class="hidden lg:block">
+                <i class="iconfont icon-map-icon"></i>
+                宁夏, 中国
+            </small>
+            
+        </div>
+        
+        
+<div class="search flex-1 flex lg:inline-block sm:hidden lg:px-4 lg:mt-2 lg:w-full">
+    <form id="search-form" class="my-auto flex-1 lg:border lg:border-solid lg:border-gray-200">
+        <div class="input-group table bg-gray-100 lg:bg-white w-full">
+            <input id="search-input" type="text" placeholder="搜索" class="inline-block w-full bg-gray-100 lg:bg-white">
+            <span class="table-cell">
+                <button name="search tigger button" disabled>
+                    <i class="iconfont icon-search m-2"></i>
+                </button>
+            </span>
+        </div>
+    </form>
+        
+<div id="content-json" data-placeholder="搜索" class="invisible hidden">/content.json</div>
+<script id="search-teamplate" type="text/html" data-path="/content.json">
+    <div>
+        <div class="search-header bg-gray-400">
+            <input id="actual-search-input" model="keyword" ref="input" class="inline-block w-full h-10 px-2 py-1" placeholder="搜索" type="text">
+        </div>
+        <div class="search-result bg-gray-200">
+            {{#each searchPosts}}
+            <a href="/{{ path }}" class="result-item block px-2 pb-3 mb-1 pt-1 hover:bg-indigo-100">
+                <i class="iconfont icon-file"></i>
+                <h1 class="result-title inline font-medium text-lg">{{ title }}</h1>
+                <p class="result-content text-gray-600 text-sm">{{{ text }}}</p>
+            </a>
+            {{/each}}
+        </div>
+    </div>
+</script>
+
+</div>
+
+
+        <button name="menu toogle button" id="menu-toggle-btn" class="block sm:hidden p-3" role="button" aria-expanded="false">
+            <i class="iconfont icon-hamburger"></i>
+        </button>
+    </div>
+    <nav id="menu-nav" class="hidden sm:flex flex-col">
+        
+        
+            <div class="menu-item menu-home" role="menuitem">
+                <a href="/.">
+                    <i class="iconfont icon-home" aria-hidden="true"></i>
+                    <span class="menu-title">首页</span>
+                </a>
+            </div>
+        
+        
+            <div class="menu-item menu-archives" role="menuitem">
+                <a href="/archives">
+                    <i class="iconfont icon-archive" aria-hidden="true"></i>
+                    <span class="menu-title">归档</span>
+                </a>
+            </div>
+        
+        
+            <div class="menu-item menu-categories" role="menuitem">
+                <a href="/categories">
+                    <i class="iconfont icon-folder" aria-hidden="true"></i>
+                    <span class="menu-title">分类</span>
+                </a>
+            </div>
+        
+        
+            <div class="menu-item menu-tags" role="menuitem">
+                <a href="/tags">
+                    <i class="iconfont icon-tag" aria-hidden="true"></i>
+                    <span class="menu-title">标签</span>
+                </a>
+            </div>
+        
+        
+            <div class="menu-item menu-repository" role="menuitem">
+                <a href="/repository">
+                    <i class="iconfont icon-project" aria-hidden="true"></i>
+                    <span class="menu-title">项目</span>
+                </a>
+            </div>
+        
+        
+            <div class="menu-item menu-about" role="menuitem">
+                <a href="/about">
+                    <i class="iconfont icon-cup" aria-hidden="true"></i>
+                    <span class="menu-title">关于</span>
+                </a>
+            </div>
+        
+        
+
+    </nav>
+</header>
+
+        <section class="main-section">
+            
+    <main class="flex-1 px-4 py-14 md:px-5 lg:px-8 lg:py-4 relative min-h-screen">
+    
+
+    <article class="content article article-archives article-type-list" itemscope="">
+        <header class="article-header">
+            
+    
+        <h1 class="article-title text-lg" itemprop="name">
+            分析和存储系统日志
+        </h1>
+    
+
+
+
+            <p class="article-meta mb-3 text-xs">
+                <span class="article-date">
+    <i class="iconfont icon-calendar-check"></i>
+	<a href="/2022-08-15-Linux%20%7C%20%E5%88%86%E6%9E%90%E5%92%8C%E5%AD%98%E5%82%A8%E7%B3%BB%E7%BB%9F%E6%97%A5%E5%BF%97.html" class="article-date">
+	  <time datetime="2022-08-15T03:29:18.977Z" itemprop="datePublished">8月 15</time>
+	</a>
+</span>
+
+                
+    <span class="article-category">
+    <i class="iconfont icon-folder"></i>
+    <a class="article-category-link" href="/categories/%E5%AD%A6%E4%B9%A0/">学习</a> , <a class="article-category-link" href="/categories/%E5%AD%A6%E4%B9%A0/Linux/">Linux</a> , <a class="article-category-link" href="/categories/%E6%97%A5%E5%B8%B8%E8%AE%B0%E5%BD%95/">日常记录</a> , <a class="article-category-link" href="/categories/%E8%BF%81%E7%A7%BB%E6%96%87%E7%AB%A0/">迁移文章</a>
+  </span>
+
+
+                
+    <span class="article-tags">
+    <i class="iconfont icon-tag"></i>
+    <a class="article-tag-none-link" href="/tags/Linux/" rel="tag">Linux</a>, <a class="article-tag-none-link" href="/tags/RHCE/" rel="tag">RHCE</a>, <a class="article-tag-none-link" href="/tags/RHEL/" rel="tag">RHEL</a>, <a class="article-tag-none-link" href="/tags/%E8%AE%A4%E8%AF%81%E8%80%83%E8%AF%95/" rel="tag">认证考试</a>
+  </span>
+
+
+                
+                
+    
+        <span class="post-wordcount" itemprop="wordCount">字数统计: 3.4k(字)</span>
+    
+    
+        <span class="post-readcount" itemprop="timeRequired">阅读时长: 14(分)</span>
+    
+
+
+            </p>
+        </header>
+        <div class="marked-body article-body">
+            <blockquote>
+<p>🔴 此文章由之前的 Typora 笔记迁移过来，内容可能已经过时。</p>
+</blockquote>
+<h2 id="系统日志概述">系统日志概述</h2>
+<p>​进程和操作系统内核会以发生的具体事件记录日志，这些日志可用于系统审核和问题的故障排除。</p>
+<p>​许多系统以文本文件的形式存储日志，它们一般都被保存在 /var/log 目录下。RHEL 内建了一个基于 Syslog 协议的标准日志记录系统。systemd-journald 和 rsyslog 服务处理红帽企业 linux 8 中的 syslog 消息。</p>
+<ul>
+<li>
+<p>Systemd-journald 服务是操作系统事件日志架构的核心。它收集许多来源的事件消息，包括内核、引导过程早期阶段的输出、守护进程启动和运行时的标准输出及标准错误，以及 syslog 事件。然后，他会将它们重构为一种标准格式，并写进带有索引的结构化系统日中。默认情况下，该日志存储在系统重启后不保留的文件系统上。</p>
+</li>
+<li>
+<p>Rsyslog 服务对 syslog 消息进行排序，并将它们写入到在系统重启后不保留的日志文件中(/var/log)。rsyslog 服务会根据发送每条消息的程序类型或设备以及每条 syslog 消息的优先级，将日志消息排序到特定的日志文件。</p>
+</li>
+</ul>
+<p>以下是一些重要的日志文件：</p>
+<table>
+<thead>
+<tr>
+<th>日志文件</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>/var/log/messages</td>
+<td>包含全局系统消息，包括系统启动期间记录的消息。该文件存储邮件、作业调度、任务计划、守护程序、内核、授权、调试等模块的信息。</td>
+</tr>
+<tr>
+<td>/var/log/boot.log</td>
+<td>包含与系统启动相关的非 syslog 控制台消息。</td>
+</tr>
+<tr>
+<td>/var/log/lastlog</td>
+<td>显示最近所有用户的登录信息。只能通过 lastlog 命令来查看这个文件的内容。</td>
+</tr>
+<tr>
+<td>/var/log/maillog</td>
+<td>包含系统中运行的邮件服务器的日志信息。如 sendmail 日志包含所有已发送的邮件的信息。</td>
+</tr>
+<tr>
+<td>/var/log/btmp</td>
+<td>包含失败的尝试登陆的信息。使用 <em>last</em> 命令来预览这个文件。如：`last -f /var/log/btmp</td>
+</tr>
+<tr>
+<td>/var/log/cups</td>
+<td>所有和打印或打印相关的日志消息。</td>
+</tr>
+<tr>
+<td>/var/log/dnf.rpm.log</td>
+<td>记录和软件包安装的相关日志。</td>
+</tr>
+<tr>
+<td>/var/log/secure</td>
+<td>包含认证与授权相关的信息。sshd 在此记录所有信息，包含失败的登陆。</td>
+</tr>
+<tr>
+<td>/var/log/wtmp</td>
+<td>所有登陆记录。使用 wtmp 可以指出谁登陆了系统，以及谁看了这个信息。</td>
+</tr>
+<tr>
+<td>/var/log/audit</td>
+<td>包含 Linux 授权守护进程（auditd）存储的信息。</td>
+</tr>
+<tr>
+<td>/var/log/samba</td>
+<td>包含 samba 服务的信息。</td>
+</tr>
+<tr>
+<td>/var/log/sssd</td>
+<td>系统安全服务守护程序用于管理远程目录和身份验证机制的访问。</td>
+</tr>
+<tr>
+<td>/var/log/cron</td>
+<td>与调度作业执行相关的消息。</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>🟢 有些应用不使用 syslog 管理他们的日志消息，但它们仍将其日志文件放在 /var/log 的某一子目录中。</p>
+</blockquote>
+<h2 id="查看系统日志文件">查看系统日志文件</h2>
+<p>​Syslog，其进程名为 rsyslog，根据设备日志消息的严重程度将日志分了八个优先级。</p>
+<table>
+<thead>
+<tr>
+<th>代码</th>
+<th>优先级</th>
+<th>严重性</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td>emerg</td>
+<td>系统不可用</td>
+</tr>
+<tr>
+<td>1</td>
+<td>alert</td>
+<td>必须立即采取措施</td>
+</tr>
+<tr>
+<td>2</td>
+<td>crit</td>
+<td>临界情况</td>
+</tr>
+<tr>
+<td>3</td>
+<td>err</td>
+<td>非严重错误状况</td>
+</tr>
+<tr>
+<td>4</td>
+<td>warning</td>
+<td>警告情况</td>
+</tr>
+<tr>
+<td>5</td>
+<td>notice</td>
+<td>正常但重要的事件</td>
+</tr>
+<tr>
+<td>6</td>
+<td>info</td>
+<td>信息性事件</td>
+</tr>
+<tr>
+<td>7</td>
+<td>debug</td>
+<td>调试级别消息</td>
+</tr>
+</tbody>
+</table>
+<p>​Rsyslog 服务使用日志消息的设备和优先级来确定如何进行处理。其配置规则位于 /etc/rsyslog.conf 文件和 /etc/rsyslog.d 目录中拓展名为 .conf 的任何文件。通过在 /etc/rsyslog.d 目录中添加适当的文件，某应用的软件包可以轻松的添加属于自己的日志输出规则。</p>
+<p>​每个控制着 syslog 消息排序方式的规则都对应了其中一个配置文件中的一行。如：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Log anything (except mail) of level info or higher.</span></span><br><span class="line"><span class="comment"># Don&#x27;t log private authentication messages!</span></span><br><span class="line">*.info;mail.none;authpriv.none;cron.none                /var/log/messages</span><br></pre></td></tr></table></figure>
+<p>​其中，每行左侧表示与规则匹配的 syslog 消息的设备和严重性。每行右侧表示要将日志消息保存到的文件（或消息所要发送到的其他位置）。星号(*)是一个匹配所有值的通配符。</p>
+<blockquote>
+<p>🟢 使用 <code>logger</code> 命令可以手动往系统日志中添加信息，使用方法详见 man page: logger(1)。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]\<span class="comment"># logger -p user.info &quot;Test User Log&quot; # -p 选项指定优先级</span></span><br><span class="line">[root@localhost ~]\<span class="comment"># tail -n 1 -f /var/log/messages</span></span><br><span class="line">Aug 23 21:22:22 localhost root[3276]: Test User Log</span><br></pre></td></tr></table></figure>
+</blockquote>
+<h2 id="查看系统日志条目">查看系统日志条目</h2>
+<p>​Systemd-journal 服务将日志数据存储在带有索引的结构化二进制文件中，该文件称为日志。此数据包含与日志事件相关的额外信息。例如，对于 syslog 事件，这可包含原始消息的设备和优先级。</p>
+<blockquote>
+<p>🟢 系统运行日志默认存储在 /run/log 目录下，该目录下的内容会在系统重启后清除。</p>
+</blockquote>
+<p>​若要从系统运行日志中检索日志消息，可使用 journalctl 命令。可以使用此命令来查看日志中的所有消息，或根据各种选项和标准来搜索特定事件。如果以 root 身份运行该命令，则对日志具有完全访问权限。普通用户也可以使用此命令，但可能会被限制查看某些消息。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">journalctl [OPTIONS...] [MATCHES] <span class="comment"># 查询 systemd 日志</span></span><br><span class="line"><span class="comment"># 例子</span></span><br><span class="line">root@localhost ~]\<span class="comment"># journalctl    # 不带参数默认输出 system.journal 的所有内容</span></span><br><span class="line">-- Logs begin at Mon 2021-08-23 21:08:56 PDT, end at Mon 2021-08-23 21:38:22 PDT. --</span><br><span class="line">Aug 23 21:08:56 localhost.localdomain kernel: Linux version 4.18.0-240.el8.x86_64 (mockbuild@x86-vm-09.build.eng.bos.redhat.com) (gcc version 8.3.1 20191121&gt;</span><br><span class="line">Aug 23 21:08:56 localhost.localdomain kernel: Command line: BOOT_IMAGE=(hd0,msdos1)/vmlinuz-4.18.0-240.el8.x86_64 root=UUID=360e2f42-d6de-4209-8487-f36b7cc6&gt;</span><br><span class="line">Aug 23 21:08:56 localhost.localdomain kernel: Disabled fast string operations</span><br><span class="line">......</span><br></pre></td></tr></table></figure>
+<p>​<code>journalctl</code> 命令突出显示重要的日志消息：优先级为 notice 或 warning 的消息显示为粗体文本，而优先级为 error 或以上的消息则显示为红色文本。</p>
+<p>​成功利用日志进行故障排除和审核的关键在于，将日志搜索限制为仅显示相关的输出。</p>
+<p>​默认情况下，<code>journalctl -n</code> 显示最后 10 个条目，可在参数后面指定具体显示的条数。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]\<span class="comment"># journalctl -n 3</span></span><br><span class="line">-- Logs begin at Mon 2021-08-23 21:08:56 PDT, end at Mon 2021-08-23 21:40:06 PDT. --</span><br><span class="line">Aug 23 21:38:22 localhost.localdomain systemd-logind[1137]: New session 8 of user root.</span><br><span class="line">Aug 23 21:38:22 localhost.localdomain sshd[3450]: pam_unix(sshd:session): session opened <span class="keyword">for</span> user root by (uid=0)</span><br><span class="line">Aug 23 21:40:06 localhost.localdomain chronyd[1070]: Source 2602:fcad:1::10 replaced with 124.108.20.1</span><br></pre></td></tr></table></figure>
+<p>​类似 <code>tail -f</code>，<code>journalctl -f</code> 也可以实现日志内容的实时更新：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]\<span class="comment"># journalctl -f</span></span><br><span class="line">-- Logs begin at Mon 2021-08-23 21:08:56 PDT. --</span><br><span class="line">Aug 23 21:38:22 localhost.localdomain sshd[3441]: Accepted password <span class="keyword">for</span> root from 172.16.1.195 port 6922 ssh2</span><br><span class="line">Aug 23 21:38:22 localhost.localdomain systemd-logind[1137]: New session 7 of user root.</span><br><span class="line">Aug 23 21:38:22 localhost.localdomain systemd[1]: Started Session 7 of user root.</span><br><span class="line">Aug 23 21:38:22 localhost.localdomain sshd[3441]: pam_unix(sshd:session): session opened <span class="keyword">for</span> user root by (uid=0)</span><br><span class="line">Aug 23 21:38:22 localhost.localdomain sshd[3450]: Accepted password <span class="keyword">for</span> root from 172.16.1.195 port 6925 ssh2</span><br><span class="line">Aug 23 21:38:22 localhost.localdomain systemd[1]: Started Session 8 of user root.</span><br><span class="line">Aug 23 21:38:22 localhost.localdomain systemd-logind[1137]: New session 8 of user root.</span><br><span class="line">Aug 23 21:38:22 localhost.localdomain sshd[3450]: pam_unix(sshd:session): session opened <span class="keyword">for</span> user root by (uid=0)</span><br><span class="line">Aug 23 21:40:06 localhost.localdomain chronyd[1070]: Source 2602:fcad:1::10 replaced with 124.108.20.1</span><br><span class="line">Aug 23 21:48:56 localhost.localdomain PackageKit[2105]: search-file transaction /131_bcadadca from uid 0 finished with success after 27ms</span><br></pre></td></tr></table></figure>
+<p>​使用 <em>-p</em> 选项可以根据日志的优先级过滤日志输出，其中参数可指定优先级的名称或编号，<code>journalctl -p</code> 命令会显示<em>该优先级及以上</em>的日志输出。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]\<span class="comment"># journalctl -p err</span></span><br><span class="line">-- Logs begin at Mon 2021-08-23 21:08:56 PDT, end at Mon 2021-08-23 21:48:56 PDT. --</span><br><span class="line">Aug 23 21:09:14 localhost.localdomain kernel: piix4_smbus 0000:00:07.3: SMBus Host Controller not enabled!</span><br></pre></td></tr></table></figure>
+<p>​在查找具体事件时，可以将输出限制为某一特定的时间段。<code>--since</code> 和 <code>--until</code> 选项，它们可以将输出限制为特定的时间范围。其参数的具体格式限制为 <em>YYYY-MM-DDhh:mm:ss</em>，除了这两个选项，其还接受 <em>yesterday</em>、<em>today</em> 和 <em>tomorrow</em> 作为有效参数。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]\<span class="comment"># journalctl --since &quot;2021-08-23 22:00:00&quot; --until &quot;2021-08-23 22:05:00&quot;</span></span><br><span class="line">-- Logs begin at Mon 2021-08-23 21:08:56 PDT, end at Tue 2021-08-24 01:22:49 PDT. --</span><br><span class="line">Aug 23 22:01:01 localhost.localdomain CROND[3760]: (root) CMD (run-parts /etc/cron.hourly)</span><br><span class="line">Aug 23 22:01:01 localhost.localdomain run-parts[3763]: (/etc/cron.hourly) starting 0anacron</span><br><span class="line">Aug 23 22:01:01 localhost.localdomain anacron[3769]: Anacron started on 2021-08-23</span><br><span class="line">Aug 23 22:01:01 localhost.localdomain run-parts[3771]: (/etc/cron.hourly) finished 0anacron</span><br><span class="line">Aug 23 22:01:01 localhost.localdomain anacron[3769]: Normal <span class="built_in">exit</span> (0 <span class="built_in">jobs</span> run)</span><br></pre></td></tr></table></figure>
+<p>​也可以指定相对于当前的某个时间以后的所有条目。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]<span class="comment"># journalctl --since &quot;-1.1 hour&quot;</span></span><br><span class="line">-- Logs begin at Mon 2021-08-23 21:08:56 PDT, end at Tue 2021-08-24 01:22:49 PDT. --</span><br><span class="line">Aug 24 01:01:01 localhost.localdomain CROND[5331]: (root) CMD (run-parts /etc/cron.hourly)</span><br><span class="line">Aug 24 01:01:01 localhost.localdomain run-parts[5334]: (/etc/cron.hourly) starting 0anacron</span><br><span class="line">Aug 24 01:01:01 localhost.localdomain run-parts[5342]: (/etc/cron.hourly) finished 0anacron</span><br><span class="line">Aug 24 01:01:01 localhost.localdomain anacron[5340]: Anacron started on 2021-08-24</span><br><span class="line">Aug 24 01:01:01 localhost.localdomain anacron[5340]: Normal <span class="built_in">exit</span> (0 <span class="built_in">jobs</span> run)</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>🟢 --since 和 --until 支持的更复杂的时间格式可参见 systemd.time(7) man page。</p>
+</blockquote>
+<p>​可以使用 <code>journalctl -o</code> 命令以特定的模式（verbose/export/json 等）输出。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]\<span class="comment"># journalctl -o verbose</span></span><br><span class="line">-- Logs begin at Mon 2021-08-23 21:08:56 PDT, end at Tue 2021-08-24 &gt;</span><br><span class="line">Mon 2021-08-23 21:08:56.476108 PDT [s=ac8c7a315ec04e1c98b39f3eba4fe1&gt;</span><br><span class="line">    _SOURCE_MONOTONIC_TIMESTAMP=0</span><br><span class="line">    _TRANSPORT=kernel</span><br><span class="line">    PRIORITY=5</span><br></pre></td></tr></table></figure>
+<p>​一些特定的系统日志筛选常用字段，可用于搜索与特定进程或事件相关的行。</p>
+<table>
+<thead>
+<tr>
+<th>筛选选项</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>_COMM</td>
+<td>指定命令的名称</td>
+</tr>
+<tr>
+<td>_EXE</td>
+<td>指定进程的可执行文件路径</td>
+</tr>
+<tr>
+<td>_PID</td>
+<td>指定进程的 PID</td>
+</tr>
+<tr>
+<td>_UID</td>
+<td>指定运行该进程的用户的 UID</td>
+</tr>
+<tr>
+<td>_SYSTEMD_UNIT</td>
+<td>指定启动该进程的 systemd 单元</td>
+</tr>
+</tbody>
+</table>
+<p>​也可以组合多个系统日志字段以实现更加精细的搜索查询，例如：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]\<span class="comment"># journalctl -n 3 _SYSTEMD_UNIT=sshd.service _UID=0 # 与操作</span></span><br><span class="line">-- Logs begin at Mon 2021-08-23 21:08:56 PDT, end at Tue 2021-08-24 02:03:19 PDT. --</span><br><span class="line">Aug 23 21:38:22 localhost.localdomain sshd[3441]: pam_unix(sshd:session): session opened <span class="keyword">for</span> user root by (uid=0)</span><br><span class="line">Aug 23 21:38:22 localhost.localdomain sshd[3450]: Accepted password <span class="keyword">for</span> root from 172.16.1.195 port 6925 ssh2</span><br><span class="line">Aug 23 21:38:22 localhost.localdomain sshd[3450]: pam_unix(sshd:session): session opened <span class="keyword">for</span> user root by (uid=0)</span><br><span class="line">[root@localhost ~]\<span class="comment"># journalctl _COMM=sshd + _PID=1247 # 或操作</span></span><br><span class="line">-- Logs begin at Mon 2021-08-23 21:08:56 PDT, end at Tue 2021-08-24 02:03:19 PDT. --</span><br><span class="line">Aug 23 21:09:31 localhost.localdomain sshd[1251]: Server listening on 0.0.0.0 port 22.</span><br><span class="line">Aug 23 21:09:31 localhost.localdomain sshd[1251]: Server listening on :: port 22.</span><br><span class="line">Aug 23 21:11:38 localhost.localdomain cupsd[1247]: REQUEST localhost - - <span class="string">&quot;POST / HTTP/1.1&quot;</span> 200 363 Create-Printer-Subscriptions successful-ok</span><br></pre></td></tr></table></figure>
+<h2 id="保留系统日志">保留系统日志</h2>
+<p>​默认情况下，系统日志保存在 /run/log/journal 目录中，这意味着系统重启时这些日志会被清除。可以在 /etc/systemd/journald.conf 文件中更改 systemd-journald 服务的配置设置，使日志在系统重启后保留下来。</p>
+<p>​/etc/systemd/journald.conf 文件中的 <b>Storage</b> 参数决定系统日志以易失性方式存储，还是在系统重启后持久保留，该参数的可选值有以下几种：</p>
+<table>
+<thead>
+<tr>
+<th>值</th>
+<th>日志存储位置</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>persistent</td>
+<td>/var/log/journal</td>
+<td>持久保留，若该目录不存在，systemd-journald 服务会自动创建。</td>
+</tr>
+<tr>
+<td>volatile</td>
+<td>/run/log/journal</td>
+<td>存放在内存文件系统，/run 目录下的内容重启后丢失。</td>
+</tr>
+<tr>
+<td>auto（默认）</td>
+<td>以上两者任一</td>
+<td>默认 /run/log/journal，但若 /var/log/journal 目录存在，则存放在该目录下。</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<ol>
+<li>持久系统日志的优点是系统启动后就可立即利用历史数据。</li>
+<li>即便是持久日志，并非所有数据都将永久保留，此日志项具有一个内置的日志轮转机制会每月触发。</li>
+<li>修改日志存储配置文件需要重新载入该服务，相关内容可参见 <em>13. 控制服务和守护进程</em> 章节。</li>
+</ol>
+</blockquote>
+<p>​默认情况下，日志的大小不能超过所处文件系统的 10%，也不能造成文件系统的可用空间低于 15%，可以在 <em>/etc/systemd/journald.conf</em> 中为运行时和持久日志调整这些值。当 systemd-journald 进程启动时，会记录当前的日志大小限额。</p>
+<p>​以下命令输出显示了反映当前大小限额的日志条目：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]\<span class="comment"># journalctl | grep -E &#x27;Runtime|System journal&#x27;</span></span><br><span class="line">Aug 24 17:47:16 localhost.localdomain systemd-journald[304]: Runtime journal (/run/log/journal/6651ee1da4824a37975cd5245c8cb076) is 8.0M, max 185.4M, 177.4M free.</span><br><span class="line">Aug 24 17:47:29 localhost.localdomain systemd-journald[694]: Runtime journal (/run/log/journal/6651ee1da4824a37975cd5245c8cb076) is 8.0M, max 185.4M, 177.4M free.</span><br><span class="line">Aug 24 17:47:29 localhost.localdomain systemd-journald[694]: Runtime journal (/run/log/journal/6651ee1da4824a37975cd5245c8cb076) is 8.0M, max 185.4M, 177.4M free.</span><br><span class="line">Aug 24 17:47:36 localhost.localdomain systemd[1]: Starting Tell Plymouth To Write Out Runtime Data...</span><br><span class="line">Aug 24 17:47:36 localhost.localdomain systemd[1]: Started Tell Plymouth To Write Out Runtime Data.</span><br></pre></td></tr></table></figure>
+<p>​使用持久存储的 systemd-journald 服务会存储系统一次或多次启动后的日志，若要根据系统的每次启动筛选日志则可以使用选项 <code>-b</code>：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]\<span class="comment"># journalctl -b 1    # 检索日志存储的第一次启动的条目</span></span><br><span class="line">[root@localhost ~]\<span class="comment"># journalctl -b      # 检索当前系统启动启动后的条目</span></span><br><span class="line">[root@localhost ~]\<span class="comment"># journalctl -b -1   # 过去一次的系统启动时的tiao</span></span><br></pre></td></tr></table></figure>
+
+        </div>
+        
+<blockquote class="copyright">
+    <p><strong>本文链接 : </strong><a class="permalink" href="https://skinyi.github.io/2022-08-15-Linux%20|%20%E5%88%86%E6%9E%90%E5%92%8C%E5%AD%98%E5%82%A8%E7%B3%BB%E7%BB%9F%E6%97%A5%E5%BF%97.html">https://skinyi.github.io/2022-08-15-Linux | 分析和存储系统日志.html</a></p>
+    <p><strong>这篇文章由作者胡编乱造或者由其他文章复制粘贴而来，其中有些内容可能已经过时，请谨慎参考复制文章中的内容。</strong></p>
+</blockquote>
+
+
+    </article>
+    
+    <section id="comments">
+        
+    </section>
+
+
+    
+
+</main>
+
+
+<aside style="" id="sidebar" class="aside aside-fixture">
+    <div class="toc-sidebar">
+        <nav id="toc" class="article-toc">
+            <h3 class="toc-title">文章目录</h3>
+            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%B3%BB%E7%BB%9F%E6%97%A5%E5%BF%97%E6%A6%82%E8%BF%B0"><span class="toc-number">1.</span> <span class="toc-text">系统日志概述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9F%A5%E7%9C%8B%E7%B3%BB%E7%BB%9F%E6%97%A5%E5%BF%97%E6%96%87%E4%BB%B6"><span class="toc-number">2.</span> <span class="toc-text">查看系统日志文件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9F%A5%E7%9C%8B%E7%B3%BB%E7%BB%9F%E6%97%A5%E5%BF%97%E6%9D%A1%E7%9B%AE"><span class="toc-number">3.</span> <span class="toc-text">查看系统日志条目</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BF%9D%E7%95%99%E7%B3%BB%E7%BB%9F%E6%97%A5%E5%BF%97"><span class="toc-number">4.</span> <span class="toc-text">保留系统日志</span></a></li></ol>
+        </nav>
+    </div>
+</aside>
+
+
+
+
+
+        </section>
+        <footer class="hidden lg:block fixed bottom-0 left-0 sm:w-1/12 bg-gray-100 z-40">
+    
+    
+        <p class="footer-custom">❤ Powered by <a href="https://hexo.io/" target="_blank" rel="noopener noreferrer">Hexo</a> with <a href="https://github.com/fengkx/hexo-theme-purer" target="_blank" rel="noopener noreferrer">Purer theme</a>.</p>
+    
+</footer>
+
+        <div id="mask" class="hidden mask fixed inset-0 bg-gray-900 opacity-75 z-40"></div>
+        <div id="search-view-container" class="hidden shadow-xl"></div>
+        
+<script src="/js/dom-event.min.js"></script>
+
+
+
+<script src="/js/local-search.min.js"></script>
+
+
+
+    <script src="//cdn.jsdelivr.net/npm/lightgallery.js@1.1.3/dist/js/lightgallery.min.js"></script>
+    
+<script src="/js/light-gallery.min.js"></script>
+
+
+
+
+
+
+    </body>
+</html>

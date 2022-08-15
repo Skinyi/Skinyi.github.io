@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html  lang="zh-CN,en,default" >
+    <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, maximum-scale=5, viewport-fit=cover">
+    <title>Linux 网路管理基础 | Avery Ma 的个人网站</title>
+    <meta name="description" content="🔴 此文章由之前的 Typora 笔记迁移过来，内容可能已经过时。  网络接口 可以使用网络端口的名称来识别和配置其连接网络的方式。旧版的 RHEL 以 eth0、eth1、eth2...等名称命名各个网络接口，这种方式存在一定缺陷故已被淘汰。新版 RHEL 采用另一种命名体系。系统将基于固件信息、PCI总线拓扑及网络设备的类型来分配网络接口名称，不再基于检测顺序： ​网络接口的名称以接口类型">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Linux 网路管理基础">
+<meta property="og:url" content="https://skinyi.github.io/2022-08-15-Linux%20|%20Linux%20%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86%E5%9F%BA%E7%A1%80.html">
+<meta property="og:site_name" content="Avery Ma 的个人网站">
+<meta property="og:description" content="🔴 此文章由之前的 Typora 笔记迁移过来，内容可能已经过时。  网络接口 可以使用网络端口的名称来识别和配置其连接网络的方式。旧版的 RHEL 以 eth0、eth1、eth2...等名称命名各个网络接口，这种方式存在一定缺陷故已被淘汰。新版 RHEL 采用另一种命名体系。系统将基于固件信息、PCI总线拓扑及网络设备的类型来分配网络接口名称，不再基于检测顺序： ​网络接口的名称以接口类型">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://skinyi.github.io/images/image-20210826104209618.png">
+<meta property="article:published_time" content="2022-08-15T03:43:49.155Z">
+<meta property="article:modified_time" content="2022-08-15T03:45:32.159Z">
+<meta property="article:author" content="skinyi">
+<meta property="article:tag" content="Linux">
+<meta property="article:tag" content="RHEL">
+<meta property="article:tag" content="RHCE">
+<meta property="article:tag" content="认证考试">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://skinyi.github.io/images/image-20210826104209618.png">
+
+    
+    <link rel="icon" href="images/favicon.png" type="image/x-icon">
+
+    
+<link rel="stylesheet" href="/css/common.min.css">
+
+
+
+    
+    
+    
+    
+        <link href="//cdn.jsdelivr.net/npm/lightgallery.js@1.1.3/dist/css/lightgallery.min.css" rel="stylesheet">
+    
+    
+    
+<link rel="stylesheet" href="/css/iconfont.min.css">
+
+    
+<meta name="generator" content="Hexo 6.2.0"></head>
+
+    <body>
+        <header class="header header-fixture">
+    <div class="profile-search-wrap flex sm:block">
+        
+        
+        <div class="profile sm:text-center md:px-1 lg:px-3 sm:pb-4 sm:pt-6">
+            <a id="avatar" role="link" href="https://github.com/skinyi" class="inline-block lg:w-16 lg:h-16 w-8 h-8 m-2" target="_blank" rel="noopener" rel="noreferrer" >
+                <img src="/images/avatar.jpg" class="rounded-full" alt="avatar">
+            </a>
+            <h2 id="name" class="hidden lg:block">Avery Ma</h2>
+            <h3 id="title" class="hidden xl:block">IT 从业者</h3>
+            
+            <small id="location" class="hidden lg:block">
+                <i class="iconfont icon-map-icon"></i>
+                宁夏, 中国
+            </small>
+            
+        </div>
+        
+        
+<div class="search flex-1 flex lg:inline-block sm:hidden lg:px-4 lg:mt-2 lg:w-full">
+    <form id="search-form" class="my-auto flex-1 lg:border lg:border-solid lg:border-gray-200">
+        <div class="input-group table bg-gray-100 lg:bg-white w-full">
+            <input id="search-input" type="text" placeholder="搜索" class="inline-block w-full bg-gray-100 lg:bg-white">
+            <span class="table-cell">
+                <button name="search tigger button" disabled>
+                    <i class="iconfont icon-search m-2"></i>
+                </button>
+            </span>
+        </div>
+    </form>
+        
+<div id="content-json" data-placeholder="搜索" class="invisible hidden">/content.json</div>
+<script id="search-teamplate" type="text/html" data-path="/content.json">
+    <div>
+        <div class="search-header bg-gray-400">
+            <input id="actual-search-input" model="keyword" ref="input" class="inline-block w-full h-10 px-2 py-1" placeholder="搜索" type="text">
+        </div>
+        <div class="search-result bg-gray-200">
+            {{#each searchPosts}}
+            <a href="/{{ path }}" class="result-item block px-2 pb-3 mb-1 pt-1 hover:bg-indigo-100">
+                <i class="iconfont icon-file"></i>
+                <h1 class="result-title inline font-medium text-lg">{{ title }}</h1>
+                <p class="result-content text-gray-600 text-sm">{{{ text }}}</p>
+            </a>
+            {{/each}}
+        </div>
+    </div>
+</script>
+
+</div>
+
+
+        <button name="menu toogle button" id="menu-toggle-btn" class="block sm:hidden p-3" role="button" aria-expanded="false">
+            <i class="iconfont icon-hamburger"></i>
+        </button>
+    </div>
+    <nav id="menu-nav" class="hidden sm:flex flex-col">
+        
+        
+            <div class="menu-item menu-home" role="menuitem">
+                <a href="/.">
+                    <i class="iconfont icon-home" aria-hidden="true"></i>
+                    <span class="menu-title">首页</span>
+                </a>
+            </div>
+        
+        
+            <div class="menu-item menu-archives" role="menuitem">
+                <a href="/archives">
+                    <i class="iconfont icon-archive" aria-hidden="true"></i>
+                    <span class="menu-title">归档</span>
+                </a>
+            </div>
+        
+        
+            <div class="menu-item menu-categories" role="menuitem">
+                <a href="/categories">
+                    <i class="iconfont icon-folder" aria-hidden="true"></i>
+                    <span class="menu-title">分类</span>
+                </a>
+            </div>
+        
+        
+            <div class="menu-item menu-tags" role="menuitem">
+                <a href="/tags">
+                    <i class="iconfont icon-tag" aria-hidden="true"></i>
+                    <span class="menu-title">标签</span>
+                </a>
+            </div>
+        
+        
+            <div class="menu-item menu-repository" role="menuitem">
+                <a href="/repository">
+                    <i class="iconfont icon-project" aria-hidden="true"></i>
+                    <span class="menu-title">项目</span>
+                </a>
+            </div>
+        
+        
+            <div class="menu-item menu-about" role="menuitem">
+                <a href="/about">
+                    <i class="iconfont icon-cup" aria-hidden="true"></i>
+                    <span class="menu-title">关于</span>
+                </a>
+            </div>
+        
+        
+
+    </nav>
+</header>
+
+        <section class="main-section">
+            
+    <main class="flex-1 px-4 py-14 md:px-5 lg:px-8 lg:py-4 relative min-h-screen">
+    
+
+    <article class="content article article-archives article-type-list" itemscope="">
+        <header class="article-header">
+            
+    
+        <h1 class="article-title text-lg" itemprop="name">
+            Linux 网路管理基础
+        </h1>
+    
+
+
+
+            <p class="article-meta mb-3 text-xs">
+                <span class="article-date">
+    <i class="iconfont icon-calendar-check"></i>
+	<a href="/2022-08-15-Linux%20%7C%20Linux%20%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86%E5%9F%BA%E7%A1%80.html" class="article-date">
+	  <time datetime="2022-08-15T03:43:49.155Z" itemprop="datePublished">8月 15</time>
+	</a>
+</span>
+
+                
+    <span class="article-category">
+    <i class="iconfont icon-folder"></i>
+    <a class="article-category-link" href="/categories/%E5%AD%A6%E4%B9%A0/">学习</a> , <a class="article-category-link" href="/categories/%E5%AD%A6%E4%B9%A0/Linux/">Linux</a> , <a class="article-category-link" href="/categories/%E6%97%A5%E5%B8%B8%E8%AE%B0%E5%BD%95/">日常记录</a> , <a class="article-category-link" href="/categories/%E8%BF%81%E7%A7%BB%E6%96%87%E7%AB%A0/">迁移文章</a>
+  </span>
+
+
+                
+    <span class="article-tags">
+    <i class="iconfont icon-tag"></i>
+    <a class="article-tag-none-link" href="/tags/Linux/" rel="tag">Linux</a>, <a class="article-tag-none-link" href="/tags/RHCE/" rel="tag">RHCE</a>, <a class="article-tag-none-link" href="/tags/RHEL/" rel="tag">RHEL</a>, <a class="article-tag-none-link" href="/tags/%E8%AE%A4%E8%AF%81%E8%80%83%E8%AF%95/" rel="tag">认证考试</a>
+  </span>
+
+
+                
+                
+    
+        <span class="post-wordcount" itemprop="wordCount">字数统计: 2.3k(字)</span>
+    
+    
+        <span class="post-readcount" itemprop="timeRequired">阅读时长: 8(分)</span>
+    
+
+
+            </p>
+        </header>
+        <div class="marked-body article-body">
+            <blockquote>
+<p>🔴 此文章由之前的 Typora 笔记迁移过来，内容可能已经过时。</p>
+</blockquote>
+<h2 id="网络接口">网络接口</h2>
+<p>可以使用网络端口的名称来识别和配置其连接网络的方式。旧版的 RHEL 以 eth0、eth1、eth2...等名称命名各个网络接口，这种方式存在一定缺陷故已被淘汰。新版 RHEL 采用另一种命名体系。系统将基于固件信息、PCI总线拓扑及网络设备的类型来分配网络接口名称，不再基于检测顺序：</p>
+<p>​网络接口的名称以接口类型开头：</p>
+<ul>
+<li>
+<p>以太网接口以 <em>en</em> 开头；</p>
+</li>
+<li>
+<p>WLAN 接口以 <em>wl</em> 开头；</p>
+</li>
+<li>
+<p>WWAN 接口以 <em>ww</em> 开头。</p>
+</li>
+</ul>
+<p>在类型之后，接口名称的其余部分将基于服务器固件所提供的信息，或由 PCI 拓扑中设备的位置确定。</p>
+<ul>
+<li>
+<p><em>oN</em> 代表这是一个板载设备，且服务器的固件提供设备的索引编号 N。如：eno1 代表板载以太网设备 1。许多服务器不提供此信息；</p>
+</li>
+<li>
+<p><em>sN</em> 表示该设备位于 PCI 热插拔插槽 N 中；</p>
+</li>
+<li>
+<p><em>pMsN</em> 表示这是一个位于插槽 N 中总线 M 上的 PCI 设备。如：wlp4s0 代表位于插槽 0 中 PCI 总线 4 上的 WLAN 卡。若该卡是一个多功能设备，设备名称中还会添加 <em>fP</em>,如 enp0s1f1。</p>
+</li>
+</ul>
+<p>此种命名方法命名的设备的名称之后不会自动发生变化。</p>
+<h2 id="IPV6-地址">IPV6 地址</h2>
+<h3 id="IPv6-地址的简写">IPv6 地址的简写</h3>
+<p>​IPv6 地址是一个 128 位数字，通常表示为八组以分号分隔的四个十六进制半字节。每个半字节均表示 4 位的 IPv6 地址，因此每个组表示 16 位的 IPv6 地址。如：</p>
+<p>​	<em>2001:0db8:0000:0010:0000:0000:0000:0001</em></p>
+<p>​其中，冒号分开的每组中的前导零可以省略，若为 <em>0000</em> 仍需保留一个零：</p>
+<p>​	<em>2001:db8:0:10:0:0:0:1</em></p>
+<p>​其中，一组或多组连续零又可以通过一个 <em>::</em> 块来合并：</p>
+<p>​	<em>2001:db8:0:10::1</em></p>
+<blockquote>
+<p>IPv6 地址简写请注意以下原则：</p>
+<ul>
+<li>抑制组中的前导零；</li>
+<li>使用 <em>::</em> 来尽可能地缩短；</li>
+<li>若地址包含两个连续的零组，且长度相同，则最好将每个组最左边的零组缩短为 <em>::</em> ，最右边的组缩短为 <em>:0:</em>，长度不同的话使用 <em>::</em> 缩短最长的零组，短的使用 <em>:0:</em>；</li>
+<li>十六进制数字使用小写字母表示；</li>
+<li>后面要跟上网络端口时使用方括号将 IPv6 地址括住，如：<em>[2001:db8:0:10::1]:80</em>。</li>
+</ul>
+</blockquote>
+<h3 id="IPv6-子网划分">IPv6 子网划分</h3>
+<p>​普通 IPv6 单薄地址分为两部分：网络前缀和接口 ID。网络前缀标识子网，接口 ID 标识子网中的任一子网接口；与 IPv4 不同，IPv6 具有一个标准的子网掩码 <em>/64</em>，用于几乎所有普通地址，因此一个 IPv6 地址因此就被分为两半，其中一半是网络前缀、一半是接口 ID。</p>
+<p>​通常，网络提供商将为组织分配一个较短的子网掩码，如 <em>/48</em>。这会保留其余网络部分以用于通过这一分配的前缀来指定子网（长度始终为 <em>/64</em>）。对于 <em>/48</em> 分配，将保留16位以用于子网（最多65536）个子网。</p>
+<img src="images/image-20210826104209618.png" alt="image-20210826104209618" style="zoom: 67%;" />
+<p>​以下列举部分常用 IPv6 地址和网络：</p>
+<table>
+<thead>
+<tr>
+<th>IPv6地址或网络</th>
+<th>用途</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>::1/128</td>
+<td>本地主机</td>
+<td>等效于 IPv4 127.0.0.1/8，在回环接口上设置。</td>
+</tr>
+<tr>
+<td>::</td>
+<td>未指定的地址</td>
+<td>等效于 IPv4 0.0.0.0。对于网络服务，这可能标识其正在侦听所有已配置的 IP 地址。</td>
+</tr>
+<tr>
+<td>::/0</td>
+<td>默认路由（IPv6互联网）</td>
+<td>等效于 IPv4 0.0.0.0/0。路由表中的默认路由与此网络匹配；此网络的路由器是在没有更好路由的情况下发送所有流量的位置。</td>
+</tr>
+<tr>
+<td>2000::/3</td>
+<td>全局单播地址</td>
+<td>”普通“的 IPv6 地址，目前由 <em>IANA</em> 从该空间进行分配。这等同于范围从 2000::/16 到 3fff::/16 的所有网络。</td>
+</tr>
+<tr>
+<td>fd00::/8</td>
+<td>唯一本地地址（RFC 4193）</td>
+<td>指在一个组织内部可达的ipv6地址，这类地址不能出现在internet上。具有全球唯一的前缀，可以进行网络之间的私有连接，而不必担心地址冲突等问题。如果出现路由泄漏，不会造成Internet路由冲突。在应用中，上层应用程序将这些地址看作全球单播地址。</td>
+</tr>
+<tr>
+<td>fe80::/10</td>
+<td>本地链路地址</td>
+<td>用于邻居发现协议和无状态自动配置进程中链路本地上节点之间的通信。使用链路本地地址作为源或目的地址的数据包不会被转发到其他链路上。</td>
+</tr>
+<tr>
+<td>ff00::/8</td>
+<td>多播</td>
+<td>等效于 IPv4 224.0.0.0/4。多播用于同时传输到多个主机，并且在 IPv6 中特别重要，因为 IPv6 没有广播地址。</td>
+</tr>
+</tbody>
+</table>
+<p>​IPv6 中的本地链路地址是一个无法路由的地址。仅用于与特定网络链路上的主机进行通信。系统上的每个网络接口都通过 fe80::/64 网络上的本地链路地址来自动配置。为确保其唯一性，本地链路地址的接口 ID 是通过网络接口的以太网硬件地址来构建的。</p>
+<p>​将 48 位 MAC 地址转换为 64 位接口 ID 的一般方法是反转 7 位的 MAC 地址，然后在其两个中间字节之间插入 <em>ff:fe</em>。如：</p>
+<ul>
+<li>
+<p>网络前缀：fe80::/64；</p>
+</li>
+<li>
+<p>MAC 地址：00:11:22:aa:bb:cc；</p>
+</li>
+<li>
+<p>本地链路地址：fe80::211:22ff:feaa:bbcc/64。</p>
+</li>
+</ul>
+<p>​其他计算机的本地链路地址可以由相同链路上的其他主机像普通地址那样使用。由于每个链路具有 fe80::/64 网络，不能使用路由表来正确地选择出站接口。在地址的结尾必须使用作用域标识符来指定与本地链路地址进行通信时使用的链路。作用域标识符由 <em>%</em> 以及后跟的网络接口名称组成。例如，要使用 ping6 对本地链路地址 fe80::211:22ff:feaa:bbcc 进行 ping 操作（使用连接到 ens160 网络接口的链路），正确的命令语法如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]\<span class="comment"># ping6 fe80::211:22ff:feaa:bbcc%ens160</span></span><br></pre></td></tr></table></figure>
+<p>​IPv6 中的一个重要多播地址是 ff02::1（全节点本地链路地址），对此地址进行 ping 操作会将流量都发送到链路上的所有节点。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]\<span class="comment"># ping6 ff02::1%ens160</span></span><br><span class="line">PING ff02::1%ens160(ff02::1%ens160) 56 data bytes</span><br><span class="line">64 bytes from fe80::8af6:d265:9b34:f1d6%ens160: icmp_seq=1 ttl=64 time=0.888 ms</span><br><span class="line">......</span><br></pre></td></tr></table></figure>
+<h3 id="IPv6-地址配置">IPv6 地址配置</h3>
+<p>​IPv6 也支持手动配置以及两种动态配置 IPv6 地址的方法，动态分配方式其中的一种是使用 DHCPv6 协议。</p>
+<p>​在 IPv6 中，以下接口 ID 是保留的，无法用于主机上的普通网络地址：</p>
+<ul>
+<li>
+<p>由链路上的所有路由器使用的全零标识符 <em>0000:0000:0000:0000</em>（子网路由器任意广播）。</p>
+</li>
+<li>
+<p>标识符 <em>fdff:ffff:ffff:ff80</em> 到 <em>fdff:ffff:ffff:ffff</em>。</p>
+</li>
+</ul>
+<p>​由于没有广播地址，DHCPv6 的工作原理与适用于 IPv4 的 DHCP 有所不同。一般来说，主机将 DHCPv6请求从其本地链路地址发送到 <em>ff02::1:2</em> 上的端口 <em>547/UDP</em>，即全 dhcp 服务器本地链路多播组。然后 DHCPv6 服务器通常向客户端的本地链路地址上的端口 <em>546/UDP</em> 发送一个包含相应信息的回复。涉及软件包：dhcp。</p>
+<p>​除了 DHCPv6 之外，IPv6 也支持另外一个动态配置方法：SLAAC（无状态地址自动配置）。使用 SLAAC 时，主机通常使用本地链路 <em>fe80::/64</em> 地址来调出其接口。主机随后向 <em>ff02::2</em>（即，全路由器本地链路多播组）发送一个”路由器请求“。本地链路上的 IPv6 路由器以网络前缀以及其他可能的信息来响应主机的本地链路地址。主机随后将该网络前缀与其通常构建的接口 ID（构建方式与本地链路地址相同）配合使用。路由器定期发送多播更新（路由器播发）以确认或更新其提供的信息。涉及软件包：radvd。</p>
+<h2 id="域名解析">域名解析</h2>
+<p>​使用 ip 地址连接服务器会很不便，使用具有一定代表意义的名称来标识某个主机会更加方便。Linux 有多种机制可以将主机名映射到 ip 地址，称为 <em>域名解析</em>。</p>
+<p>​一种方法是在各个系统上的 /etc/hosts 文件中为每个名称设置一个静态条目。多台服务器的话需要手动更行每台服务器的文件副本，比较繁琐。</p>
+<p>​对于大多数主机，可以使用<em>域名解析</em>网络服务，从主机名查找其地址（或进行反查）。DNS（域名服务器）是提供主机名到 ip 地址映射的分布式服务器。域名服务器无需与主机位于同一子网，仅仅可供主机访问即可。Linux 中通常通过 /etc/resolv.conf 文件中的静态设置来配置如何提供域名解析服务。</p>
+
+        </div>
+        
+<blockquote class="copyright">
+    <p><strong>本文链接 : </strong><a class="permalink" href="https://skinyi.github.io/2022-08-15-Linux%20|%20Linux%20%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86%E5%9F%BA%E7%A1%80.html">https://skinyi.github.io/2022-08-15-Linux | Linux 网络管理基础.html</a></p>
+    <p><strong>这篇文章由作者胡编乱造或者由其他文章复制粘贴而来，其中有些内容可能已经过时，请谨慎参考复制文章中的内容。</strong></p>
+</blockquote>
+
+
+    </article>
+    
+    <section id="comments">
+        
+    </section>
+
+
+    
+
+</main>
+
+
+<aside style="" id="sidebar" class="aside aside-fixture">
+    <div class="toc-sidebar">
+        <nav id="toc" class="article-toc">
+            <h3 class="toc-title">文章目录</h3>
+            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BD%91%E7%BB%9C%E6%8E%A5%E5%8F%A3"><span class="toc-number">1.</span> <span class="toc-text">网络接口</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#IPV6-%E5%9C%B0%E5%9D%80"><span class="toc-number">2.</span> <span class="toc-text">IPV6 地址</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#IPv6-%E5%9C%B0%E5%9D%80%E7%9A%84%E7%AE%80%E5%86%99"><span class="toc-number">2.1.</span> <span class="toc-text">IPv6 地址的简写</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#IPv6-%E5%AD%90%E7%BD%91%E5%88%92%E5%88%86"><span class="toc-number">2.2.</span> <span class="toc-text">IPv6 子网划分</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#IPv6-%E5%9C%B0%E5%9D%80%E9%85%8D%E7%BD%AE"><span class="toc-number">2.3.</span> <span class="toc-text">IPv6 地址配置</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9F%9F%E5%90%8D%E8%A7%A3%E6%9E%90"><span class="toc-number">3.</span> <span class="toc-text">域名解析</span></a></li></ol>
+        </nav>
+    </div>
+</aside>
+
+
+
+
+
+        </section>
+        <footer class="hidden lg:block fixed bottom-0 left-0 sm:w-1/12 bg-gray-100 z-40">
+    
+    
+        <p class="footer-custom">❤ Powered by <a href="https://hexo.io/" target="_blank" rel="noopener noreferrer">Hexo</a> with <a href="https://github.com/fengkx/hexo-theme-purer" target="_blank" rel="noopener noreferrer">Purer theme</a>.</p>
+    
+</footer>
+
+        <div id="mask" class="hidden mask fixed inset-0 bg-gray-900 opacity-75 z-40"></div>
+        <div id="search-view-container" class="hidden shadow-xl"></div>
+        
+<script src="/js/dom-event.min.js"></script>
+
+
+
+<script src="/js/local-search.min.js"></script>
+
+
+
+    <script src="//cdn.jsdelivr.net/npm/lightgallery.js@1.1.3/dist/js/lightgallery.min.js"></script>
+    
+<script src="/js/light-gallery.min.js"></script>
+
+
+
+
+
+
+    </body>
+</html>

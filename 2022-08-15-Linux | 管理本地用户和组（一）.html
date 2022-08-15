@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html  lang="zh-CN,en,default" >
+    <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, maximum-scale=5, viewport-fit=cover">
+    <title>管理本地用户和组（一） | Avery Ma 的个人网站</title>
+    <meta name="description" content="🔴 此文章由之前的 Typora 笔记迁移过来，内容可能已经过时。  用户和组的概念 什么是用户 用户账户用于在可以运行命令的不同人员和程序之间提供安全界限。 ​用户使用用户名向人类用户标识自己并增加操作的便利性。在内部，系统通过分配的唯一标识号用户ID或UID）来区分不同的用户帐户。人类使用用户帐户时，通常会为其分配一个密码，供用户用于在登录时证明他们是实际的授权用户。 用户帐户构成了系统安">
+<meta property="og:type" content="article">
+<meta property="og:title" content="管理本地用户和组（一）">
+<meta property="og:url" content="https://skinyi.github.io/2022-08-15-Linux%20|%20%E7%AE%A1%E7%90%86%E6%9C%AC%E5%9C%B0%E7%94%A8%E6%88%B7%E5%92%8C%E7%BB%84%EF%BC%88%E4%B8%80%EF%BC%89.html">
+<meta property="og:site_name" content="Avery Ma 的个人网站">
+<meta property="og:description" content="🔴 此文章由之前的 Typora 笔记迁移过来，内容可能已经过时。  用户和组的概念 什么是用户 用户账户用于在可以运行命令的不同人员和程序之间提供安全界限。 ​用户使用用户名向人类用户标识自己并增加操作的便利性。在内部，系统通过分配的唯一标识号用户ID或UID）来区分不同的用户帐户。人类使用用户帐户时，通常会为其分配一个密码，供用户用于在登录时证明他们是实际的授权用户。 用户帐户构成了系统安">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-08-15T02:00:28.205Z">
+<meta property="article:modified_time" content="2022-08-15T02:07:01.313Z">
+<meta property="article:author" content="skinyi">
+<meta property="article:tag" content="Linux">
+<meta property="article:tag" content="RHEL">
+<meta property="article:tag" content="RHCE">
+<meta property="article:tag" content="认证考试">
+<meta name="twitter:card" content="summary">
+
+    
+    <link rel="icon" href="images/favicon.png" type="image/x-icon">
+
+    
+<link rel="stylesheet" href="/css/common.min.css">
+
+
+
+    
+    
+    
+    
+        <link href="//cdn.jsdelivr.net/npm/lightgallery.js@1.1.3/dist/css/lightgallery.min.css" rel="stylesheet">
+    
+    
+    
+<link rel="stylesheet" href="/css/iconfont.min.css">
+
+    
+<meta name="generator" content="Hexo 6.2.0"></head>
+
+    <body>
+        <header class="header header-fixture">
+    <div class="profile-search-wrap flex sm:block">
+        
+        
+        <div class="profile sm:text-center md:px-1 lg:px-3 sm:pb-4 sm:pt-6">
+            <a id="avatar" role="link" href="https://github.com/skinyi" class="inline-block lg:w-16 lg:h-16 w-8 h-8 m-2" target="_blank" rel="noopener" rel="noreferrer" >
+                <img src="/images/avatar.jpg" class="rounded-full" alt="avatar">
+            </a>
+            <h2 id="name" class="hidden lg:block">Avery Ma</h2>
+            <h3 id="title" class="hidden xl:block">IT 从业者</h3>
+            
+            <small id="location" class="hidden lg:block">
+                <i class="iconfont icon-map-icon"></i>
+                宁夏, 中国
+            </small>
+            
+        </div>
+        
+        
+<div class="search flex-1 flex lg:inline-block sm:hidden lg:px-4 lg:mt-2 lg:w-full">
+    <form id="search-form" class="my-auto flex-1 lg:border lg:border-solid lg:border-gray-200">
+        <div class="input-group table bg-gray-100 lg:bg-white w-full">
+            <input id="search-input" type="text" placeholder="搜索" class="inline-block w-full bg-gray-100 lg:bg-white">
+            <span class="table-cell">
+                <button name="search tigger button" disabled>
+                    <i class="iconfont icon-search m-2"></i>
+                </button>
+            </span>
+        </div>
+    </form>
+        
+<div id="content-json" data-placeholder="搜索" class="invisible hidden">/content.json</div>
+<script id="search-teamplate" type="text/html" data-path="/content.json">
+    <div>
+        <div class="search-header bg-gray-400">
+            <input id="actual-search-input" model="keyword" ref="input" class="inline-block w-full h-10 px-2 py-1" placeholder="搜索" type="text">
+        </div>
+        <div class="search-result bg-gray-200">
+            {{#each searchPosts}}
+            <a href="/{{ path }}" class="result-item block px-2 pb-3 mb-1 pt-1 hover:bg-indigo-100">
+                <i class="iconfont icon-file"></i>
+                <h1 class="result-title inline font-medium text-lg">{{ title }}</h1>
+                <p class="result-content text-gray-600 text-sm">{{{ text }}}</p>
+            </a>
+            {{/each}}
+        </div>
+    </div>
+</script>
+
+</div>
+
+
+        <button name="menu toogle button" id="menu-toggle-btn" class="block sm:hidden p-3" role="button" aria-expanded="false">
+            <i class="iconfont icon-hamburger"></i>
+        </button>
+    </div>
+    <nav id="menu-nav" class="hidden sm:flex flex-col">
+        
+        
+            <div class="menu-item menu-home" role="menuitem">
+                <a href="/.">
+                    <i class="iconfont icon-home" aria-hidden="true"></i>
+                    <span class="menu-title">首页</span>
+                </a>
+            </div>
+        
+        
+            <div class="menu-item menu-archives" role="menuitem">
+                <a href="/archives">
+                    <i class="iconfont icon-archive" aria-hidden="true"></i>
+                    <span class="menu-title">归档</span>
+                </a>
+            </div>
+        
+        
+            <div class="menu-item menu-categories" role="menuitem">
+                <a href="/categories">
+                    <i class="iconfont icon-folder" aria-hidden="true"></i>
+                    <span class="menu-title">分类</span>
+                </a>
+            </div>
+        
+        
+            <div class="menu-item menu-tags" role="menuitem">
+                <a href="/tags">
+                    <i class="iconfont icon-tag" aria-hidden="true"></i>
+                    <span class="menu-title">标签</span>
+                </a>
+            </div>
+        
+        
+            <div class="menu-item menu-repository" role="menuitem">
+                <a href="/repository">
+                    <i class="iconfont icon-project" aria-hidden="true"></i>
+                    <span class="menu-title">项目</span>
+                </a>
+            </div>
+        
+        
+            <div class="menu-item menu-about" role="menuitem">
+                <a href="/about">
+                    <i class="iconfont icon-cup" aria-hidden="true"></i>
+                    <span class="menu-title">关于</span>
+                </a>
+            </div>
+        
+        
+
+    </nav>
+</header>
+
+        <section class="main-section">
+            
+    <main class="flex-1 px-4 py-14 md:px-5 lg:px-8 lg:py-4 relative min-h-screen">
+    
+
+    <article class="content article article-archives article-type-list" itemscope="">
+        <header class="article-header">
+            
+    
+        <h1 class="article-title text-lg" itemprop="name">
+            管理本地用户和组（一）
+        </h1>
+    
+
+
+
+            <p class="article-meta mb-3 text-xs">
+                <span class="article-date">
+    <i class="iconfont icon-calendar-check"></i>
+	<a href="/2022-08-15-Linux%20%7C%20%E7%AE%A1%E7%90%86%E6%9C%AC%E5%9C%B0%E7%94%A8%E6%88%B7%E5%92%8C%E7%BB%84%EF%BC%88%E4%B8%80%EF%BC%89.html" class="article-date">
+	  <time datetime="2022-08-15T02:00:28.205Z" itemprop="datePublished">8月 15</time>
+	</a>
+</span>
+
+                
+    <span class="article-category">
+    <i class="iconfont icon-folder"></i>
+    <a class="article-category-link" href="/categories/%E5%AD%A6%E4%B9%A0/">学习</a> , <a class="article-category-link" href="/categories/%E5%AD%A6%E4%B9%A0/Linux/">Linux</a> , <a class="article-category-link" href="/categories/%E6%97%A5%E5%B8%B8%E8%AE%B0%E5%BD%95/">日常记录</a> , <a class="article-category-link" href="/categories/%E8%BF%81%E7%A7%BB%E6%96%87%E7%AB%A0/">迁移文章</a>
+  </span>
+
+
+                
+    <span class="article-tags">
+    <i class="iconfont icon-tag"></i>
+    <a class="article-tag-none-link" href="/tags/Linux/" rel="tag">Linux</a>, <a class="article-tag-none-link" href="/tags/RHCE/" rel="tag">RHCE</a>, <a class="article-tag-none-link" href="/tags/RHEL/" rel="tag">RHEL</a>, <a class="article-tag-none-link" href="/tags/%E8%AE%A4%E8%AF%81%E8%80%83%E8%AF%95/" rel="tag">认证考试</a>
+  </span>
+
+
+                
+                
+    
+        <span class="post-wordcount" itemprop="wordCount">字数统计: 2.5k(字)</span>
+    
+    
+        <span class="post-readcount" itemprop="timeRequired">阅读时长: 9(分)</span>
+    
+
+
+            </p>
+        </header>
+        <div class="marked-body article-body">
+            <blockquote>
+<p>🔴 此文章由之前的 Typora 笔记迁移过来，内容可能已经过时。</p>
+</blockquote>
+<h2 id="用户和组的概念">用户和组的概念</h2>
+<h3 id="什么是用户">什么是用户</h3>
+<p>用户账户用于在可以运行命令的不同人员和程序之间提供安全界限。</p>
+<p>​用户使用用户名向人类用户标识自己并增加操作的便利性。在内部，系统通过分配的唯一标识号用户ID或UID）来区分不同的用户帐户。人类使用用户帐户时，通常会为其分配一个密码，供用户用于在登录时证明他们是实际的授权用户。</p>
+<p>用户帐户构成了系统安全的基础。系统中的每个进程（运行程序）都作为一个特定用户运行。每个文件都有一个特定用户作为其所有者。文件所有权有助于系统对文件用户实施访问控制。与运行进程相关联的用户可确定该进程可访问的文件和目录。</p>
+<p>​用户帐户有三种主要类型：超级用户、系统用户和普通用户。</p>
+<ul>
+<li>
+<p>超级用户帐户用于管理系统。超级用户的名称为 root，其帐户 UID 为 0。超级用户对系统具有完全访问权限。</p>
+</li>
+<li>
+<p>系统用户帐户供提供支持服务进程使用。这些进程（或守护进程）通常不需要以超级用户身份运行。系统会为它们分配非特权帐户，允许它们确保其文件和其他资源不受彼此以及系统上普通用户的影响。用户无法使用系统用户帐户以交互方式登录。</p>
+</li>
+<li>
+<p>普通用户是大多数用户都有用于处理日常工作的帐户。与系统用户一样，普通用户对系统具有有限的访问权限。。</p>
+</li>
+</ul>
+<p>​可以使用 <code>id</code> 命令显示有关当前已登陆用户的信息。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">id</span> [OPTION]... [USER] <span class="comment"># 打印真实有效的用户和其组 ID，忽略 USER 时打印当前用户的用户和其组信息</span></span><br><span class="line"><span class="comment"># 常见选项（下面四个只能四选一）：</span></span><br><span class="line">-g, --group <span class="comment"># 只打印有效的组 ID</span></span><br><span class="line">-G, --<span class="built_in">groups</span> <span class="comment"># 打印所有的组 ID</span></span><br><span class="line">-u, --user <span class="comment"># 只打印有效的用户 ID</span></span><br><span class="line">-Z, --context <span class="comment"># 只打印进程安全上下文</span></span><br><span class="line"><span class="comment">## 用于 -g、-G、-u 之后的：</span></span><br><span class="line">-n, --name <span class="comment"># 打印名字而不是用户 ID</span></span><br><span class="line">-r, --real <span class="comment"># 打印真实 ID 而不是有效 ID</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]\<span class="comment"># id</span></span><br><span class="line">uid=0(root) gid=0(root) <span class="built_in">groups</span>=0(root) context=unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023	<span class="comment"># 安全上下文</span></span><br><span class="line">[root@localhost ~]\<span class="comment"># id -ur student</span></span><br><span class="line">1000	<span class="comment"># 只打印 student 用户的用户ID</span></span><br></pre></td></tr></table></figure>
+<p>​存储用户信息的配置文件为 /etc/passwd 文件，它的格式为：</p>
+<p>​		​<code>用户名</code>:<code>加密的用户密码</code>[^1]:<code>用户UID</code>:<code>用户主要组的GID</code>:<code>用户真实姓名</code>:<code>用户主目录</code>:<code>用户的默认登陆shell</code>[^2]</p>
+<p>[^1]: 已弃用，现在该字段始终应为 <code>x</code>，密码配置已经移到了 /etc/shadow 配置文件。<br />
+[^2]: 对于普通用户一般来说是 /bin/bash，某些服务的系统用户一般不允许进行交互式登陆，其可能会使用：/sbin/nologin。</p>
+<p>​例子：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]\<span class="comment"># head -n 1 /etc/passwd</span></span><br><span class="line">root:x:0:0:root:/root:/bin/bash</span><br></pre></td></tr></table></figure>
+<h4 id="红帽-UID-范围划分">红帽 UID 范围划分</h4>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">UID 范围</th>
+<th>账户范围</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">0</td>
+<td>root</td>
+</tr>
+<tr>
+<td style="text-align:center">1-200</td>
+<td>系统用户，红帽静态分配给一些系统进程</td>
+</tr>
+<tr>
+<td style="text-align:center">201-999</td>
+<td>系统用户，供文件系统中没有自己的文件的系统进程使用。一般是一些后续安装的系统服务，由红帽动态分配，用来限制这些服务仅访问它们正常运行所需的资源。</td>
+</tr>
+<tr>
+<td style="text-align:center">1000+</td>
+<td>普通用户</td>
+</tr>
+</tbody>
+</table>
+<h3 id="什么是组">什么是组</h3>
+<p>​组是需要共享文件和其他系统资源访问权限的用户的集合。组可用于向一组用户授予文件访问权限，而非仅仅向一个用户授予访问权限。</p>
+<p>​与用户相似，组也有组名称以增加操作的便利性。在內部，系统通过分配的唯一标识号（组ID或GID）来区分不同的组。</p>
+<p>​存储用户组信息的配置文件为 /etc/group 文件，它的格式为：</p>
+<p>​		<code>组名称</code>:<code>组密码</code>[^3]:<code>该组的GID号</code>:<code>组成员列表（以逗号作为分界符）</code></p>
+<p>[^3]: 已弃用，该字段始终应为 <code>x</code>。组密码配置文件已移至 /etc/gshadow。</p>
+<h4 id="主要组和补充组">主要组和补充组</h4>
+<p>​每个用户有且只有一个主要组。对于本地用户而言，这是按 /etc/passwd 文件中的 GID 号列出的组。默认情况下，这是拥有用户创建的新文件的组。</p>
+<p>​通常，在创建新的普通用户时，会创建一个与该用户同名的新组。该组将用作新用户的主要组，而该用户是这一用户专用组的唯一成员。事实证明，这有助于简化文件权限的管理。</p>
+<p>​用户也可以有补充组。补充组的成员资格由 /etc/group 文件确定。根据所在的组是否具有访问权限，将授予用户对文件的访问权限。具有访问权限的组是用户的主要组还是补充组无关紧要。</p>
+<p>​例如，如果用户 user 有一个主要组 user 以及两个补充组 wheel 和 webadmin，那么该用户就可以读取其中任何一个组可读的文件。</p>
+<p>​查询用户主要组及其组 GID 也可以使用 <code>id</code> 命令，具体用法详见上面对 id 命令的介绍。</p>
+<h2 id="使用超级用户权限">使用超级用户权限</h2>
+<h3 id="超级用户">超级用户</h3>
+<p>​大多数操作系统具有某种类型的超级用户，即具有系统全部权限的用户。在 RHEL 中，此为 root 用户。该用户的特权高于文件系统上的一般特权，用于管理系统。要执行诸如安装或删除软件以及管理系统文件和目录等任务，必须将特权升级到root用户。</p>
+<p>​普通用户能控制大部分的设备，但也有一些例外，只有此时才需要 root 用户。例如，普通用户可以控制可移动设备，如 USB 设备。因此，虽然普通用户可以添加和删除文件并可管理可移动的设备，但默认情况下，只有 root 用户才能管理“固定的”硬盘。</p>
+<p>​root 用户这种无限制的特权也带来了职责问题。root 用户拥有足以破坏系统的无限制权限：删除文件和目录、删除用户帐户，以及添加后门等。如果 root 帐户泄露，则其他人就有可能拥有系统的管理控制权限。在一般的系统使用场景下，建议管理员以普通用户身份登录，仅在需要时升级到 root 用户特权。</p>
+<p>​Linux 上的 root 帐户大致相当于 Microsoft Windows 上的本地 Administrator 帐户。在 Linux 中，多数系统管理员都作为无特权的用户登录，然后使用各种工具临时获得 root 特权。</p>
+<h3 id="2-使用-su-命令进行用户切换">2. 使用 <code>su</code> 命令进行用户切换</h3>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">su [OPTIONS] [-] [USER [ARG...]]	<span class="comment"># 使用替换的用户和组运行命令</span></span><br><span class="line"><span class="comment"># 常见选项：</span></span><br><span class="line">-c, --<span class="built_in">command</span>=COMMAND <span class="comment"># 切换用户过去执行命令（慎用别名），执行完毕后切回原来的用户</span></span><br><span class="line">-g, --group=GROUP <span class="comment"># 指定主要组，仅适用于 root</span></span><br><span class="line">-, -l, --login <span class="comment"># 切换用户时，使环境变量(HOME，SHELL，USER，LOGNAME，PATH等）和欲切换的用户相同、不使用则取得用户的临时权限，不加载环境变量</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]\<span class="comment"># su --login student -c &quot;ls -l&quot;</span></span><br><span class="line">total 0</span><br><span class="line">[root@localhost ~]\<span class="comment"># su - student</span></span><br><span class="line">[student@localhost ~]\$ </span><br></pre></td></tr></table></figure>
+<p>​使用 <code>exit</code> 或 <code>logout</code> 命令可以从临时切换过去的用户切换回原来的用户。</p>
+<h3 id="3-使用-sudo-命令利用超级用户特权执行命令">3. 使用 <code>sudo</code> 命令利用超级用户特权执行命令</h3>
+<p>​有时为了安全起见，root 用户的账户可能没有设置有效的密码。在这种情况下无法正常通过密码验证以 root 用户登陆，也不能通过使用 <code>su</code> 获取交互式 shell，而为了使用 root 特权，则可以使用 <code>sudo</code> 命令来临时获得 root 特权执行命令，这个过程也需要进行密码验证，不过是需要输入当前用户自己的密码。</p>
+<p>​普通用户能执行 root 特权命令的前提是该普通为系统管理员用户，即其已经在 /etc/sudoers 中，并且已经被配置了些许可以以 root 权限运行的命令。普通用户如果没被允许执行特权命令，其使用 sudo 执行命令会被拒绝，且会被记录下来向 root 用户报告。</p>
+<p>​使用 <code>visudo</code> 命令可以编辑 /etc/sudoers 配置文件，进行 root 权限下放的配置，RHEL7 之后 wheel 组成员默认被授予了超级用户的一些权限，它们可以使用 sudo 执行一些 root 特权命令。</p>
+<blockquote>
+<p>🟢 建议在 /etc/sudoers.d 目录下补充自己的 sudo 权限访问权限而不是修改 /etc/sudoers。</p>
+</blockquote>
+<p>​为用户配置权限的一般形式为：<em>用户名或%组名 ALL=(ALL)  [NOPASSWD:]ALL</em>，其中 NOPASSWD: 会允许当前用户或组不用输入用户自己的密码直接运行特权命令，比较危险。</p>
+<p>​管理员用户使用 root 特权执行命令的内容会被记录到 <em>/var/log/secure</em> 日志中去：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[student@localhost ~]\$ sudo <span class="built_in">tail</span> -n 0 -f /var/log/secure</span><br><span class="line">Apr 17 12:27:16 localhost sudo[9240]: student : TTY=pts/2 ; PWD=/home/student ; USER=root ; COMMAND=/bin/tail -n 0 -f /var/log/secure</span><br><span class="line">Apr 17 12:27:16 localhost sudo[9240]: pam_systemd(sudo:session): Cannot create session: Already running <span class="keyword">in</span> a session or user slice</span><br><span class="line">Apr 17 12:27:16 localhost sudo[9240]: pam_unix(sudo:session): session opened <span class="keyword">for</span> user root by root(uid=0)</span><br></pre></td></tr></table></figure>
+<p>​特殊地，管理员用户可以通过以下两种方式切换到 root，这两种方式的行为不完全相同：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[student@localhost ~]\$ sudo su -	<span class="comment"># 推荐</span></span><br><span class="line">[sudo] password <span class="keyword">for</span> student: </span><br><span class="line">[root@localhost ~]\<span class="comment"># </span></span><br><span class="line">[student@localhost ~]\$ sudo -i	<span class="comment"># 虽切换到了 root 但使用的环境与上方方法有差异</span></span><br><span class="line">[sudo] password <span class="keyword">for</span> student: </span><br><span class="line">[root@localhost ~]\<span class="comment"># </span></span><br></pre></td></tr></table></figure>
+
+        </div>
+        
+<blockquote class="copyright">
+    <p><strong>本文链接 : </strong><a class="permalink" href="https://skinyi.github.io/2022-08-15-Linux%20|%20%E7%AE%A1%E7%90%86%E6%9C%AC%E5%9C%B0%E7%94%A8%E6%88%B7%E5%92%8C%E7%BB%84%EF%BC%88%E4%B8%80%EF%BC%89.html">https://skinyi.github.io/2022-08-15-Linux | 管理本地用户和组（一）.html</a></p>
+    <p><strong>这篇文章由作者胡编乱造或者由其他文章复制粘贴而来，其中有些内容可能已经过时，请谨慎参考复制文章中的内容。</strong></p>
+</blockquote>
+
+
+    </article>
+    
+    <section id="comments">
+        
+    </section>
+
+
+    
+
+</main>
+
+
+<aside style="" id="sidebar" class="aside aside-fixture">
+    <div class="toc-sidebar">
+        <nav id="toc" class="article-toc">
+            <h3 class="toc-title">文章目录</h3>
+            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%94%A8%E6%88%B7%E5%92%8C%E7%BB%84%E7%9A%84%E6%A6%82%E5%BF%B5"><span class="toc-number">1.</span> <span class="toc-text">用户和组的概念</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF%E7%94%A8%E6%88%B7"><span class="toc-number">1.1.</span> <span class="toc-text">什么是用户</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%BA%A2%E5%B8%BD-UID-%E8%8C%83%E5%9B%B4%E5%88%92%E5%88%86"><span class="toc-number">1.1.1.</span> <span class="toc-text">红帽 UID 范围划分</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF%E7%BB%84"><span class="toc-number">1.2.</span> <span class="toc-text">什么是组</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%BB%E8%A6%81%E7%BB%84%E5%92%8C%E8%A1%A5%E5%85%85%E7%BB%84"><span class="toc-number">1.2.1.</span> <span class="toc-text">主要组和补充组</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8%E8%B6%85%E7%BA%A7%E7%94%A8%E6%88%B7%E6%9D%83%E9%99%90"><span class="toc-number">2.</span> <span class="toc-text">使用超级用户权限</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%B6%85%E7%BA%A7%E7%94%A8%E6%88%B7"><span class="toc-number">2.1.</span> <span class="toc-text">超级用户</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E4%BD%BF%E7%94%A8-su-%E5%91%BD%E4%BB%A4%E8%BF%9B%E8%A1%8C%E7%94%A8%E6%88%B7%E5%88%87%E6%8D%A2"><span class="toc-number">2.2.</span> <span class="toc-text">2. 使用 su 命令进行用户切换</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E4%BD%BF%E7%94%A8-sudo-%E5%91%BD%E4%BB%A4%E5%88%A9%E7%94%A8%E8%B6%85%E7%BA%A7%E7%94%A8%E6%88%B7%E7%89%B9%E6%9D%83%E6%89%A7%E8%A1%8C%E5%91%BD%E4%BB%A4"><span class="toc-number">2.3.</span> <span class="toc-text">3. 使用 sudo 命令利用超级用户特权执行命令</span></a></li></ol></li></ol>
+        </nav>
+    </div>
+</aside>
+
+
+
+
+
+        </section>
+        <footer class="hidden lg:block fixed bottom-0 left-0 sm:w-1/12 bg-gray-100 z-40">
+    
+    
+        <p class="footer-custom">❤ Powered by <a href="https://hexo.io/" target="_blank" rel="noopener noreferrer">Hexo</a> with <a href="https://github.com/fengkx/hexo-theme-purer" target="_blank" rel="noopener noreferrer">Purer theme</a>.</p>
+    
+</footer>
+
+        <div id="mask" class="hidden mask fixed inset-0 bg-gray-900 opacity-75 z-40"></div>
+        <div id="search-view-container" class="hidden shadow-xl"></div>
+        
+<script src="/js/dom-event.min.js"></script>
+
+
+
+<script src="/js/local-search.min.js"></script>
+
+
+
+    <script src="//cdn.jsdelivr.net/npm/lightgallery.js@1.1.3/dist/js/lightgallery.min.js"></script>
+    
+<script src="/js/light-gallery.min.js"></script>
+
+
+
+
+
+
+    </body>
+</html>
