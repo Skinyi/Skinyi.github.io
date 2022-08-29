@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html  lang="zh-CN,en,default" >
+    <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, maximum-scale=5, viewport-fit=cover">
+    <title>RHCSA8 考前练习题及答案（上） | Avery Ma 的个人网站</title>
+    <meta name="description" content="🔴 此文章由之前的 Typora 笔记迁移过来，内容可能已经过时。  在 Node1 上完成以下任务 配置网络 在 node1 上配置网卡 ens160 的网络，要求如下：  主机名：node1.domain8.example.com IP 地址: 192.168.30.10&#x2F;24 网关：192.168.30.254 DNS：114.114.114.114  12345678910111213">
+<meta property="og:type" content="article">
+<meta property="og:title" content="RHCSA8 考前练习题及答案（上）">
+<meta property="og:url" content="https://skinyi.github.io/2022-08-29-Linux%20|%20RHCSA8%20%E8%80%83%E5%89%8D%E7%BB%83%E4%B9%A0%E9%A2%98%E5%8F%8A%E7%AD%94%E6%A1%88%EF%BC%88%E4%B8%8A%EF%BC%89.html">
+<meta property="og:site_name" content="Avery Ma 的个人网站">
+<meta property="og:description" content="🔴 此文章由之前的 Typora 笔记迁移过来，内容可能已经过时。  在 Node1 上完成以下任务 配置网络 在 node1 上配置网卡 ens160 的网络，要求如下：  主机名：node1.domain8.example.com IP 地址: 192.168.30.10&#x2F;24 网关：192.168.30.254 DNS：114.114.114.114  12345678910111213">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-08-29T14:56:35.740Z">
+<meta property="article:modified_time" content="2022-08-29T15:03:19.474Z">
+<meta property="article:author" content="skinyi">
+<meta property="article:tag" content="Linux">
+<meta property="article:tag" content="RHEL">
+<meta property="article:tag" content="RHCE">
+<meta property="article:tag" content="认证考试">
+<meta name="twitter:card" content="summary">
+
+    
+    <link rel="icon" href="images/favicon.png" type="image/x-icon">
+
+    
+<link rel="stylesheet" href="/css/common.min.css">
+
+
+
+    
+    
+    
+    
+        <link href="//cdn.jsdelivr.net/npm/lightgallery.js@1.1.3/dist/css/lightgallery.min.css" rel="stylesheet">
+    
+    
+    
+<link rel="stylesheet" href="/css/iconfont.min.css">
+
+    
+<meta name="generator" content="Hexo 6.2.0"></head>
+
+    <body>
+        <header class="header header-fixture">
+    <div class="profile-search-wrap flex sm:block">
+        
+        
+        <div class="profile sm:text-center md:px-1 lg:px-3 sm:pb-4 sm:pt-6">
+            <a id="avatar" role="link" href="https://github.com/skinyi" class="inline-block lg:w-16 lg:h-16 w-8 h-8 m-2" target="_blank" rel="noopener" rel="noreferrer" >
+                <img src="/images/avatar.jpg" class="rounded-full" alt="avatar">
+            </a>
+            <h2 id="name" class="hidden lg:block">Avery Ma</h2>
+            <h3 id="title" class="hidden xl:block">IT 从业者</h3>
+            
+            <small id="location" class="hidden lg:block">
+                <i class="iconfont icon-map-icon"></i>
+                宁夏, 中国
+            </small>
+            
+        </div>
+        
+        
+<div class="search flex-1 flex lg:inline-block sm:hidden lg:px-4 lg:mt-2 lg:w-full">
+    <form id="search-form" class="my-auto flex-1 lg:border lg:border-solid lg:border-gray-200">
+        <div class="input-group table bg-gray-100 lg:bg-white w-full">
+            <input id="search-input" type="text" placeholder="搜索" class="inline-block w-full bg-gray-100 lg:bg-white">
+            <span class="table-cell">
+                <button name="search tigger button" disabled>
+                    <i class="iconfont icon-search m-2"></i>
+                </button>
+            </span>
+        </div>
+    </form>
+        
+<div id="content-json" data-placeholder="搜索" class="invisible hidden">/content.json</div>
+<script id="search-teamplate" type="text/html" data-path="/content.json">
+    <div>
+        <div class="search-header bg-gray-400">
+            <input id="actual-search-input" model="keyword" ref="input" class="inline-block w-full h-10 px-2 py-1" placeholder="搜索" type="text">
+        </div>
+        <div class="search-result bg-gray-200">
+            {{#each searchPosts}}
+            <a href="/{{ path }}" class="result-item block px-2 pb-3 mb-1 pt-1 hover:bg-indigo-100">
+                <i class="iconfont icon-file"></i>
+                <h1 class="result-title inline font-medium text-lg">{{ title }}</h1>
+                <p class="result-content text-gray-600 text-sm">{{{ text }}}</p>
+            </a>
+            {{/each}}
+        </div>
+    </div>
+</script>
+
+</div>
+
+
+        <button name="menu toogle button" id="menu-toggle-btn" class="block sm:hidden p-3" role="button" aria-expanded="false">
+            <i class="iconfont icon-hamburger"></i>
+        </button>
+    </div>
+    <nav id="menu-nav" class="hidden sm:flex flex-col">
+        
+        
+            <div class="menu-item menu-home" role="menuitem">
+                <a href="/.">
+                    <i class="iconfont icon-home" aria-hidden="true"></i>
+                    <span class="menu-title">首页</span>
+                </a>
+            </div>
+        
+        
+            <div class="menu-item menu-archives" role="menuitem">
+                <a href="/archives">
+                    <i class="iconfont icon-archive" aria-hidden="true"></i>
+                    <span class="menu-title">归档</span>
+                </a>
+            </div>
+        
+        
+            <div class="menu-item menu-categories" role="menuitem">
+                <a href="/categories">
+                    <i class="iconfont icon-folder" aria-hidden="true"></i>
+                    <span class="menu-title">分类</span>
+                </a>
+            </div>
+        
+        
+            <div class="menu-item menu-tags" role="menuitem">
+                <a href="/tags">
+                    <i class="iconfont icon-tag" aria-hidden="true"></i>
+                    <span class="menu-title">标签</span>
+                </a>
+            </div>
+        
+        
+            <div class="menu-item menu-repository" role="menuitem">
+                <a href="/repository">
+                    <i class="iconfont icon-project" aria-hidden="true"></i>
+                    <span class="menu-title">项目</span>
+                </a>
+            </div>
+        
+        
+            <div class="menu-item menu-about" role="menuitem">
+                <a href="/about">
+                    <i class="iconfont icon-cup" aria-hidden="true"></i>
+                    <span class="menu-title">关于</span>
+                </a>
+            </div>
+        
+        
+
+    </nav>
+</header>
+
+        <section class="main-section">
+            
+    <main class="flex-1 px-4 py-14 md:px-5 lg:px-8 lg:py-4 relative min-h-screen">
+    
+
+    <article class="content article article-archives article-type-list" itemscope="">
+        <header class="article-header">
+            
+    
+        <h1 class="article-title text-lg" itemprop="name">
+            RHCSA8 考前练习题及答案（上）
+        </h1>
+    
+
+
+
+            <p class="article-meta mb-3 text-xs">
+                <span class="article-date">
+    <i class="iconfont icon-calendar-check"></i>
+	<a href="/2022-08-29-Linux%20%7C%20RHCSA8%20%E8%80%83%E5%89%8D%E7%BB%83%E4%B9%A0%E9%A2%98%E5%8F%8A%E7%AD%94%E6%A1%88%EF%BC%88%E4%B8%8A%EF%BC%89.html" class="article-date">
+	  <time datetime="2022-08-29T14:56:35.740Z" itemprop="datePublished">8月 29</time>
+	</a>
+</span>
+
+                
+    <span class="article-category">
+    <i class="iconfont icon-folder"></i>
+    <a class="article-category-link" href="/categories/%E5%AD%A6%E4%B9%A0/">学习</a> , <a class="article-category-link" href="/categories/%E5%AD%A6%E4%B9%A0/Linux/">Linux</a> , <a class="article-category-link" href="/categories/%E6%97%A5%E5%B8%B8%E8%AE%B0%E5%BD%95/">日常记录</a> , <a class="article-category-link" href="/categories/%E8%BF%81%E7%A7%BB%E6%96%87%E7%AB%A0/">迁移文章</a>
+  </span>
+
+
+                
+    <span class="article-tags">
+    <i class="iconfont icon-tag"></i>
+    <a class="article-tag-none-link" href="/tags/Linux/" rel="tag">Linux</a>, <a class="article-tag-none-link" href="/tags/RHCE/" rel="tag">RHCE</a>, <a class="article-tag-none-link" href="/tags/RHEL/" rel="tag">RHEL</a>, <a class="article-tag-none-link" href="/tags/%E8%AE%A4%E8%AF%81%E8%80%83%E8%AF%95/" rel="tag">认证考试</a>
+  </span>
+
+
+                
+                
+    
+        <span class="post-wordcount" itemprop="wordCount">字数统计: 2.6k(字)</span>
+    
+    
+        <span class="post-readcount" itemprop="timeRequired">阅读时长: 12(分)</span>
+    
+
+
+            </p>
+        </header>
+        <div class="marked-body article-body">
+            <blockquote>
+<p>🔴 此文章由之前的 Typora 笔记迁移过来，内容可能已经过时。</p>
+</blockquote>
+<h2 id="在-Node1-上完成以下任务">在 Node1 上完成以下任务</h2>
+<h3 id="配置网络">配置网络</h3>
+<p>在 node1 上配置网卡 ens160 的网络，要求如下：</p>
+<ul>
+<li>主机名：<a target="_blank" rel="noopener" href="http://node1.domain8.example.com">node1.domain8.example.com</a></li>
+<li>IP 地址: 192.168.30.10/24</li>
+<li>网关：192.168.30.254</li>
+<li>DNS：114.114.114.114</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]\<span class="comment"># hostnamectl set-hostname node1.domain8.example.com</span></span><br><span class="line">[root@node1 ~]\<span class="comment"># hostname</span></span><br><span class="line">node1.domain8.example.com</span><br><span class="line">[root@node1 ~]\<span class="comment"># nmcli con mod ens160 connection.autoconnect yes \ </span></span><br><span class="line">&gt; ipv4.method manual \</span><br><span class="line">&gt; ipv4.address 192.168.30.10/24 \</span><br><span class="line">&gt; ipv4.gateway 192.168.30.254 \</span><br><span class="line">&gt; ipv4.dns 114.114.114.114</span><br><span class="line">[root@node1 ~]\<span class="comment"># nmcli con up ens160</span></span><br><span class="line">Connection successfully activated (D-Bus active path: /org/freedesktop/NetworkManager/ActiveConnection/6)</span><br><span class="line">[root@node1 ~]\<span class="comment"># nmcli con show ens160 | grep ipv4</span></span><br><span class="line">ipv4.method:                            manual</span><br><span class="line">ipv4.dns:                               114.114.114.114</span><br><span class="line">ipv4.dns-search:                        --</span><br><span class="line">ipv4.dns-options:                       --</span><br><span class="line">ipv4.dns-priority:                      0</span><br><span class="line">ipv4.addresses:                         192.168.30.10/24</span><br><span class="line">ipv4.gateway:                           192.168.30.254</span><br><span class="line">......</span><br></pre></td></tr></table></figure>
+<h3 id="配置-yum-dnf-使用指定存储库">配置 yum/dnf 使用指定存储库</h3>
+<p>给系统配置默认存储库，要求如下： YUM 的 两 个 存 储 库 的 地 址 分 别 是 ：</p>
+<ul>
+<li><a href="ftp://host.domain8.example.com/dvd/BaseOS">ftp://host.domain8.example.com/dvd/BaseOS</a></li>
+<li><a href="ftp://host.domain8.example.com/dvd/AppStream">ftp://host.domain8.example.com/dvd/AppStream</a></li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 1. 方法一：利用 dnf-utils 软件包（需提前找到该包名）</span></span><br><span class="line">[root@node1 ~]\<span class="comment"># rpm -ivh ftp://host.domain8.example.com/dvd/BaseOS/Packages/dnf-utils-4.0.2.2-3.el8.noarch.rpm</span></span><br><span class="line">[root@node1 ~]\<span class="comment"># dnf-config-manager --add-repo ftp://host.domain8.example.com/dvd/BaseOS</span></span><br><span class="line">[root@node1 ~]\<span class="comment"># dnf-config-manager --add-repo ftp://host.domain8.example.com/dvd/AppStream</span></span><br><span class="line">vim /etc/yum.conf <span class="comment"># 编辑修改 gpgcheck=0,如方法二所示</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 2. 方法二：手动编辑添加</span></span><br><span class="line">[root@node1 ~]\<span class="comment"># vim /etc/yum.repos.d/default.repo</span></span><br><span class="line">[root@node1 ~]\<span class="comment"># cat !$</span></span><br><span class="line"><span class="built_in">cat</span> /etc/yum.repos.d/default.repo</span><br><span class="line">[baseos]</span><br><span class="line">name=baseos</span><br><span class="line">baseurl=ftp://host.domain8.example.com/dvd/BaseOS</span><br><span class="line">enabled=1</span><br><span class="line">gpgcheck=0</span><br><span class="line"></span><br><span class="line">[base]</span><br><span class="line">name=base</span><br><span class="line">baseurl=ftp://host.domain8.example.com/dvd/AppStream</span><br><span class="line">enabled=1</span><br><span class="line">gpgcheck=0</span><br><span class="line"></span><br><span class="line"><span class="comment"># 3. 验证：</span></span><br><span class="line">[root@node1 ~]\<span class="comment"># yum repolist</span></span><br><span class="line">Updating Subscription Management repositories.</span><br><span class="line">Unable to <span class="built_in">read</span> consumer identity</span><br><span class="line"></span><br><span class="line">This system is not registered to Red Hat Subscription Management. You can use subscription-manager to register.</span><br><span class="line"></span><br><span class="line">repo <span class="built_in">id</span>                              repo name</span><br><span class="line">base                                 base</span><br><span class="line">baseos                               baseos</span><br></pre></td></tr></table></figure>
+<h3 id="调试-SELinux">调试 SELinux</h3>
+<p>非标准端口 82 上运行的 WEB 服务器在提供内容时遇到问题。根据需要调试并解决问题， 并使其满足以下条件：</p>
+<ol>
+<li>系统上的 web 服务器能够提供 /var/www/html 中所有现在有的 html 文件（注意：不要删除或者其他方式改动现有的文件内容）</li>
+<li>Web 服务器通过 82 端口访问</li>
+<li>Web 服务器在系统启动时自动启动</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 查看原本的 SELinux 设置</span></span><br><span class="line">[root@node1 ~]\<span class="comment"># semanage port -l | grep ^http_port_t        # 查看属于 http_port_t 类型上下文的端口</span></span><br><span class="line">http_port_t                    tcp      80, 81, 443, 488, 8008, 8009, 8443, 9000</span><br><span class="line">[root@node1 ~]\<span class="comment"># ls -lZ /var/www/html | grep html$        # 查看 /var/www/html 中的 html 文件的安全上下文</span></span><br><span class="line">total 0</span><br><span class="line">-rw-r--r--. 1 root root unconfined_u:object_r:var_t:s0 0 Aug  4 22:52 1.html</span><br><span class="line">-rw-r--r--. 1 root root unconfined_u:object_r:var_t:s0 0 Aug  4 22:52 index.html</span><br><span class="line"></span><br><span class="line"><span class="comment"># 修改涉及的端口及文件的 SELinux 设置</span></span><br><span class="line">[root@node1 ~]\<span class="comment"># semanage port -a -t http_port_t -p tcp 82</span></span><br><span class="line">[root@node1 ~]\<span class="comment"># restorecon -RFv /var/www/html</span></span><br><span class="line">Relabeled /var/www/html from unconfined_u:object_r:var_t:s0 to system_u:object_r:httpd_sys_content_t:s0</span><br><span class="line">Relabeled /var/www/html/1.html from unconfined_u:object_r:var_t:s0 to system_u:object_r:httpd_sys_content_t:s0</span><br><span class="line">Relabeled /var/www/html/index.html from unconfined_u:object_r:var_t:s0 to system_u:object_r:httpd_sys_content_t:s0</span><br><span class="line">[root@node1 ~]\<span class="comment"># systemctl enable --now httpd</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 测试访问。宿主机访问还需放开防火墙</span></span><br><span class="line">[root@node1 ~]\<span class="comment"># curl localhost:82</span></span><br></pre></td></tr></table></figure>
+<h3 id="创建用户账户-2">创建用户账户</h3>
+<p>创建下列用户、用户组，并按要求完成设置：</p>
+<ol>
+<li>组名为 sysmgrs</li>
+<li>natasha 用户的附属组是 sysmgrs</li>
+<li>harry 用户的附属组是 sysmgrs</li>
+<li>john 用户的 shell 是非交互式 shell，且不是 sysmgrs 组的成员</li>
+<li>natasha、harry、john 的密码是 redhat</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[root@node1 ~]\<span class="comment"># groupadd sysmgrs</span></span><br><span class="line">[root@node1 ~]\<span class="comment"># useradd -G sysmgrs natasha    # -p 选项指定的加密后的密码，不推荐使用</span></span><br><span class="line">[root@node1 ~]\<span class="comment"># useradd -G sysmgrs harry</span></span><br><span class="line">[root@node1 ~]\<span class="comment"># useradd -s /sbin/nologin john</span></span><br><span class="line">[root@node1 ~]\<span class="comment"># for i in natasha harry john; do echo redhat | passwd --stdin $i; done</span></span><br></pre></td></tr></table></figure>
+<h3 id="配置-Cron-作业">配置 Cron 作业</h3>
+<p>配置 cron 作业，该作业每隔 5 分钟运行并执行以下命令：<br />
+logger “EX200 in progress”，以用户 natasha 身份运行</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root@node1 ~]\<span class="comment"># crontab -e -u natasha</span></span><br><span class="line">*/5 * * * * logger <span class="string">&quot;EX200 in progress&quot;</span></span><br><span class="line">[root@node1 ~]\<span class="comment"># tail -f /var/log/cron    # 验证任务</span></span><br></pre></td></tr></table></figure>
+<h3 id="创建协作目录">创建协作目录</h3>
+<p>创建具有特殊权限的目录 /home/managers，要求如下：</p>
+<ol>
+<li>/home/managers 目录属于 sysmgrs 组</li>
+<li>此目录可以被 sysmgrs 的组成员读取、写入和访问，但是其他任何用户不具备这些权限。（不包括 root 用户）</li>
+<li>在 /home/managers 目录中创建的文件的所属组自动变成 sysmgrs</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">[root@node1 ~]\<span class="comment"># mkdir /home/managers</span></span><br><span class="line">[root@node1 ~]\<span class="comment"># chgrp sysmgrs /home/managers</span></span><br><span class="line"><span class="comment"># [root@node1 ~]\# chmod 2770 /home/managers</span></span><br><span class="line">[root@node1 ~]\<span class="comment"># chmod g=rws,o=- /home/managers    # g+s 实现目录内新建文件自动继承目录的文件</span></span><br><span class="line"><span class="comment"># 验证</span></span><br><span class="line">[root@node1 ~]\<span class="comment"># ls -ld /home/managers</span></span><br><span class="line">drwxrws---. 2 root sysmgrs 6 Aug  8 10:46 /home/managers</span><br></pre></td></tr></table></figure>
+<h3 id="配置-NTP">配置 NTP</h3>
+<p>配置 node1 作为 NTP 的客户端，配置同步阿里云的 ntp 授时服务：<a target="_blank" rel="noopener" href="http://ntp.aliyun.com">ntp.aliyun.com</a>。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">[root@node1 ~]\<span class="comment"># timedatectl | grep NTP</span></span><br><span class="line">              NTP service: active</span><br><span class="line">[root@node1 ~]\<span class="comment"># systemctl status chronyd</span></span><br><span class="line">● chronyd.service - NTP client/server</span><br><span class="line">   Loaded: loaded (/usr/lib/systemd/system/chronyd.service; enabled; vendor preset: enabled)</span><br><span class="line">   Active: active (running) (thawing) since Mon 2022-08-08 11:14:54 CST; 10min ago</span><br><span class="line">   ......</span><br><span class="line">[root@node1 ~]\<span class="comment"># vim /etc/chrony.conf</span></span><br><span class="line"><span class="comment"># Use public servers from the pool.ntp.org project.</span></span><br><span class="line"><span class="comment"># Please consider joining the pool (http://www.pool.ntp.org/join.html).</span></span><br><span class="line">server ntp.aliyun.com iburst</span><br><span class="line">pool 2.rhel.pool.ntp.org iburst</span><br><span class="line"></span><br><span class="line"><span class="comment"># Record the rate at which the system clock gains/losses time.</span></span><br><span class="line">driftfile /var/lib/chrony/drift</span><br><span class="line">......</span><br><span class="line">[root@node1 ~]\<span class="comment"># systemctl restart chronyd</span></span><br><span class="line">[root@node1 ~]\<span class="comment"># chronyc sources    # 203.107.6.88 是域名 ntp.aliyun.com 返回的授时服务 ip</span></span><br><span class="line">210 Number of sources = 7</span><br><span class="line">MS Name/IP address         Stratum Poll Reach LastRx Last sample               </span><br><span class="line">===============================================================================</span><br><span class="line">^* 203.107.6.88                  2   7   357    70  -6780us[  -10ms] +/-   37ms</span><br><span class="line">......</span><br></pre></td></tr></table></figure>
+<h3 id="配置-autofs">配置 autofs</h3>
+<p>配置 autofs，按照以下要求自动挂载远程用户的家目录，要求如下：</p>
+<ol>
+<li><a target="_blank" rel="noopener" href="http://host.domain8.example.com">host.domain8.example.com</a> ( 172.25.250.250 ) NFS 导出 /rhome 到您的系统</li>
+<li>此文件系统包含为用户 remoteuser1 预配置的主目录</li>
+<li>remoteuser1 的主目录是 <a target="_blank" rel="noopener" href="http://host.domain8.example.com">host.domain8.example.com</a>:/rhome/remoteuser1</li>
+<li>remoteuser1 的主目录应自动挂载到本地 /rhome 下的 /rhome/remoteuser1</li>
+<li>主目录必须可供其用户写入</li>
+<li>remoteuser1 的密码是 redhat</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">[root@node1 ~]\<span class="comment"># systemctl status autofs</span></span><br><span class="line">● autofs.service - Automounts filesystems on demand</span><br><span class="line">   Loaded: loaded (/usr/lib/systemd/system/autofs.service; disabled; vendor preset: disabled)</span><br><span class="line">   Active: inactive (dead)</span><br><span class="line">[root@node1 ~]\<span class="comment"># vim /etc/auto.master    # 编辑 autofs 的主配置文件</span></span><br><span class="line">/misc   /etc/auto.misc</span><br><span class="line"><span class="comment"># 添加 nfs 条目 - rhome 作为基本挂载点</span></span><br><span class="line"><span class="comment"># | 本地 autofs 挂载点    | 针对该挂载点的配置文件    | (可选)挂载选项</span></span><br><span class="line">/rhome    /etc/auto.nfs</span><br><span class="line">[root@node1 ~]\<span class="comment"># vim /etc/auto.nfs    # 编辑 nfs autofs 的配置</span></span><br><span class="line"><span class="comment"># 添加用户目录及远程 nfs 路径</span></span><br><span class="line"><span class="comment"># | 挂载点（相对于基本挂载点：/rhome/remoteuser1）    | 挂载选项（可读写）    | 远程位置</span></span><br><span class="line">remoteuser1    -fstype=nfs,rw    host.domain8.example.com:/rhome/remoteuser1    <span class="comment"># 以空格隔开</span></span><br><span class="line">[root@node1 ~]\<span class="comment"># systemctl enable --now autofs</span></span><br><span class="line">[root@node1 ~]\<span class="comment"># echo flectrag | passwd --stdin remoteuser1</span></span><br><span class="line">[root@node1 ~]\<span class="comment"># su - remoteuser1</span></span><br></pre></td></tr></table></figure>
+<h3 id="配置-var-tmp-fstab-的权限">配置 /var/tmp/fstab 的权限</h3>
+<p>配置文件权限，将文件 /etc/fstab 复制到 /var/tmp/fstab。配置 /var/tmp/fstab 的权限以满足如下条件：</p>
+<ol>
+<li>/var/tmp/fstab 属于 root 用户和 root 组</li>
+<li>/var/tmp/fstab 不能被任何人执行</li>
+<li>用户 natasha 有读写权限</li>
+<li>用户 harry 没有读写权限</li>
+<li>所有其他用户（当前或者未来）能够读取 /var/tmp/fstab</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">[root@node1 ~]\<span class="comment"># cp /etc/fstab /var/tmp/fstab</span></span><br><span class="line">[root@node1 ~]\<span class="comment"># setfacl -m u:natasha:rw /var/tmp/fstab</span></span><br><span class="line">[root@node1 ~]\<span class="comment"># setfacl -m u:harry:- /var/tmp/fstab</span></span><br><span class="line">[root@node1 ~]\<span class="comment"># getfacl /var/tmp/fstab    # 验证</span></span><br><span class="line">getfacl: Removing leading <span class="string">&#x27;/&#x27;</span> from absolute path names</span><br><span class="line"><span class="comment"># file: var/tmp/fstab</span></span><br><span class="line"><span class="comment"># owner: root</span></span><br><span class="line"><span class="comment"># group: root</span></span><br><span class="line">user::rw-</span><br><span class="line">user:natasha:rw-</span><br><span class="line">user:harry:---</span><br><span class="line">group::r--</span><br><span class="line">mask::rw-</span><br><span class="line">other::r--</span><br></pre></td></tr></table></figure>
+<h3 id="配置用户账户">配置用户账户</h3>
+<p>配置用户 manalo ，其用户 ID 为 3533。此用户的密码应当为 redhat</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[root@node1 ~]\<span class="comment"># useradd -u 3533 manalo</span></span><br><span class="line">[root@node1 ~]\<span class="comment"># echo redhat | passwd --stdin manalo</span></span><br><span class="line">Changing password <span class="keyword">for</span> user manalo.</span><br><span class="line">passwd: all authentication tokens updated successfully.</span><br></pre></td></tr></table></figure>
+<h3 id="查找文件">查找文件</h3>
+<p>查找属于 manalo 用户所属的文件，并拷贝到 /root/findfiles 目录</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@node1 ~]\<span class="comment"># mkdir /root/findfiles</span></span><br><span class="line">[root@node1 ~]\<span class="comment"># find / -user manalo -exec cp -a &#123;&#125; /root/findfiles \;</span></span><br></pre></td></tr></table></figure>
+<h3 id="查找字符串">查找字符串</h3>
+<p>查找文件 /usr/share/xml/iso-codes/iso_639_3.xml 中包含字符串 ng 的所有行。并将所有这 些行的内容放到文件/root/list 中，/root/list 不得包含空行。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@node1 ~]\<span class="comment"># grep ng /usr/share/xml/iso-codes/iso_639_3.xml &gt; /root/list</span></span><br></pre></td></tr></table></figure>
+<h3 id="创建归档">创建归档</h3>
+<p>创建一个名为 /root/backup.tar.gz 的 tar 包，用来压缩 /usr/local 目录。 如果考试让你用的 /root/backup.tar.bz2 的 tar 包呢？</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root@node1 ~]\<span class="comment"># tar -czvf /root/backup.tar.gz /usr/local/    # 压缩为 tar.gz</span></span><br><span class="line">[root@node1 ~]\<span class="comment"># tar -cjvf /root/backup.tar.bz2 /usr/local/    # 压缩为 tar.bz2</span></span><br><span class="line">[root@node1 ~]\<span class="comment"># tar -tf /root/backup.tar.gz    # 验证</span></span><br></pre></td></tr></table></figure>
+<h3 id="配置容器使其自动启动">配置容器使其自动启动</h3>
+<p>利用仓库服务器上的 rsyslog 镜像，创建一个名为 logserver 的容器</p>
+<blockquote>
+<p>仓库地址：<a target="_blank" rel="noopener" href="http://registry.domain250.example.com">registry.domain250.example.com</a>，用户名：admin，密码：redhat。</p>
+</blockquote>
+<ol>
+<li>
+<p>面向 wallah 用户，配置一个 systemd 服务</p>
+</li>
+<li>
+<p>该服务命名为 container-logserver ，并在系统重启时自动启动，无需干预</p>
+</li>
+</ol>
+<h3 id="完成为容器配置持久存储">完成为容器配置持久存储</h3>
+<p>通过以下方式扩展上一个任务的服务</p>
+<ol>
+<li>
+<p>配置主机系统的 journald 日志以在系统重启后保留数据，并重新启动日志记录服务</p>
+</li>
+<li>
+<p>将主机 /var/log/journal 目录下任何以 *.journal 的文件复制到 /home/wallah/container_logfile 中</p>
+</li>
+<li>
+<p>将服务配置为在启动时自动将/home/wallah/container_logfile 挂载到容器中的 /var/log/journal 下</p>
+</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># jouranld 的日志临时存储在 /run/log/journal/ 目录中，持久化时会保存在 /var/log/journal/ 目录中，该目录无需手动创建</span></span><br><span class="line"><span class="comment"># journald 日志的存储方式在 /etc/systemd/journald.conf 配置文件中定义</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 任务九 1-2：</span></span><br><span class="line"><span class="comment">## 1. 修改 journald 配置文件使其持久化存储日志</span></span><br><span class="line">[root@node1 ~]\<span class="comment"># vim /etc/systemd/journald.conf</span></span><br><span class="line">[Journal]</span><br><span class="line"><span class="comment">#Storage=auto</span></span><br><span class="line">Storge=persistent</span><br><span class="line"><span class="comment">#Compress=yes</span></span><br><span class="line">[root@node1 ~]\<span class="comment"># systemctl enable --now systemd-journald    # 重启（设置自启）journald 服务</span></span><br><span class="line"><span class="comment">## 2. 复制日志</span></span><br><span class="line">[root@node1 ~]\<span class="comment"># journalctl -u systemd-journald    # 查看日志服务生成的日志存储路径（主要是随机字符串目录）</span></span><br><span class="line">[root@node1 ~]\<span class="comment"># cp /var/run/journal/&lt;long_random_string&gt;/*.journal /home/wallah/containe_logfile/</span></span><br><span class="line">[root@node1 ~]\<span class="comment"># chown -R wallah:wallah /home/wallah/container_logfile</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 任务八 1-2，任务九 3：</span></span><br><span class="line">[root@node1 ~]\<span class="comment"># ssh wallah@node1    # 使用 ssh 本地远程 wallah 用户</span></span><br><span class="line"><span class="comment">## 1. 配置 logserver 容器</span></span><br><span class="line">[wallah@node1 ~]\<span class="comment"># podman login registry.domain250.example.com    # 登录到镜像仓库</span></span><br><span class="line">Username: admin</span><br><span class="line">Password: redhat</span><br><span class="line">Login Succeeded!</span><br><span class="line">[wallah@node1 ~]\<span class="comment"># podman search registry.domain250.example.com/    # 查看仓库内的镜像列表</span></span><br><span class="line">[wallah@node1 ~]\<span class="comment"># podman pull registry.domain250.example.com/rhel/rsyslog    # 拉取镜像到本地</span></span><br><span class="line">[wallah@node1 ~]\<span class="comment"># podman run -d --name logserver -v /home/wallah/container_logfile:/var/log/journal:Z registry.domain250.example.com/rhel/rsyslog    # 启动容器，-d 后台运行，--name 指定容器名字，-v 指定目录映射(冒号和Z不可缺)</span></span><br><span class="line">[wallah@node1 ~]\<span class="comment"># podman ps # 查看运行中的容器</span></span><br><span class="line"><span class="comment">## 2. 为容器创建用户服务</span></span><br><span class="line">[wallah@node1 ~]\<span class="comment"># loginctl enable-linger [wallah]    # 允许 wallah 用户逗留（用户登出后其服务保持运行）</span></span><br><span class="line">[wallah@node1 ~]\<span class="comment"># mkdir -p ~/.config/systemd/user/    # 创建用户 systemd 服务配置目录</span></span><br><span class="line">[wallah@node1 ~]\<span class="comment"># cd ~/.config/systemd/user/</span></span><br><span class="line">[wallah@node1 user]\<span class="comment"># podman generate systemd -n logserver -f    # 创建用户服务</span></span><br><span class="line">/home/wallah/.config/systemd/user/container-logserver.service</span><br><span class="line">[wallah@node1 user]\<span class="comment"># podman stop logserver    # 先停止容器以进行后续测试</span></span><br><span class="line">[wallah@node1 user]\<span class="comment"># systemctl --user enable --now container-logserver.service    # 启用用户服务并设置 container-logserver 服务的自启</span></span><br><span class="line"><span class="comment">## 3. 验证</span></span><br><span class="line">[wallah@node1 user]\<span class="comment"># podman ps    # 验证容器是否自启</span></span><br></pre></td></tr></table></figure>
+
+        </div>
+        
+<blockquote class="copyright">
+    <p><strong>本文链接 : </strong><a class="permalink" href="https://skinyi.github.io/2022-08-29-Linux%20|%20RHCSA8%20%E8%80%83%E5%89%8D%E7%BB%83%E4%B9%A0%E9%A2%98%E5%8F%8A%E7%AD%94%E6%A1%88%EF%BC%88%E4%B8%8A%EF%BC%89.html">https://skinyi.github.io/2022-08-29-Linux | RHCSA8 考前练习题及答案（上）.html</a></p>
+    <p><strong>这篇文章由作者胡编乱造或者由其他文章复制粘贴而来，其中有些内容可能已经过时，请谨慎参考复制文章中的内容。</strong></p>
+</blockquote>
+
+
+    </article>
+    
+    <section id="comments">
+        
+    </section>
+
+
+    
+
+</main>
+
+
+<aside style="" id="sidebar" class="aside aside-fixture">
+    <div class="toc-sidebar">
+        <nav id="toc" class="article-toc">
+            <h3 class="toc-title">文章目录</h3>
+            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9C%A8-Node1-%E4%B8%8A%E5%AE%8C%E6%88%90%E4%BB%A5%E4%B8%8B%E4%BB%BB%E5%8A%A1"><span class="toc-number">1.</span> <span class="toc-text">在 Node1 上完成以下任务</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%85%8D%E7%BD%AE%E7%BD%91%E7%BB%9C"><span class="toc-number">1.1.</span> <span class="toc-text">配置网络</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%85%8D%E7%BD%AE-yum-dnf-%E4%BD%BF%E7%94%A8%E6%8C%87%E5%AE%9A%E5%AD%98%E5%82%A8%E5%BA%93"><span class="toc-number">1.2.</span> <span class="toc-text">配置 yum&#x2F;dnf 使用指定存储库</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%B0%83%E8%AF%95-SELinux"><span class="toc-number">1.3.</span> <span class="toc-text">调试 SELinux</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%9B%E5%BB%BA%E7%94%A8%E6%88%B7%E8%B4%A6%E6%88%B7-2"><span class="toc-number">1.4.</span> <span class="toc-text">创建用户账户</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%85%8D%E7%BD%AE-Cron-%E4%BD%9C%E4%B8%9A"><span class="toc-number">1.5.</span> <span class="toc-text">配置 Cron 作业</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%9B%E5%BB%BA%E5%8D%8F%E4%BD%9C%E7%9B%AE%E5%BD%95"><span class="toc-number">1.6.</span> <span class="toc-text">创建协作目录</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%85%8D%E7%BD%AE-NTP"><span class="toc-number">1.7.</span> <span class="toc-text">配置 NTP</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%85%8D%E7%BD%AE-autofs"><span class="toc-number">1.8.</span> <span class="toc-text">配置 autofs</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%85%8D%E7%BD%AE-var-tmp-fstab-%E7%9A%84%E6%9D%83%E9%99%90"><span class="toc-number">1.9.</span> <span class="toc-text">配置 &#x2F;var&#x2F;tmp&#x2F;fstab 的权限</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%85%8D%E7%BD%AE%E7%94%A8%E6%88%B7%E8%B4%A6%E6%88%B7"><span class="toc-number">1.10.</span> <span class="toc-text">配置用户账户</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9F%A5%E6%89%BE%E6%96%87%E4%BB%B6"><span class="toc-number">1.11.</span> <span class="toc-text">查找文件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9F%A5%E6%89%BE%E5%AD%97%E7%AC%A6%E4%B8%B2"><span class="toc-number">1.12.</span> <span class="toc-text">查找字符串</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%9B%E5%BB%BA%E5%BD%92%E6%A1%A3"><span class="toc-number">1.13.</span> <span class="toc-text">创建归档</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%85%8D%E7%BD%AE%E5%AE%B9%E5%99%A8%E4%BD%BF%E5%85%B6%E8%87%AA%E5%8A%A8%E5%90%AF%E5%8A%A8"><span class="toc-number">1.14.</span> <span class="toc-text">配置容器使其自动启动</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%8C%E6%88%90%E4%B8%BA%E5%AE%B9%E5%99%A8%E9%85%8D%E7%BD%AE%E6%8C%81%E4%B9%85%E5%AD%98%E5%82%A8"><span class="toc-number">1.15.</span> <span class="toc-text">完成为容器配置持久存储</span></a></li></ol></li></ol>
+        </nav>
+    </div>
+</aside>
+
+
+
+
+
+        </section>
+        <footer class="hidden lg:block fixed bottom-0 left-0 sm:w-1/12 bg-gray-100 z-40">
+    
+    
+        <p class="footer-custom">❤ Powered by <a href="https://hexo.io/" target="_blank" rel="noopener noreferrer">Hexo</a> with <a href="https://github.com/fengkx/hexo-theme-purer" target="_blank" rel="noopener noreferrer">Purer theme</a>.</p>
+    
+</footer>
+
+        <div id="mask" class="hidden mask fixed inset-0 bg-gray-900 opacity-75 z-40"></div>
+        <div id="search-view-container" class="hidden shadow-xl"></div>
+        
+<script src="/js/dom-event.min.js"></script>
+
+
+
+<script src="/js/local-search.min.js"></script>
+
+
+
+    <script src="//cdn.jsdelivr.net/npm/lightgallery.js@1.1.3/dist/js/lightgallery.min.js"></script>
+    
+<script src="/js/light-gallery.min.js"></script>
+
+
+
+
+
+
+    </body>
+</html>
