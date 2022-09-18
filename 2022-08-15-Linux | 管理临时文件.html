@@ -39,7 +39,7 @@
 <link rel="stylesheet" href="/css/iconfont.min.css">
 
     
-<meta name="generator" content="Hexo 6.2.0"></head>
+<meta name="generator" content="Hexo 6.3.0"></head>
 
     <body>
         <header class="header header-fixture">
@@ -207,7 +207,7 @@
             <blockquote>
 <p>🔴 此文章由之前的 Typora 笔记迁移过来，内容可能已经过时。</p>
 </blockquote>
-<h2 id="概述-2">概述</h2>
+<h2 id="概述">概述</h2>
 <p>​现代操作文件会在运行时产生大量的临时文件和目录，有些应用（和用户）会使用 <em>/tmp</em> 目录来保存临时数据，还有一些应用（和用户）则使用更特定于任务的位置，如守护进程以及 <em>/run</em> 下特定于用户的易失性（存储于内存，断电或重启丢失）目录。</p>
 <p>​为了保持系统充分运行，有必要创建那些不存在的目录和文件，因为守护进程和脚本可能会依靠它们的存在，而清除旧文件后就不会填满磁盘空间或提供错误信息。</p>
 <p>​RHEL 7 以上引入了一个名为 <em>systemd-tmpfiles</em> 的新工具，它提供了一种结构化和可配置的方法来管理临时目录和文件。在 systemd 启动系统后，其中一个最先启动的服务单元是 systemd-tmpfiles-setup。该服务运行命令 <code>systemd-tmpfiles --create --remove</code>。此命令从 <em>/usr/lib/tmpfiles.d/*.conf</em>、<em>/run/tmpfiles.d/*.conf</em> 和 <em>/etc/tmpfiles.d/*.conf</em> 读取配置文件。系统会删除这些配置文件中标记的要删除的任何文件和目录，并且会创建标记要创建（或修复权限）的任何文件和目录，并使其拥有正确的权限（如有必要）。</p>
@@ -256,7 +256,7 @@
     <div class="toc-sidebar">
         <nav id="toc" class="article-toc">
             <h3 class="toc-title">文章目录</h3>
-            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A6%82%E8%BF%B0-2"><span class="toc-number">1.</span> <span class="toc-text">概述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8%E5%AE%9A%E6%97%B6%E5%99%A8%E6%B8%85%E7%90%86%E4%B8%B4%E6%97%B6%E6%96%87%E4%BB%B6"><span class="toc-number">2.</span> <span class="toc-text">使用定时器清理临时文件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%89%8B%E5%8A%A8%E6%B8%85%E7%90%86%E4%B8%B4%E6%97%B6%E6%96%87%E4%BB%B6"><span class="toc-number">3.</span> <span class="toc-text">手动清理临时文件</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E4%BC%98%E5%85%88%E7%BA%A7"><span class="toc-number">3.1.</span> <span class="toc-text">配置文件优先级</span></a></li></ol></li></ol>
+            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A6%82%E8%BF%B0"><span class="toc-number">1.</span> <span class="toc-text">概述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8%E5%AE%9A%E6%97%B6%E5%99%A8%E6%B8%85%E7%90%86%E4%B8%B4%E6%97%B6%E6%96%87%E4%BB%B6"><span class="toc-number">2.</span> <span class="toc-text">使用定时器清理临时文件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%89%8B%E5%8A%A8%E6%B8%85%E7%90%86%E4%B8%B4%E6%97%B6%E6%96%87%E4%BB%B6"><span class="toc-number">3.</span> <span class="toc-text">手动清理临时文件</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E4%BC%98%E5%85%88%E7%BA%A7"><span class="toc-number">3.1.</span> <span class="toc-text">配置文件优先级</span></a></li></ol></li></ol>
         </nav>
     </div>
 </aside>
